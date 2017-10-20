@@ -3,8 +3,12 @@ Models/obj/
 
 Web/obj/
 
-\.vs/
+Web/node_modules/
+
+Web/bin/
 
 Models/bin/
 
-Web/bin/
+*.userprefs
+
+\.vs/
