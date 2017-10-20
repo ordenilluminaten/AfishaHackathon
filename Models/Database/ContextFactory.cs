@@ -23,7 +23,7 @@ namespace Models {
 
         private static void GetConnectionStringFromSettings() {
             if (string.IsNullOrEmpty(ConnectionString))
-                ConnectionString = JsonConvert.DeserializeObject<AppSetting>(File.ReadAllText("../Afisha/appsettings.Development.json"))
+                ConnectionString = JsonConvert.DeserializeObject<AppSetting>(File.ReadAllText("../Web/appsettings.Development.json"))
                                               .ConnectionStrings.DefaultConnection;
         }
     }
