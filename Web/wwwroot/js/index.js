@@ -51,36 +51,33 @@ var appRactive = Ractive({
     }
 });
 
-function friendsWillGo() {
+function getVkfriends() {
     VK.api('friends.get', {
         order: 'hints',
         count: 100,
         fields: 'nickname,photo_100'
     }, (data) => {
         let friends = {};
-        let ids = data.response.items.map((item) => {
+        let userIds = [];
+        let count = 0;
+        userIds = data.response.items.map((item) => {
             friends[item.id] = item;
+            count++;
             return item.id;
         });
-        Request.post({
-            url: '/GetUsersEventsByIds',
-            data: {
-                ids: ids
-            }
-        }).then((usersEvents) => {
-            if (usersEvents != null)
-                for (let idUser in usersEvents)
-                    friends[idUser].events = usersEvents[idUser];
 
-            appRactive.set("currentUser.friends", friends);                        
-        });
+        appRactive.set("currentUser.friends", {
+            count: count,
+            userIds: userIds,
+            items: friends
+        });       
     });
 }
 
 function onInited() {
-    debugger;
-    friendsWillGo();
+    getVkfriends();
 }
+
 
 
 

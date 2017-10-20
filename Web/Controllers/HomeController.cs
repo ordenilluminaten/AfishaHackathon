@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ATMIT.Core.Web.Repository;
 using Microsoft.AspNetCore.Hosting;
@@ -39,8 +41,7 @@ namespace Afisha.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<IActionResult> Index(FirstRequest request)
-        {
+        public async Task<IActionResult> Index(FirstRequest request) {
             //TODO обработка запроса
             if (Environment.IsDevelopment())
             {
@@ -71,6 +72,25 @@ namespace Afisha.Controllers
             });
 
             return View(request);
+        }
+
+        [HttpPost]
+        [Route(nameof(GetUsersEventsByIds))]
+        public async Task<IActionResult> GetUsersEventsByIds(IEnumerable<int> ids) {
+            var userEvents = await Unit.Get<UserEvent, Guid>().All
+                .Where(_x => ids.Contains(_x.IdUser))
+                .GroupBy(_x => _x.IdUser)
+                .ToDictionaryAsync(_x => _x.Key, _x => _x.Select(_y => new {
+                    id = _y.Id,
+                    idEvent = _y.IdEvent,
+                    date = _y.Date,
+                    userTotalCount = _y.UserCount
+                }));
+
+            return Json(new {
+                items = userEvents,
+                count = userEvents.Count
+            });
         }
     }
 }

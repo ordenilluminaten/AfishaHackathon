@@ -20,6 +20,7 @@
         "wwwroot/js/pages/AllPage.js",
         "wwwroot/js/pages/MoviesPage.js",
         "wwwroot/js/pages/EventPage.js",
+        "wwwroot/js/pages/Header.js",
         "wwwroot/js/components/utils.js"
       ]
     },
@@ -70,6 +71,12 @@
       "outputFileName": "wwwroot/images/svg-icons.min.svg",
       "inputFiles": [
         "wwwroot/images/svg-icons.svg"
+      ]
+    },
+    {
+      "outputFileName": "Feed/companies.Production.min.xml",
+      "inputFiles": [
+        "Feed/companies.Production.xml"
       ]
     }
   ],

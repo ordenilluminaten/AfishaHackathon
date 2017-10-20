@@ -1,4 +1,6 @@
 ﻿@using Models.Api.VkApi
+@using ATMIT.Web.Utility;
+@using Models.Afisha;
 @model FirstRequest
 @{
     ViewData["Title"] = "Афиша";
@@ -11,5 +13,6 @@
 @section Scripts {
     <script>
         appRactive.set('currentUser', @Json.Serialize(Model.ApiResult.Value.UserData));
+        appRactive.set('categories', @Json.Serialize(Enum<PlaceType>.ToIEnumerable().ToDictionary(_x => (int)_x, _x => _x.GetDisplayName())));        
     </script>
 }

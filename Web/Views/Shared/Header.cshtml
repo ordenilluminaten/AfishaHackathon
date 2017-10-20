@@ -17,7 +17,8 @@
                     </a>
                 </li>
 
-                <li class="dropdown friends-item" onclick="dropdown.toggle(this, event, 'friends-dropdown')">
+                <li class="dropdown friends-item" 
+                    onclick="dropdown.toggle(this, event, 'friends-dropdown', Header.openFriends)">
                     @await Html.PartialAsync("Friends")
                 </li>
 

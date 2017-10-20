@@ -1,23 +1,29 @@
 ﻿//dropdown
 var dropdown = {
     listeners: {},
-    show: (el, id) => {
+    show: (el, id, onShowCb, onCloseCb) => {
+        debugger;
         if(!el.classList.contains('selected')) {
-            dropdown.listeners[id] = function (event) {
+            dropdown.listeners[id] = function (e) {
                 //isClickInside?
-                if (event.target.closest('.dropdown-content') == null && !el.contains(event.target))
-                    dropdown.hide(el, id);
+                if (e.target.closest('.dropdown-content') == null && !el.contains(e.target))
+                    dropdown.hide(el, id, onCloseCb);
             };
             el.classList.add('selected');
             document.addEventListener('click', dropdown.listeners[id]);
+            if(onShowCb != null)
+                onShowCb();
         }
     },
-    hide: (el, id) => {
+    hide: (el, id, onShowCb, onCloseCb) => {
         document.removeEventListener('click', dropdown.listeners[id]);
         delete dropdown.listeners[id];
         el.classList.remove('selected');
+
+        if(onCloseCb != null)
+            onCloseCb();
     },
-    toggle: (el, e, id) => {
+    toggle: (el, e, id, onShowCb, onCloseCb) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -26,7 +32,9 @@ var dropdown = {
             return;
 
         const isVisible = menu.classList.contains('visible');
-        isVisible ? dropdown.hide(el, id) : dropdown.show(el, id);
+        isVisible 
+            ? dropdown.hide(el, id, onShowCb, onCloseCb) 
+            : dropdown.show(el, id, onShowCb, onCloseCb);
     }
 }
 
