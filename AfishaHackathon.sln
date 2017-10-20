@@ -3,7 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Feed", "Feed", "{43F93515-D73F-4269-AC44-F2C76CB067E9}"
 	ProjectSection(SolutionItems) = preProject
-		companies.xml = companies.xml
+		companies.Development.xml = companies.Development.xml
+		companies.Production.xml = companies.Production.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{E006F912-7826-4C79-948B-1A81505EC8FF}"

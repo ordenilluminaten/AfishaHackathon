@@ -83,13 +83,13 @@ namespace Afisha
             });
             services.AddTransient<UnitOfWork<ApplicationDbContext>>();
             services.Configure<AppSetting>(Configuration);
-            services.AddSingleton<AfishaApi>();
+            //services.AddSingleton<AfishaApi>();
             services.AddSingleton<VkApi>();
             //services.AddSingleton<AfishaBot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting, AfishaBot _afishaBot)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting)
         {
 
             if (env.IsDevelopment())
