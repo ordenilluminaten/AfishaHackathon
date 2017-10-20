@@ -7,6 +7,8 @@ using System.Xml.Linq;
 using Microsoft.Extensions.Options;
 using Models.AppSettings;
 using ATMIT.Web.Utility;
+using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models {
     public class FeedParser {
@@ -165,7 +167,23 @@ namespace Models {
             Phones = new List<Phone>();
             Photos = new List<string>();
         }
-        public int Id { get; set; }
+        public Place(int id, PlaceType type, int idCity, string address, string name, string otherName, string country, string url, string addUrl, string workingTime, float rating, Coordinate coordinate) 
+        {
+            this.Id = id;
+                this.Type = type;
+                this.IdCity = idCity;
+                this.Address = address;
+                this.Name = name;
+                this.OtherName = otherName;
+                this.Country = country;
+                this.Url = url;
+                this.AddUrl = addUrl;
+                this.WorkingTime = workingTime;
+                this.Rating = rating;
+                this.Coordinate = coordinate;
+               
+        }
+                public int Id { get; set; }
         public PlaceType Type { get; set; }
         public int IdCity { get; set; }
         public string Address { get; set; }
@@ -198,18 +216,33 @@ namespace Models {
     }
 
     public enum PlaceType {
+        [Display(Name = "Все места")]
+        All,
+        [Display(Name = "Рестораны")]
         Restaurant,
+        [Display(Name = "Концертные залы")]
         ConcertHall,
-        SportBuilding,
+        [Display(Name = "Спорткомплексы")]
+        SportBuilding,        
+        [Display(Name = "Кинотеатры")]
         Cinema,
-        Museum,
-        Theatre,
-        FitnessCenter,
-        Hotel,
-        Shop,
+        [Display(Name = "Музеи")]
+        Museum, 
+        [Display(Name = "Театры")]       
+        Theatre,      
+        [Display(Name = "Фитнес центры")]  
+        FitnessCenter,        
+        [Display(Name = "Отели")]
+        Hotel,        
+        [Display(Name = "Магазины")]
+        Shop,        
+        [Display(Name = "Клубы")]
         Club,
-        Park,
-        Gallery,
+        [Display(Name = "Парки")]        
+        Park,   
+        [Display(Name = "Галереи")]     
+        Gallery,        
+        [Display(Name = "Выставочный зал")]     
         ShowRoom
     }
 }

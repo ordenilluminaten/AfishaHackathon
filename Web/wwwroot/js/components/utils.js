@@ -2,10 +2,11 @@
 var dropdown = {
     listeners: {},
     show: (el, id, onShowCb, onCloseCb) => {
+        debugger;
         if(!el.classList.contains('selected')) {
-            dropdown.listeners[id] = function (event) {
+            dropdown.listeners[id] = function (e) {
                 //isClickInside?
-                if (event.target.closest('.dropdown-content') == null && !el.contains(event.target))
+                if (e.target.closest('.dropdown-content') == null && !el.contains(e.target))
                     dropdown.hide(el, id, onCloseCb);
             };
             el.classList.add('selected');
