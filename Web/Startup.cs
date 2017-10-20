@@ -21,14 +21,13 @@ using Models.AppSettings;
 using Models.Extensions;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Models.Afisha;
 using Newtonsoft.Json;
 
-namespace Afisha
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
-        {
+namespace Afisha {
+    public class Startup {
+        public Startup(IConfiguration configuration, IHostingEnvironment env) {
             Configuration = configuration;
             Env = env;
             var builder = new ConfigurationBuilder()
@@ -46,21 +45,17 @@ namespace Afisha
         public IHostingEnvironment Env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
             services.AddEntityFrameworkSqlServer()
             .AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
                 options.UseSqlServer(ContextFactory.ConnectionString)
                        .UseInternalServiceProvider(serviceProvider));
 
-            if (!Env.IsDevelopment())
-            {
-                services.Configure<MvcOptions>(options =>
-                {
+            if (!Env.IsDevelopment()) {
+                services.Configure<MvcOptions>(options => {
                     options.Filters.Add(new RequireHttpsAttribute());
                 });
-                services.Configure<RewriteOptions>(options =>
-                {
+                services.Configure<RewriteOptions>(options => {
                     options.AddRedirectToHttps();
                 });
             }
@@ -70,37 +65,31 @@ namespace Afisha
             //task.Start();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc()
-                .AddJsonOptions(options =>
-                {
+                .AddJsonOptions(options => {
                     options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
             services.AddMemoryCache();
             services.AddDistributedMemoryCache();
-            services.AddSession(options =>
-            {
+            services.AddSession(options => {
                 options.Cookie.SameSite = SameSiteMode.None;
             });
             services.AddTransient<UnitOfWork<ApplicationDbContext>>();
             services.Configure<AppSetting>(Configuration);
             services.AddTransient<FeedParser>();
+            services.AddSingleton<AfishaData>();
             services.AddSingleton<VkApi>();
             //services.AddSingleton<AfishaBot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting, FeedParser _parser)
-        {
-            _parser.Parse();
-            if (env.IsDevelopment())
-            {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting, AfishaData _data) {
+            if (env.IsDevelopment()) {
                 //_afishaBot.Start(BotTaskType.NotificationAboutEvent);
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
-            }
-            else
-            {
+            } else {
                 //app.UseExceptionHandler("/Home/Error");
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
@@ -112,8 +101,7 @@ namespace Afisha
             if (env.IsProduction())
                 app.UseMigrations();
 
-            app.UseMvc(routes =>
-            {
+            app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
