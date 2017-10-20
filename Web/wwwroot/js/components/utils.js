@@ -2,7 +2,6 @@
 var dropdown = {
     listeners: {},
     show: (el, id, onShowCb, onCloseCb) => {
-        debugger;
         if(!el.classList.contains('selected')) {
             dropdown.listeners[id] = function (e) {
                 //isClickInside?
@@ -13,6 +12,9 @@ var dropdown = {
             document.addEventListener('click', dropdown.listeners[id]);
             if(onShowCb != null)
                 onShowCb();
+        }
+        else if(event.target.closest('.dropdown-content') == null) {            
+            dropdown.hide(el, id, onCloseCb);
         }
     },
     hide: (el, id, onShowCb, onCloseCb) => {
