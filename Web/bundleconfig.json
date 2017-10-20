@@ -20,6 +20,7 @@
         "wwwroot/js/pages/AllPage.js",
         "wwwroot/js/pages/MoviesPage.js",
         "wwwroot/js/pages/EventPage.js",
+        "wwwroot/js/pages/Header.js",
         "wwwroot/js/components/utils.js"
       ]
     },
