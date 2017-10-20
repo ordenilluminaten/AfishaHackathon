@@ -4,22 +4,25 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using ATMIT.Web.Utility;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Models.AppSettings;
-using ATMIT.Web.Utility;
 
-namespace Models {
+namespace Models.Afisha {
     public class FeedParser {
+        private readonly IMemoryCache p_memoryCache;
         private readonly Dictionary<string, PlaceType> p_typeDictionary = new Dictionary<string, PlaceType>();
         private readonly Dictionary<int, string> cityIntStringDictionary = new Dictionary<int, string>();
         private readonly Dictionary<string, int> cityStringIntDictionary = new Dictionary<string, int>();
-        private readonly List<Place> p_placeList = new List<Place>();
+        private readonly Dictionary<string, Place> p_placeDict = new Dictionary<string, Place>();
 
         private readonly string p_filePath;
         private byte p_cityNameBeginIndex = 6;
         private int p_idCity = 1;
 
-        public FeedParser(IOptions<AppSetting> _settings) {
+        public FeedParser(IOptions<AppSetting> _settings, IMemoryCache _memoryCache) {
+            p_memoryCache = _memoryCache;
             p_filePath = _settings.Value.AfishaFeed.Filepath;
             foreach (var type in Enum<PlaceType>.ToIEnumerable()) {
                 p_typeDictionary.Add(type.ToString(), type);
@@ -44,7 +47,7 @@ namespace Models {
                             for (var i = 0; i < str.Length; i++) {
                                 if (!char.IsDigit(str[i]))
                                     continue;
-                                _place.Id = int.Parse(str.Substring(i));
+                                _place.Id = str;
                                 _place.Type = p_typeDictionary[str.Substring(0, i)];
                                 break;
                             }
@@ -131,85 +134,29 @@ namespace Models {
 
             }
         }
-        public async Task<string> Parse() {
+        public async Task Parse() {
+            //try {
             var watch = Stopwatch.StartNew();
-            Stopwatch readWatch;
-            Stopwatch loopWatch;
-            string text;
-
-
-            readWatch = Stopwatch.StartNew();
-            text = await File.ReadAllTextAsync(p_filePath);
+            var text = await File.ReadAllTextAsync(p_filePath);
             var doc = XDocument.Parse(text);
             if (doc.Root == null)
                 throw new NullReferenceException(nameof(doc.Root));
-            readWatch.Stop();
-            loopWatch = Stopwatch.StartNew();
             using (var enumerator = doc.Root.Elements("company").GetEnumerator()) {
                 while (enumerator.MoveNext()) {
                     var place = new Place();
                     ParseXElement(enumerator.Current, place);
-                    p_placeList.Add(place);
+                    if (!p_placeDict.ContainsKey(place.Id))
+                        p_placeDict.Add(place.Id, place);
                 }
             }
-            loopWatch.Stop();
+            p_memoryCache.Set(AfishaData.CachePlaceDictKey, p_placeDict);
+            p_memoryCache.Set(AfishaData.CacheCityDictKey, cityIntStringDictionary);
             watch.Stop();
             File.WriteAllText("time", watch.Elapsed.ToString("G"));
-            return text;
+            //} catch (Exception e) {
+            //    Console.WriteLine(e);
+            //    throw;
+            //}
         }
-    }
-
-    public class Place {
-        public Place() {
-            Coordinate = new Coordinate();
-            Phones = new List<Phone>();
-            Photos = new List<string>();
-        }
-        public int Id { get; set; }
-        public PlaceType Type { get; set; }
-        public int IdCity { get; set; }
-        public string Address { get; set; }
-        public string Name { get; set; }
-        public string OtherName { get; set; }
-        public string Country { get; set; }
-        /// <summary>
-        /// Поле может быть пустым
-        /// </summary>
-        public string Url { get; set; }
-        public string AddUrl { get; set; }
-        public string WorkingTime { get; set; }
-        public float Rating { get; set; }
-        public Coordinate Coordinate { get; set; }
-        public List<Phone> Phones { get; set; }
-        public List<string> Photos { get; set; }
-    }
-
-    public class Coordinate {
-        public double Lat { get; set; }
-        public double Lon { get; set; }
-    }
-
-    public class Phone {
-        public string Number { get; set; }
-        /// <summary>
-        /// Может быть пустым
-        /// </summary>
-        public string Info { get; set; }
-    }
-
-    public enum PlaceType {
-        Restaurant,
-        ConcertHall,
-        SportBuilding,
-        Cinema,
-        Museum,
-        Theatre,
-        FitnessCenter,
-        Hotel,
-        Shop,
-        Club,
-        Park,
-        Gallery,
-        ShowRoom
     }
 }
