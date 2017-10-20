@@ -8,12 +8,18 @@ var sidebar = Ractive.extend({
     template: '#sidebar-template'
 });
 
+var filter = Ractive.extend({
+    isolated: false,
+    template: '#filter-template'
+});
+
 var appRactive = Ractive({
     target: '#app-wrapper',
     template: '#app-template',
     components: {
         Header: header,
-        Sidebar: sidebar
+        Sidebar: sidebar,
+        Filter: filter
     },
     data: {
         currentPage: null

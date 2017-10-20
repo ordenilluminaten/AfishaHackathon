@@ -1,0 +1,29 @@
+﻿<script id="filter-template" type="text/ractive">
+    {{#with parent.data}}
+    <div id="filter">
+               <!-- <div class="breadcrumb">
+            {{#partial breadcrumb}}
+                {{#if parent != null}}
+                    {{#with parent}}
+                        <a href="javascript:;" on-click="@@global.router.navigate(id)">{{title}}</a>
+                        {{>breadcrumb}}
+                    {{/with}}
+                {{/if}}
+            {{/partial}}
+            {{#with currentPage}}
+                <span>{{title}}</span>
+                {{>breadcrumb}}
+            {{/with}}
+        </div>-->
+	    <div id="cat-filter" class="dropdown" onclick="dropdown.toggle(this, event, 'categories-dropdown')">
+	        123   
+            <div id="categories-dropdown" class="dropdown-content w-100">
+                <a href="#home">Профиль</a>
+                <a href="#about">Избранное</a>
+                <div class="separator"></div>
+                <a href="#contact">Выход</a>
+            </div>
+	    </div>
+	</div>
+    {{/with}}
+</script>
