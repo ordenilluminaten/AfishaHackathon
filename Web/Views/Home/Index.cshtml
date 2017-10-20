@@ -1,0 +1,15 @@
+﻿@using Models.Api.VkApi
+@model FirstRequest
+@{
+    ViewData["Title"] = "Афиша";
+}
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <script>
+        appRactive.set('currentUser', @Json.Serialize(Model.ApiResult.Value.UserData));
+    </script>
+}

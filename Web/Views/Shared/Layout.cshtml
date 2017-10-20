@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    @*<link rel="stylesheet" href="https://vk.com/css/al/fonts_cnt.css">*@
+
+    <environment include="Development">
+        <link href="~/bundles/site.css" rel="stylesheet" />
+        <link href="~/lib/flatpickr/flatpickr.css" rel="stylesheet" />
+
+    </environment>
+    <environment exclude="Development">
+        <link href="~/bundles/site.min.css" asp-append-version="true" rel="stylesheet" />
+        <link href="~/lib/flatpickr/flatpickr.min.css" rel="stylesheet" />
+    </environment>
+
+    @if (IsSectionDefined("Styles")) {
+        @RenderSection("Styles", required: false)
+    }
+</head>
+<body>
+    <div id="app-wrapper">
+        <script id="sidebar-template" type="text/ractive">
+            @{
+                await Html.RenderPartialAsync("Sidebar"); 
+            }
+        </script>
+        <script id="header-template" type="text/ractive">
+            @{
+                await Html.RenderPartialAsync("Header");
+            }
+        </script>
+        <script id="paginator-template" type="text/ractive">
+            @{
+                await Html.RenderPartialAsync("Paginator");
+            }
+        </script>
+
+        <script id="app-template" type="text/ractive">
+            <Header />
+            <Sidebar />
+            <div id="page">
+                <div id="page-content">
+                    <# page-data />
+                </div>
+            </div>
+            @{await Html.RenderPartialAsync("Footer");}
+        </script>
+    </div>
+    @RenderBody()
+
+	@{
+        await Html.RenderPartialAsync("Bundle");
+    }
+    <environment Include="Development">
+        <script src="https://vk.com/js/api/xd_connection.js?2" async></script>
+
+        <script src="~/lib/flatpickr/flatpickr.js"></script>
+        <script src="lib/ractive/ractive.js"></script>
+        <script src="js/components/ractive.ext.js"></script>
+        <script src="js/components/objectClass.js"></script>
+        <script src="js/components/profiler.js"></script>
+        <script src="js/components/request.js"></script>
+        <script src="js/components/modal.js"></script>
+        <script src="js/components/nav-tabs.js"></script>
+        <script src="js/components/utils.js"></script>
+        @* pages *@
+        <script src="~/js/pages/Page.js"></script>
+        <script src="~/js/pages/AllPage.js"></script>
+        <script src="~/js/pages/MoviesPage.js"></script>
+        <script src="~/js/pages/EventPage.js"></script>
+
+        <script src="~/js/index.js"></script>
+    </environment>
+    <environment Exclude="Development">
+        <script src="https://vk.com/js/api/xd_connection.js?2"></script>
+
+        <script src="~/lib/toastr/toastr.min.js"  asp-append-version="true"></script>
+        <script src="~/lib/flatpickr/flatpickr.min.js"  asp-append-version="true"></script>
+        <script src="~/bundles/site.min.js" asp-append-version="true"></script>
+        <script src="~/js/index.js" asp-append-version="true"></script>        
+    </environment>
+    @if (IsSectionDefined("Scripts")) {
+        @RenderSection("Scripts", required: false)
+    }
+</body>
+</html>

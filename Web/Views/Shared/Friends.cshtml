@@ -1,0 +1,131 @@
+<style>
+    #friends-dropdown {
+        width: 400px;
+        min-height: 100px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+        #friends-dropdown .search {
+            position: absolute;
+            top: 55px;
+            width: 400px;
+            z-index: 1;
+            border-bottom: 1px solid rgba(225, 225, 225, 1);
+        }
+
+            #friends-dropdown .search input {
+                border-top: 1px solid rgb(236, 236, 236);
+                border-right: 1px solid rgb(236, 236, 236);
+                border-bottom: none;
+                border-left: 1px solid rgb(236, 236, 236);
+                border-image: initial;
+                flex: 1;
+            }
+
+            #friends-dropdown .search button {
+                background-color: rgb(238, 238, 238);
+                border: none;
+                padding: 5px 0px;
+                width: 54px;
+            }
+
+        #friends-dropdown .friend-list {
+            max-height: 400px;
+            margin-top: 33px;
+            overflow-y: auto;
+        }
+
+            #friends-dropdown .friend-list .friend {
+                padding: 15px;
+                background: rgb(255, 255, 255);
+                border-bottom: 1px solid rgb(238, 238, 238);
+                border-top: 1px solid rgb(238, 238, 238);
+            }
+
+        #friends-dropdown .nav-link {
+            padding: 0;
+            line-height: 50px;
+        }
+</style>
+
+<a href="javascript:;">
+    <svg width="25" height="25" class="svg-icon">
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#users"></use>
+    </svg>
+</a>
+<div class="dropdown-content" id="friends-dropdown">
+    <div class="tabs">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tab-my-events">
+                    Мои     
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab-friend-will-go">
+                    Друзья
+                    {{#with parent.data.currentUser.friends as friends}}
+                        {{#if friends != null && friends.count != 0}}
+                            ({{friends.count}})
+                        {{/if}}      
+                    {{/with}}
+                </a>
+            </li>
+        </ul>
+        <div id="tab-my-events" class="tab active">
+            {{#with parent.data.currentUser.events as events}}
+            {{#if events != null && events.count != 0}}
+            {{else}}
+            <p style="line-height: 15px;">У вас нет запланированных событий</p>
+            {{/if}}
+            {{/with}}
+        </div>
+        <div id="tab-friend-will-go" class="tab">
+            {{#with parent.data.currentUser.friends as friends}}
+            {{#if friends != null && friends.count != 0}}
+            <div class="row search">
+                <input type="text">
+                <button type="button">
+                    <svg class="svg-icon" width="20" height="20">
+                        <use xlink="http://www.w3.org/1999/xlink" xlink="http://www.w3.org/1999/xlink"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#search"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="row friend-list">
+                {{#each friends}}
+                <div class="col-12 mb-2 friend">
+                    <img class="icon-circle user-avatar" id="header-avatar" src="{{photo_100}}"
+                        style="float: left; margin-right: 10px;">
+                    <div class="user-info" style="float: left; line-height: 20px;">
+                        <p>{{frist_name}}</p>
+                        <p>{{last_name}}</p>
+                    </div>
+                    <table style="line-height: 15px; width: 100%;">
+                        <tbody>
+                            {{#if events != null}}
+                            {{#each events}}
+                            <tr>
+                                <td>
+                                    <a href="javascript:;" style="text-decoration: underline;color: #00b6ff;">
+                                        {{title}}
+                                    </a>
+                                </td>
+                                <td>3 из {{UserTotalCount}}</td>
+                                <td>{{Date}}</td>
+                            </tr>
+                            {{/each}}
+                            {{/if}}                     
+                        </tbody>
+                    </table>
+                </div>
+                {{/each}}
+            </div>
+            {{else}}
+            <p style="line-height: 15px;">Ни у кого из ваших друзей нет событий</p>
+            {{/if}}
+            {{/with}}
+        </div>
+    </div>    
+</div>

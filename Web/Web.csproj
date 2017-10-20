@@ -8,6 +8,9 @@
   <ItemGroup>
     <Folder Include="wwwroot\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Views\" />
+    <Folder Include="Views\Shared\" />
+    <Folder Include="Views\Home\" />
   </ItemGroup>
 
   <ItemGroup>

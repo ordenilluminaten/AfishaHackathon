@@ -1,0 +1,63 @@
+﻿{{#with parent.data}}
+<div class="pagination-menu row">
+
+    <div class="col-lg-6 col-xs-12">
+        <div class="container">
+            <div class="row justify-content-start">
+                <ul class="list-inline">
+                    <li class="list-inline-item"><label class="control-label">Кол-во:&nbsp;<b>{{Filter.ItemsTotal}}</b></label></li>
+                    {{#if Filter.ItemsTotal > 25}}
+                    <li class="list-inline-item"><label class="control-label">Кол-во на стр:</label></li>
+                    <li class="list-inline-item">
+                        <select class="form-control form-control-sm" on-change="@@this.fire('changeValue',@@context,'Take',Filter.Take)" value="{{Filter.Take}}">
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </li>
+                    {{/if}}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    {{#if Filter.PageTotal > 1}}
+    <div class="col-lg-6 col-xs-12">
+        <div class="container">
+            <div class="row justify-content-lg-end">
+                <div class="col-xs-12">
+                    <div class="input-group input-group-sm">
+                        <ul class="pagination pagination-sm">
+                            {{#if Filter.Page == 1}}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="javascript:;"><span aria-hidden="true">&laquo;</span></a>
+                            </li>
+                            {{else}}
+                            <li class="page-item" on-click="@@this.fire('selectPage',@@context,Filter.Page-1)">
+                                <a class="page-link" href="javascript:;"><span aria-hidden="true">&laquo;</span></a>
+                            </li>
+                            {{/if}}
+                            {{#each Pages}}
+                            <li class="page-item {{Active==true?'active':''}}" on-click="@@this.fire('selectPage',@@context,Num)">
+                                <a class="page-link" href="javascript:;">{{Num}}</a>
+                            </li>
+                            {{/each}}
+                            {{#if Filter.Page == Filter.PageTotal}}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="javascript:;"><span aria-hidden="true">&raquo;</span></a>
+                            </li>
+                            {{else}}
+                            <li class="page-item" on-click="@@this.fire('selectPage',@@context,Filter.Page+1)">
+                                <a class="page-link" href="javascript:;"><span aria-hidden="true">&raquo;</span></a>
+                            </li>
+                            {{/if}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+</div>
+{{/with}}

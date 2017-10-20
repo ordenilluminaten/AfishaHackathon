@@ -106,12 +106,6 @@ namespace Afisha
                 app.UseDatabaseErrorPage();
             }
             app.UseStaticFiles();
-            app.UseRequestLocalization(new RequestLocalizationOptions
-            {
-                SupportedCultures = new List<CultureInfo> {
-                    new CultureInfo("ru")
-                }
-            });
             //app.UseErrorHandler();
             app.UseSession();
             //обновляем миграции
