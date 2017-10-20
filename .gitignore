@@ -13,3 +13,8 @@ Models/bin/
 
 Models/Models\.csproj\.user
 \.vs/
+Web/wwwroot/bundles/
+
+Web/wwwroot/lib/
+
+Web/Web\.csproj\.user
