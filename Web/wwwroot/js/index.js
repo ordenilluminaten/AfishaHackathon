@@ -23,9 +23,6 @@ var appRactive = Ractive({
     },
     data: {
         currentPage: null,
-        categories: {
-            '0':'123'
-        },
         filter: {
             Category: 0,
             Search: null,

@@ -8,7 +8,7 @@
                 </svg>
                 <div id="categories-dropdown" class="dropdown-content w-100">
     			    {{#each categories:i}}
-    				    <a href="javascript:;">{{this}}</a>
+    				    <a href="javascript:;" on-click='@@this.set('')'>{{this}}</a>
     			        {{#if i==0}}
     			        <div class="separator"></div>
     			        {{/if}}
