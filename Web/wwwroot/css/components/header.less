@@ -10,10 +10,11 @@
     z-index: 10;
     position: relative;
     padding: 0 20px;
+          border-bottom: 1px solid #eaeef1;
 
     .header-content {
         height: 100%;
-        border-bottom: 1px solid #eaeef1;
+
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -68,6 +69,10 @@
 
             & > div, & > a, & > span, .nav-link {
                 color: #7e7e7e;
+            }
+
+            &.dropdown.selected {
+                background: #f0f0f0;
             }
 
             & > a {

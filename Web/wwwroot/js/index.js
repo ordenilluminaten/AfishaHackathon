@@ -22,7 +22,16 @@ var appRactive = Ractive({
         Filter: filter
     },
     data: {
-        currentPage: null
+        currentPage: null,
+        categories: {
+            '0':'123'
+        },
+        filter: {
+            Category: 0,
+            Search: null,
+            ViewType: 0,
+            Sort: 'id'
+        }
     },
     on: {
         init: () => {
