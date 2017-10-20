@@ -4,6 +4,7 @@
     }
 
     render(...args) {
+        debugger;
         return PaginationRactive({
             template: '#movies-page-template',
             data: {

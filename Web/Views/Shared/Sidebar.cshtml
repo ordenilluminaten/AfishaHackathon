@@ -1,80 +1,78 @@
-﻿<script id="sidebar-template" type="text/ractive">
-    <aside id="sidebar">
-        <div id="sidebar-header">
-            <a class="logo text-center" on-click="@@global.router.navigate('all')">
-                @* https://next.afisha.ru/img/logo.svg *@
-                <svg class="svg-icon icon-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#afisha-logo"></use>
-                </svg>
-            </a>
-        </div>
-        <nav id="sidebar-nav">
-            <ul class="nav">
-                <li>
-                    <a class="{{currentPage.id=='all'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('all')">
-                        <svg width="32" height="32" class="svg-icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink"xlink:href="/images/svg-icons.min.svg#menu-events"></use>
-                        </svg>
-                        <span>Все</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="{{currentPage.id=='movies'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('movies')">
-                        <svg width="32" height="32" class="svg-icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-movies"></use>
-                        </svg>
-                        <span>Кино</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="{{currentPage.id=='theaters'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('theaters')">
-                        <svg width="32" height="32" class="svg-icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-theaters"></use>
-                        </svg>
-                        <span>Театр</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="{{currentPage.id=='exhibitions'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('exhibitions')">
-                        <svg width="32" height="32" class="svg-icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-exhibitions"></use>
-                        </svg>
-                        <span>Выставки</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="{{currentPage.id=='concerts'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('concerts')">
-                        <svg width="32" height="32" class="svg-icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-concerts"></use>
-                        </svg>
-                        <span>Концерты</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="{{currentPage.id=='children'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('children')">
-                        <svg width="32" height="32" class="svg-icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-children"></use>
-                        </svg>
-                        <span>Дети</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="{{currentPage.id=='restaurants'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('restaurants')">
-                        <svg width="32" height="32" class="svg-icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-restaurants"></use>
-                        </svg>
-                        <span>Рестораны</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="{{currentPage.id=='quests'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('quests')">
-                        <svg width="32" height="32" class="svg-icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-quests"></use>
-                        </svg>
-                        <span>Квесты</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </aside>
-</script>
+﻿<aside id="sidebar">
+    <div id="sidebar-header">
+        <a class="logo text-center" on-click="@@global.router.navigate('all')">
+            @* https://next.afisha.ru/img/logo.svg *@
+            <svg class="svg-icon icon-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#afisha-logo"></use>
+            </svg>
+        </a>
+    </div>
+    <nav id="sidebar-nav">
+        <ul class="nav">
+            <li>
+                <a class="{{currentPage.id=='all'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('all')">
+                    <svg width="32" height="32" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink"xlink:href="/images/svg-icons.min.svg#menu-events"></use>
+                    </svg>
+                    <span>Все</span>
+                </a>
+            </li>
+            <li>
+                <a class="{{currentPage.id=='movies'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('movies')">
+                    <svg width="32" height="32" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-movies"></use>
+                    </svg>
+                    <span>Кино</span>
+                </a>
+            </li>
+            <li>
+                <a class="{{currentPage.id=='theaters'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('theaters')">
+                    <svg width="32" height="32" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-theaters"></use>
+                    </svg>
+                    <span>Театр</span>
+                </a>
+            </li>
+            <li>
+                <a class="{{currentPage.id=='exhibitions'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('exhibitions')">
+                    <svg width="32" height="32" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-exhibitions"></use>
+                    </svg>
+                    <span>Выставки</span>
+                </a>
+            </li>
+            <li>
+                <a class="{{currentPage.id=='concerts'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('concerts')">
+                    <svg width="32" height="32" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-concerts"></use>
+                    </svg>
+                    <span>Концерты</span>
+                </a>
+            </li>
+            <li>
+                <a class="{{currentPage.id=='children'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('children')">
+                    <svg width="32" height="32" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-children"></use>
+                    </svg>
+                    <span>Дети</span>
+                </a>
+            </li>
+            <li>
+                <a class="{{currentPage.id=='restaurants'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('restaurants')">
+                    <svg width="32" height="32" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-restaurants"></use>
+                    </svg>
+                    <span>Рестораны</span>
+                </a>
+            </li>
+            <li>
+                <a class="{{currentPage.id=='quests'?'current':''}}" href="javascript:;" on-click="@@global.router.navigate('quests')">
+                    <svg width="32" height="32" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-quests"></use>
+                    </svg>
+                    <span>Квесты</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>

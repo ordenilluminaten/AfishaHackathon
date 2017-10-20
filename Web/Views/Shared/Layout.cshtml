@@ -22,11 +22,21 @@
 </head>
 <body>
     <div id="app-wrapper">
-        @{
-            await Html.RenderPartialAsync("Sidebar");
-            await Html.RenderPartialAsync("Header");
-            await Html.RenderPartialAsync("Paginator");
-        }
+        <script id="sidebar-template" type="text/ractive">
+            @{
+                await Html.RenderPartialAsync("Sidebar"); 
+            }
+        </script>
+        <script id="header-template" type="text/ractive">
+            @{
+                await Html.RenderPartialAsync("Header");
+            }
+        </script>
+        <script id="paginator-template" type="text/ractive">
+            @{
+                await Html.RenderPartialAsync("Paginator");
+            }
+        </script>
 
         <script id="app-template" type="text/ractive">
             <Header />

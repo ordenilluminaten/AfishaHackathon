@@ -1,5 +1,5 @@
 class Tabs {
-    static init(selector) {
+    static init(selector) {        
         let tab_lists_anchors = document.querySelectorAll(selector + " li a");
         let divs = document.querySelector(selector).getElementsByClassName("tab");
         for (var i = 0; i < tab_lists_anchors.length; i++)
@@ -9,6 +9,7 @@ class Tabs {
         for (i = 0; i < tab_lists_anchors.length; i++) {
     
             document.querySelectorAll(".tabs li a")[i].addEventListener('click', function(e) {
+                debugger;
                 for (i = 0; i < divs.length; i++) 
                     divs[i].style.display = "none";
     

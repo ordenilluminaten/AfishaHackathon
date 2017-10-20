@@ -31,6 +31,7 @@ var appRactive = Ractive({
         },
         complete: () => {
             router.navigate('all');
+            Tabs.init(".tabs");
         }
     }
 });
@@ -56,13 +57,13 @@ function friendsWillGo() {
                 for (let idUser in usersEvents)
                     friends[idUser].events = usersEvents[idUser];
 
-            appRactive.set("currentUser.friends", friends);
-            Tabs.init("#friends-dropdown .tabs");
+            appRactive.set("currentUser.friends", friends);                        
         });
     });
 }
 
 function onInited() {
+    debugger;
     friendsWillGo();
 }
 

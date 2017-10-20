@@ -2,13 +2,15 @@
 var dropdown = {
     listeners: {},
     show: (el, id) => {
-        dropdown.listeners[id] = function (event) {
-            //isClickInside?
-            if (!el.contains(event.target))
-                dropdown.hide(el, id);
-        };
-        el.classList.toggle('selected');
-        document.addEventListener('click', dropdown.listeners[id]);
+        if(!el.classList.contains('selected')) {
+            dropdown.listeners[id] = function (event) {
+                //isClickInside?
+                if (event.target.closest('.dropdown-content') == null && !el.contains(event.target))
+                    dropdown.hide(el, id);
+            };
+            el.classList.add('selected');
+            document.addEventListener('click', dropdown.listeners[id]);
+        }
     },
     hide: (el, id) => {
         document.removeEventListener('click', dropdown.listeners[id]);
