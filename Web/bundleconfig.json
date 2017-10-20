@@ -71,6 +71,12 @@
       "inputFiles": [
         "wwwroot/images/svg-icons.svg"
       ]
+    },
+    {
+      "outputFileName": "Feed/companies.Production.min.xml",
+      "inputFiles": [
+        "Feed/companies.Production.xml"
+      ]
     }
   ],
   "cshtml": [

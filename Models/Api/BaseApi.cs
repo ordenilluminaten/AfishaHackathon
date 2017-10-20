@@ -1,10 +1,12 @@
 ﻿using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Models.Extensions;
 
 namespace Models.Api {
     public abstract class BaseApi {
+        
         static BaseApi() {
             p_httpClient = new HttpClient();
         }
