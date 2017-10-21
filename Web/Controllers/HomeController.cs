@@ -158,6 +158,7 @@ namespace Afisha.Controllers {
                 State = CompanionState.Pending
             });
             await Unit.SaveAsync();
+
             if (!CurrentUser.CanRecieveGroupMessages)
                 return Json(true);
 
@@ -205,7 +206,7 @@ namespace Afisha.Controllers {
 
             var newMessageData = new MessageData {
                 random_id = DateTime.Now.Ticks,
-                user_id = offer.IdUser,
+                user_id = offer.UserEvent.IdUser,
                 message = $"Пользователь {CurrentUser.FullName} отклонил вашу заявку на совместный поход в " +
                           $"\"{Afisha.Places[offer.UserEvent.IdPlace].Name}\"\n" +
                           $"Перейти: {AppSettings.Value.VkApiSettings.AppUrl}"
