@@ -19,15 +19,10 @@ using Models.Afisha;
 using Newtonsoft.Json;
 using Models.Afisha.Bot;
 using Models.Notifications.EventNotification;
-using System.Globalization;
-using System.Collections.Generic;
 
-namespace Afisha
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
-        {
+namespace Afisha {
+    public class Startup {
+        public Startup(IConfiguration configuration, IHostingEnvironment env) {
             Configuration = configuration;
             Env = env;
             var builder = new ConfigurationBuilder()
@@ -45,42 +40,31 @@ namespace Afisha
         public IHostingEnvironment Env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
             services.AddEntityFrameworkSqlServer()
             .AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
                 options.UseSqlServer(ContextFactory.ConnectionString)
                        .UseInternalServiceProvider(serviceProvider));
 
-            if (!Env.IsDevelopment())
-            {
-                services.Configure<MvcOptions>(options =>
-                {
+            if (!Env.IsDevelopment()) {
+                services.Configure<MvcOptions>(options => {
                     options.Filters.Add(new RequireHttpsAttribute());
                 });
-                services.Configure<RewriteOptions>(options =>
-                {
+                services.Configure<RewriteOptions>(options => {
                     options.AddRedirectToHttps();
                 });
             }
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.Configure<RequestLocalizationOptions>(options => {
-                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("ru-RU");    
-                options.SupportedCultures = new List<CultureInfo> { new CultureInfo("ru-RU") };
-            });
-
             services.AddMvc()
-                .AddJsonOptions(options =>
-                {
+                .AddJsonOptions(options => {
                     options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
             services.AddMemoryCache();
             services.AddDistributedMemoryCache();
-            services.AddSession(options =>
-            {
+            services.AddSession(options => {
                 options.Cookie.SameSite = SameSiteMode.None;
             });
 
@@ -94,17 +78,13 @@ namespace Afisha
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting, AfishaData _data, AfishaBot _afishaBot)
-        {
-            if (env.IsDevelopment())
-            {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting, AfishaData _data, AfishaBot _afishaBot) {
+            if (env.IsDevelopment()) {
                 _afishaBot.Start(BotTaskType.NotificationAboutEvent);
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
-            }
-            else
-            {
+            } else {
                 //app.UseExceptionHandler("/Home/Error");
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
@@ -116,8 +96,7 @@ namespace Afisha
             if (env.IsProduction())
                 app.UseMigrations();
 
-            app.UseMvc(routes =>
-            {
+            app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
