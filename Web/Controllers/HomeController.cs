@@ -15,13 +15,17 @@ using Models.Api.VkApi;
 using Models.AppSettings;
 using Models.Extensions;
 using Models.Filters;
+using ATMIT.Web.Utility;
 
-namespace Afisha.Controllers {
-    public class HomeController : BaseController {
+namespace Afisha.Controllers
+{
+    public class HomeController : BaseController
+    {
         public IOptions<AppSetting> AppSettings { get; }
         public VkApi Api { get; }
         public UnitOfWork<ApplicationDbContext> Unit { get; }
-        public AfishaData Afisha {
+        public AfishaData Afisha
+        {
             get;
             set;
         }
@@ -33,7 +37,8 @@ namespace Afisha.Controllers {
             VkApi vkApi,
             UnitOfWork<ApplicationDbContext> unit,
             AfishaData afisha)
-            : base(environment, accessor, memoryCache) {
+            : base(environment, accessor, memoryCache)
+        {
             Unit = unit;
             AppSettings = appSettings;
             Api = vkApi;
@@ -46,19 +51,24 @@ namespace Afisha.Controllers {
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<IActionResult> Index(FirstRequest request) {
+        public async Task<IActionResult> Index(FirstRequest request)
+        {
             //TODO обработка запроса
-            if (Environment.IsDevelopment()) {
+            if (Environment.IsDevelopment())
+            {
                 if (string.IsNullOrEmpty(request.ApiResultJson))
                     request.ApiResultJson = @"{'response':[{'id':46611989,'first_name':'Миша','last_name':'Штанько','nickname':'BenyKrik','city':{'id':2,'title':'Санкт - Петербург'},'country':{'id':1,'title':'Россия'},'photo_200':'https:\/\/ pp.userapi.com\/ c639129\/ v639129989\/ 2ba7f\/ LGwnKIkG1pw.jpg','has_mobile':1,'online':0,'status':'Эй, проснись!Ну ты и соня.Тебя даже вчерашний шторм не разбудил. Говорят, мы уже приплыли в Морровинд.Нас выпустят, это точно!'}]}";
 
             }
             //обновляем юзера, await можно убрать (наверное)
-            await Task.Run(async () => {
+            await Task.Run(async () =>
+            {
                 var userData = request.ApiResult.Value.UserData;
-                using (var ctx = ContextFactory.Create()) {
+                using (var ctx = ContextFactory.Create())
+                {
                     var user = await ctx.Users.FirstOrDefaultAsync(_x => _x.Id == userData.Id);
-                    if (user == null) {
+                    if (user == null)
+                    {
                         user = new User();
                         await ctx.Users.AddAsync(user);
                     }
@@ -84,7 +94,8 @@ namespace Afisha.Controllers {
             var q = list.AsQueryable();
             filter.Filter(ref q);
 
-            return Json(new {
+            return Json(new
+            {
                 Items = q,
                 Filter = filter
             });
@@ -92,18 +103,21 @@ namespace Afisha.Controllers {
 
         [HttpPost]
         [Route(nameof(GetUsersEventsByIds))]
-        public async Task<IActionResult> GetUsersEventsByIds(IEnumerable<int> ids) {
+        public async Task<IActionResult> GetUsersEventsByIds(IEnumerable<int> ids)
+        {
             var userEvents = await Unit.Get<UserEvent, Guid>().All
                 .Where(_x => ids.Contains(_x.IdUser))
                 .GroupBy(_x => _x.IdUser)
-                .ToDictionaryAsync(_x => _x.Key, _x => _x.Select(_y => new {
+                .ToDictionaryAsync(_x => _x.Key, _x => _x.Select(_y => new
+                {
                     id = _y.Id,
-                    idEvent = _y.IdPlace,
+                    IdPlace = _y.IdPlace,
                     date = _y.Date,
                     userTotalCount = _y.UserCount
                 }));
 
-            return Json(new {
+            return Json(new
+            {
                 items = userEvents,
                 count = userEvents.Count
             });
@@ -111,26 +125,32 @@ namespace Afisha.Controllers {
 
         [HttpGet]
         [Route(nameof(CreateInviteCompanion))]
-        public async Task<IActionResult> CreateInviteCompanion(int idEvent) {
-            return PartialView("InviteCompanionModal", new UserEvent {
-                // IdEvent = idEvent,
-                IdUser = CurrentUser.Id,
+        public async Task<IActionResult> CreateInviteCompanion(string idPlace)
+        {
+            return PartialView("InviteCompanionModal", new UserEvent
+            {
+                IdPlace = idPlace,
                 Date = DateTime.Now
             });
         }
 
         [HttpPost]
         [Route(nameof(CreateInviteCompanion))]
-        public async Task<IActionResult> CreateInviteCompanion(UserEvent invite) {
+        public async Task<IActionResult> CreateInviteCompanion(UserEvent invite)
+        {
+            ModelState.RemoveFor<UserEvent>(_x => _x.Id);
+            ModelState.RemoveFor<UserEvent>(_x => _x.IdUser);
             if (!ModelState.IsValid)
                 return JsonModelState(ModelState);
 
+            invite.IdUser = CurrentUser.Id;
             Unit.Get<UserEvent>().Create(invite);
             await Unit.SaveAsync();
 
-            return Json(new {
+            return Json(new
+            {
                 idUserEvent = invite.Id
             });
-        }     
+        }
     }
 }

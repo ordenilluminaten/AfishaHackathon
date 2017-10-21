@@ -22,3 +22,5 @@ Web/Web\.csproj\.user
 Web/time
 
 Web/Views/Home/Bundle\.cshtml
+
+\.vscode/tasks\.json
