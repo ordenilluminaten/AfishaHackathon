@@ -14,7 +14,7 @@
                     Request.post({
                         url: '/GetEventData',
                         data: {
-                            idEvent: this.event.ID
+                            idPlace: this.event.ID
                         }
                     }).then((userEventData) => {
                         router.ractive.set('userEventData', userEventData);
@@ -24,7 +24,7 @@
                     Tabs.init("#page");
                     VK.Widgets.Comments('reviews', {}, this.event.ID);
                 },
-                inviteCompanion: (ctx, idEvent) => {
+                inviteCompanion: (ctx, idPlace) => {
                     var modal = new Modal({
                         id: 'invite-companion-modal',
                         title: 'Пригласить спутников',
@@ -33,7 +33,7 @@
                                 method: 'GET',
                                 url: '/CreateInviteCompanion',
                                 data: {
-                                    idEvent: idEvent
+                                    idPlace: idPlace
                                 }
                             }
                         },
@@ -94,7 +94,7 @@
             template: '#user-events-template',
             data: {
                 getItems: (filter, onDone) => {
-                    filter.IdEvent = this.event.ID;
+                    filter.IdPlace = this.event.ID;
                     Request.post({
                         url: '/Home/UserEvents',
                         data: filter
