@@ -22,7 +22,6 @@ namespace Models.Afisha.Bot {
             p_eventNotificator = _eventNotificator;
             p_tasks = new Dictionary<BotTaskType, CancellableTask>();
         }
-
         public void Start(BotTaskType _taskType) {
             if (p_tasks.ContainsKey(_taskType)) {
                 return;
@@ -51,13 +50,11 @@ namespace Models.Afisha.Bot {
                 return;
             StopTask(task);
         }
-
         private void StopTask(CancellableTask _task) {
             _task.Cancel();
             _task.WaitForFinished();
             _task.Dispose();
         }
-
         public void Dispose() {
             using (var tasks = p_tasks.GetEnumerator()) {
                 while (tasks.MoveNext()) {

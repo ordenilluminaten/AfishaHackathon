@@ -12,9 +12,10 @@ using System;
 namespace Models.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171021154142_UserNotificationAdded")]
+    partial class UserNotificationAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,8 +48,6 @@ namespace Models.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("Date");
-
-                    b.Property<DateTime?>("DateReaded");
 
                     b.Property<int>("IdUser");
 

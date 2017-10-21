@@ -16,19 +16,17 @@ using Models.AppSettings;
 using Models.Extensions;
 using Models.Filters;
 using ATMIT.Web.Utility;
+using Models.Api.VkApi.VkCallbackAPI.RequestDataModels;
+using Models.Database.Tables;
 
 namespace Afisha.Controllers {
     public class HomeController : BaseController {
         public IOptions<AppSetting> AppSettings { get; }
         public VkApi Api { get; }
         public UnitOfWork<ApplicationDbContext> Unit { get; }
-        public AfishaData Afisha {
-            get;
-            set;
-        }
+        public AfishaData Afisha { get; set; }
 
-        public class UserPlaces
-        {
+        public class UserPlaces {
             public Guid Id { get; set; }
             public string IdPlace { get; set; }
             public string Date { get; set; }
@@ -104,16 +102,14 @@ namespace Afisha.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> UserEvents(UserEventFilter filter)
-        {
+        public async Task<IActionResult> UserEvents(UserEventFilter filter) {
             var items = await Unit.Get<UserEvent, Guid>().GetList(filter)
                 .Include(x => x.Offers)
                     .ThenInclude(x => x.User)
                 .Include(x => x.User)
                 .ToArrayAsync();
             return Json(
-                new
-                {
+                new {
                     Items = items,
                     Filter = filter
                 });
@@ -136,16 +132,60 @@ namespace Afisha.Controllers {
                 State = CompanionState.Pending
             });
             await Unit.SaveAsync();
+            if (!CurrentUser.CanRecieveGroupMessages)
+                return Json(true);
+
+            var newUserNotification = new UserNotification {
+                IdUser = userEvent.IdUser,
+                IdUserEvent = userEvent.Id,
+                IdUserFrom = CurrentUser.Id,
+                Type = UserNotificationType.NewOffer,
+                Date = DateTime.Now
+            };
+
+            Unit.DbContext.UserNotifications.Add(newUserNotification);
+            await Unit.SaveAsync();
+
+            var newMessageData = new MessageData {
+                random_id = DateTime.Now.Ticks,
+                user_id = userEvent.IdUser,
+                message = $"Пользователь {CurrentUser.FullName} хочет пойти с Вами в" +
+                          $" \"{Afisha.Places[userEvent.IdPlace].Name}\"\n" +
+                          $"Перейти: {AppSettings.Value.VkApiSettings.AppUrl}"
+            };
+
+            await Api.Messages.SendAsync(newMessageData);
+
             return Json(true);
         }
 
         [HttpPost]
         public async Task<IActionResult> RemoveOffer(Guid idOffer) {
-            var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.Id == idOffer);
+            var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.Id == idOffer, _x => _x.Include(_y => _y.UserEvent));
             if (offer == null)
                 return JsonError("Заявка на найдена");
             if (offer.IdUser != CurrentUser.Id)
                 return JsonError("Нет доступа к событию");
+
+            var newUserNotification = new UserNotification {
+                IdUser = offer.IdUser,
+                IdUserEvent = offer.IdUserEvent,
+                IdUserFrom = CurrentUser.Id,
+                Type = UserNotificationType.OfferRejected,
+                Date = DateTime.Now
+            };
+
+            Unit.DbContext.UserNotifications.Add(newUserNotification);
+
+            var newMessageData = new MessageData {
+                random_id = DateTime.Now.Ticks,
+                user_id = offer.IdUser,
+                message = $"Пользователь {CurrentUser.FullName} отклонил вашу заявку на совместный поход в " +
+                          $"\"{Afisha.Places[offer.UserEvent.IdPlace].Name}\"\n" +
+                          $"Перейти: {AppSettings.Value.VkApiSettings.AppUrl}"
+            };
+
+            await Api.Messages.SendAsync(newMessageData);
 
             Unit.Get<UserEventOffer>().Delete(offer);
             await Unit.SaveAsync();
@@ -154,8 +194,7 @@ namespace Afisha.Controllers {
 
         [HttpPost]
         [Route(nameof(GetUsersEventsByIds))]
-        public async Task<IActionResult> GetUsersEventsByIds(int[] ids)
-        {
+        public async Task<IActionResult> GetUsersEventsByIds(int[] ids) {
             var userDict = new Dictionary<int, List<UserPlaces>>();
             var userEvents = await Unit.Get<UserEvent, Guid>().All
                 .Where(_x => ids.Contains(_x.IdUser))
@@ -167,16 +206,13 @@ namespace Afisha.Controllers {
             .Include(_x => _x.UserEvent)
             .ToArrayAsync();
 
-            foreach (var userEvent in userEvents)
-            {
+            foreach (var userEvent in userEvents) {
                 List<UserPlaces> events = null;
-                if (!userDict.TryGetValue(userEvent.IdUser, out events))
-                {
+                if (!userDict.TryGetValue(userEvent.IdUser, out events)) {
                     events = new List<UserPlaces>();
                     userDict[userEvent.IdUser] = events;
                 }
-                events.Add(new UserPlaces
-                {
+                events.Add(new UserPlaces {
                     Id = userEvent.Id,
                     IdPlace = userEvent.IdPlace,
                     Date = userEvent.Date.ToString(@"MM/dd/yy H:mm:ss"),
@@ -185,16 +221,13 @@ namespace Afisha.Controllers {
                 });
             }
 
-            foreach (var userEventOffer in userEventOffers)
-            {
+            foreach (var userEventOffer in userEventOffers) {
                 List<UserPlaces> events = null;
-                if (!userDict.TryGetValue(userEventOffer.IdUser, out events))
-                {
+                if (!userDict.TryGetValue(userEventOffer.IdUser, out events)) {
                     events = new List<UserPlaces>();
                     userDict[userEventOffer.IdUser] = events;
                 }
-                events.Add(new UserPlaces
-                {
+                events.Add(new UserPlaces {
                     Id = userEventOffer.Id,
                     IdPlace = userEventOffer.UserEvent.IdPlace,
                     Date = userEventOffer.Date.ToString("MM/dd/yy H:mm:ss"),
@@ -204,8 +237,7 @@ namespace Afisha.Controllers {
                 });
             }
 
-            return Json(new
-            {
+            return Json(new {
                 items = userDict,
                 count = userDict.Count
             });
