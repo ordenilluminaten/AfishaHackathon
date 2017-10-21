@@ -1,0 +1,369 @@
+<script id='place-page-template' type="text/html">
+    <style>
+        #page {
+            padding: 0;
+        }
+
+        .header {
+            height: 45vh;
+            max-height: inherit;
+            min-height: 45vh;
+            overflow: hidden;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: -1;
+        }
+
+            .header img {
+                transform: translate(-50%, -50%);
+                filter: blur(75px) brightness(0.9);
+                display: inline-block;
+                width: 100%;
+                position: relative;
+                top: 50%;
+                left: 50%;
+                border: 0;
+            }
+
+        .content {
+            margin-top: 40px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+            background-color: #fff;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+            .content > hr {
+                margin: 0;
+                border: 0;
+                height: 0;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            }
+
+            .content .short-info {
+                position: relative;
+                border-top-right-radius: 4px;
+                padding: 20px;
+            }
+
+                .content .short-info p, .content .short-info span {
+                    color: #666A73;
+                }
+
+                .content .short-info p {
+                    word-wrap: break-word;
+                    padding: 0;
+                    margin: 0;
+                }
+
+            .content .datetime {
+                position: relative;
+            }
+
+            .content .short-info .time {
+                font-size: 12px;
+                font-weight: 600;
+                line-height: 15px;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                color: #666a73;
+            }
+
+            .content .short-info .age {
+                color: white;
+                background-color: red;
+                border-radius: 50%;
+                padding: 4px;
+                text-align: center;
+                font-size: 11px;
+                height: 25px;
+                width: 25px;
+                line-height: 17px;
+                position: absolute;
+                top: -10px;
+                right: -10px;
+            }
+
+            .content .short-info h1 {
+                font-size: 1.5rem;
+                line-height: 1.5rem;
+                letter-spacing: 0.5px;
+                color: #282C35;
+            }
+
+            .content .short-info h4 {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                font-size: 1rem;
+                font-weight: normal;
+                line-height: 1rem;
+                letter-spacing: 1px;
+                color: #666a73;
+                text-align: center;
+                width: 100%;
+                padding: 0 20px;
+            }
+
+            .content .short-info .verdict {
+                display: -webkit-box;
+                margin: 0 auto;
+                color: #666A73;
+            }
+
+            .content .panel a {
+                margin: 0 5px;
+            }
+
+        button.action-btn {
+            cursor: pointer;
+            border: none;
+            height: 30px;
+            width: 100%;
+            font-size: 1em;
+            color: rgb(255, 255, 255);
+            outline: none;
+            text-transform: uppercase;
+        }
+
+            button.action-btn:hover {
+                transition: box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+                transition-delay: 0.1s;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+            }
+
+        .action-btn svg {
+            fill: white;
+        }
+
+        .action-btn.i-will-go {
+            background-color: #31ce74;
+        }
+
+        .action-btn.i-will-not-go {
+            background-color: #ff0000;
+        }
+    </style>
+    <div class="header">
+        <picture>
+            <source srcset="{{Image630x315.Url}}">
+            <img alt="">
+        </picture>
+    </div>
+    <div class="container">
+        <div class="content">
+            <div class="row">
+                <div class="col-8" style="padding-right: 0;">
+                    <picture>
+                        <source srcset="{{Image630x315.Url}}">
+                        <img style="width: 100%;height: 100%;border-top-left-radius: 4px;object-fit: cover;">
+                    </picture>
+                </div>
+                <div class="col-4 d-flex flex-column" style="padding-left: 0;">
+                    <div class="short-info" style="flex:1">
+                        <div class="datetime">
+                            <span class="time">{{Duration}}</span>
+                            {{#if AgeRestriction != null && AgeRestriction != ""}}
+                            <span class="age">{{AgeRestriction}}</span>
+                            {{/if}}
+                        </div>
+                        <h1>
+                            {{Name}}
+                        </h1>
+                        <p style="color: #666A73;font-size: 13px;">
+                            {{#if OriginalName != null && OriginalName != ""}}
+                            ({{OriginalName}})
+                            {{/if}}
+                        </p>
+                        <b style="margin-top: 15px; display: block;">
+                            Наш вердикт:
+                        </b>
+                        <p class="verdict">
+                            {{Verdict}}
+                        </p>
+                        {{#if Genres != null && Genres != ""}}
+                        {{#if Genres.Links != null && Genres.Links != ""}}
+                        <b>
+                            Жанры:
+                        </b>
+                        <p>
+                            {{#if Genres.Links.length}}
+                            {{#each Genres.Links:i}}
+                            {{Name}}{{#if i < Genres.Links.length - 1}},&nbsp;{{/if}}
+                            {{/each}}
+                            {{else}}
+                            {{Genres.Links.Name}}
+                            {{/if}}
+                        </p>
+                        {{/if}}
+                        {{/if}}
+                        {{#if Directors != null && Directors != ""}}
+                        {{#if Directors.Links != null && Directors.Links != ""}}
+                        <b>
+                            Режиссеры:
+                        </b>
+                        <p>
+                            {{#if Directors.Links.length}}
+                            {{#each Directors.Links:i}}
+                            {{Name}}{{#if i < Directors.Links.length - 1}},&nbsp;{{/if}}
+                            {{/each}}
+                            {{else}}
+                            {{Directors.Links.Name}}
+                            {{/if}}
+                        </p>
+                        {{/if}}
+                        {{/if}}
+                        <b>
+                            Рейтинг:
+                        </b>
+                        <span>{{toFixed(Rating,2)}}</span>
+                    </div>
+                    {{#if userEventData.idUserEvent == null}}
+                    <button class="action-btn i-will-go" on-click="@@this.fire('inviteCompanion', @@context, ID)">
+                        Я пойду
+                        <svg width="16" height="16" class="svg-icon">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#going"></use>
+                        </svg>
+                    </button>
+                    {{/if}}
+                </div>
+            </div>
+            @*<hr />
+                <div class="row">
+                    <div class="col-8 panel">
+                        <div style="padding: 7px 5px 0px 5px;">
+                            <a href="javascript:;">
+                                <svg width="25" height="25" class="svg-icon">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#share"></use>
+                                </svg>
+                            </a>
+                            <a href="javascript:;">
+                                <svg width="25" height="25" class="svg-icon">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#favorite"></use>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-4" style="padding-top: 5px;
+                        padding-right: 20px;
+                        padding-bottom: 5px;
+                        padding-left: 5px;">
+                        {{#if userEventData.idUserEvent == null}}
+                        <button class="action-btn i-will-go" style="height: 100%;width: 100%;"
+                                on-click="@@this.fire('inviteCompanion', @@context, ID)">
+                            Пойду
+                        </button>
+                        {{/if}}
+                    </div>
+                </div>*@
+            <hr />
+            <div class="row">
+                <div class="col-12">
+                    <div class="tabs" style="padding: 0 10px;">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#tab-will-go">
+                                    Идут (159)
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-description">
+                                    Описание
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-gallery">
+                                    Галерея
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-trailer">
+                                    Трейлер
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-reviews">
+                                    Отзывы
+                                </a>
+                            </li>
+                        </ul>
+                        <div id="tab-will-go" class="tab active">
+                            <# user-events />
+                        </div>
+                        <div id="tab-description" class="tab">
+                            <div class="row">
+                                <div class="col-4">
+                                    <img src="{{Poster.Url}}" style="width: 100%;" />
+                                </div>
+                                <div class="col-8">
+                                    <p>
+                                        {{Description}}
+                                    </p>
+                                    {{#if Actors != null && Actors != ""}}
+                                    {{#if Actors.Links != null && Actors.Links != ""}}
+                                    <b>
+                                        В ролях:
+                                    </b>
+                                    <br />
+                                    <p>
+                                        {{#if Actors.Links.length}}
+                                        {{#each Actors.Links:i}}
+                                        {{Name}}{{#if i < Actors.Links.length - 1}},&nbsp;{{/if}}
+                                        {{/each}}
+                                        {{else}}
+                                        {{Actors.Links.Name}}
+                                        {{/if}}
+                                    </p>
+                                    {{/if}}
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-gallery" class="tab">
+                            <div class="slider">
+                                <input type="radio" name="slide_switch" id="id1" checked="checked" />
+                                <label for="id1">
+                                    <img src="//img07.rl0.ru/afisha/2000x2000q85i/s3.afisha.ru/MediaStorage/b7/8a/29482ae973ef42e5bedbe18f8ab7.jpg" />
+                                </label>
+                                <img src="//img.rl0.ru/afisha/2000x2000q85i/s4.afisha.ru/MediaStorage/34/8f/8b3b01277aa24d5cb14898808f34.jpg" />
+                                <input type="radio" name="slide_switch" id="id2" />
+                                <label for="id2">
+                                    <img src="//img02.rl0.ru/afisha/2000x2000q85i/s3.afisha.ru/MediaStorage/29/17/31abd6c684344a05acd6778f1729.jpg" />
+                                </label>
+                                <img src="//img02.rl0.ru/afisha/2000x2000q85i/s3.afisha.ru/MediaStorage/29/17/31abd6c684344a05acd6778f1729.jpg" />
+
+                                <input type="radio" name="slide_switch" id="id3" />
+                                <label for="id3">
+                                    <img src="//img05.rl0.ru/afisha/2000x2000q85i/s.afisha.ru/MediaStorage/3d/9b/be0a442278c447e4a9fbc77f9b3d.jpg" />
+                                </label>
+                                <img src="//img05.rl0.ru/afisha/2000x2000q85i/s.afisha.ru/MediaStorage/3d/9b/be0a442278c447e4a9fbc77f9b3d.jpg" />
+
+                                <input type="radio" name="slide_switch" id="id4" />
+                                <label for="id4">
+                                    <img src="//img06.rl0.ru/afisha/2000x2000q85i/s3.afisha.ru/MediaStorage/36/a1/d3bf55fe7f1c432c83bc23e4a136.jpg" />
+                                </label>
+                                <img src="//img06.rl0.ru/afisha/2000x2000q85i/s3.afisha.ru/MediaStorage/36/a1/d3bf55fe7f1c432c83bc23e4a136.jpg" />
+
+                                <input type="radio" name="slide_switch" id="id5" />
+                                <label for="id5">
+                                    <img src="//img03.rl0.ru/afisha/2000x2000q85i/s3.afisha.ru/MediaStorage/0c/78/82eda4e43d9542b1a01d6816780c.jpg" />
+                                </label>
+                                <img src="//img03.rl0.ru/afisha/2000x2000q85i/s3.afisha.ru/MediaStorage/0c/78/82eda4e43d9542b1a01d6816780c.jpg" />
+                            </div>
+                        </div>
+                        <div id="tab-trailer" class="tab">
+                            <iframe style="width: 100%;height:345px" src="https://www.youtube.com/embed/RO8kPw41DSo" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <div id="tab-reviews" class="tab">
+                            <div id="reviews"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

@@ -78,7 +78,7 @@ var router = {
     pages: {
         all: () => new AllPage(),
         movies: () => new MoviesPage(),
-        event: (parentPage, args) => new EventPage(args[0], parentPage)
+        place: (parentPage, args) => new PlacePage(args[0], parentPage)
     }
 }
 

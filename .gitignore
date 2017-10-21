@@ -20,3 +20,5 @@ Web/wwwroot/lib/
 Web/Web\.csproj\.user
 
 Web/time
+
+Web/Views/Home/Bundle\.cshtml
