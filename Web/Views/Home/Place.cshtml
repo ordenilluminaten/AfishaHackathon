@@ -166,16 +166,15 @@
         <div class="content">
             <div class="row">
                 <div class="col-8" style="padding-right: 0;">
-                    <picture>
-                        {{#if photos != null && photos.length > 0}}
-                        <source srcset="{{photos[0]}}">
-                        {{/if}}
-                        <img style="width: 100%;
-                            height: 450px;
-                            margin-bottom: -7px;
-                            border-top-left-radius: 4px;
-                            object-fit: cover;">
-                    </picture>
+                    <div style="background-image: url('{{photos[0]}}');
+                                background-position: center center;
+                                background-repeat: no-repeat;
+                                background-size: cover;
+                                width: 100%;
+                                height: 100%;
+                                min-height: 375px;">
+
+                    </div>
                 </div>
                 <div class="col-4 d-flex flex-column" style="padding-left: 0;">
                     <div class="short-info" style="flex:1">           
@@ -219,10 +218,7 @@
                         </b>
                         <span>{{toFixed(rating,2)}}</span>
                     </div>
-                    2
-                    {{#if userEventData.idUserEvent == null}}
-                    {{id}}
-                    1
+                    {{#if userEventData.idUserEvent == null}}                 
                     <button class="action-btn i-will-go" on-click="@@this.fire('inviteCompanion', @@context, id)">
                         Я пойду
                         <svg width="16" height="16" class="svg-icon">
