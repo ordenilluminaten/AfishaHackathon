@@ -3,11 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace Models.Notifications {
-    public abstract  class BaseNotificator {
-        protected BaseNotificator(TimeSpan timeSpan) {
-            Timeout = timeSpan;
+    public abstract class BaseNotificator {
+        protected BaseNotificator() {
+            Timeout = TimeSpan.FromMinutes(5);
         }
-        private TimeSpan Timeout { get; }
+
+        public  TimeSpan Timeout { get; protected set; }
         public virtual void StartProcLoop(CancellationToken _cancellationToken) {
             while (true) {
                 try {

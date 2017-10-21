@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using ATMIT.Core.Web.Repository;
-using ATMIT.Web.Utility.Tasks;
+﻿using ATMIT.Core.Web.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,13 +15,10 @@ using Models.Api.VkApi;
 //using Models.Api.VkApi.Bot;
 using Models.AppSettings;
 using Models.Extensions;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Diagnostics;
 using Models.Afisha;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using System.Text;
+using Models.Afisha.Bot;
+using Models.Notifications.EventNotification;
 
 namespace Afisha {
     public class Startup {
@@ -61,34 +54,32 @@ namespace Afisha {
                     options.AddRedirectToHttps();
                 });
             }
-            //var test = new EventNotificator(TimeSpan.FromSeconds(5));
-            //CancellableTaskProc proc = test.StartProcLoop;
-            //var task = new CancellableTask(proc, TaskCreationOptions.LongRunning, $"BotTask");
-            //task.Start();
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc()
                 .AddJsonOptions(options => {
                     options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
+
             services.AddMemoryCache();
             services.AddDistributedMemoryCache();
             services.AddSession(options => {
                 options.Cookie.SameSite = SameSiteMode.None;
             });
+
             services.AddTransient<UnitOfWork<ApplicationDbContext>>();
             services.Configure<AppSetting>(Configuration);
             services.AddTransient<FeedParser>();
             services.AddSingleton<AfishaData>();
             services.AddSingleton<VkApi>();
-            //services.AddSingleton<AfishaBot>();
+            services.AddSingleton<AfishaBot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting, AfishaData _data) {
-            var a = _data.Places;
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting, AfishaData _data, AfishaBot _afishaBot) {
             if (env.IsDevelopment()) {
-                //_afishaBot.Start(BotTaskType.NotificationAboutEvent);
+                _afishaBot.Start(BotTaskType.NotificationAboutEvent);
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
