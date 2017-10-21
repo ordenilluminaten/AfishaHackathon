@@ -47,7 +47,6 @@
                                 dateFormat: 'd M Y H:i',
                                 onClose: (selectedDates, dateStr, instance) => {
                                     inviteRactive.set('Date', selectedDates[0].toLocaleString());
-                                    this.updateItems();
                                 }
                             });
                         },
@@ -66,6 +65,7 @@
                                                 data: inviteData,
                                             }).then((data) => {
                                                 router.ractive.set('userEventData.idUserEvent', data.idUserEvent);
+                                                this.userEventsRactive.updateItems();
                                                 Modal.close('invite-companion-modal');
                                             });
                                         }
