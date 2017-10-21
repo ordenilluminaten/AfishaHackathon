@@ -1,0 +1,40 @@
+﻿{{#with parent.data}}
+    <div id="filter-block">
+        <div class="filter-bar">
+    		<div id="cat-filter" class="filter mr-2 dropdown" onclick="dropdown.toggle(this, event, 'categories-dropdown')">
+    			<span>{{categories[filter.Category]}}</span>
+    		    <svg width="15" height="15" class="svg-icon">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
+                </svg>
+                <div id="categories-dropdown" class="dropdown-content w-100">
+    			    {{#each categories:i}}
+    				    <a href="javascript:;" on-click='@@this.set('')'>{{this}}</a>
+    			        {{#if i==0}}
+    			        <div class="separator"></div>
+    			        {{/if}}
+    			    {{/each}}
+                </div>
+            </div>
+            <div class="filter">
+                <svg width="15" height="15" class="svg-icon mr-1">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#search"></use>
+                </svg>
+                <input type="text" placeholder="Поиск" value="{{filter.Search}}" on-enter="@@this.updateItems()" />
+            </div>
+            <!--<div class="filter mr-2">
+                <svg class="svg-icon" width="15" height="15">
+                    <use xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-events"></use>
+                </svg>
+                <input id="datepicker" type="text" value="@DateTime.Now.Date.ToShortDateString()" />
+            </div>-->
+            <div class="filter" style="margin-left: auto;">
+                <svg width="17" height="17" class="svg-icon mr-2 {{filter.ViewType==0?'selected':''}}" on-click="@@this.fire('changeValue','ViewType',0,false)">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#card_view"></use>
+                </svg>
+                <svg width="20" height="20" class="svg-icon {{filter.ViewType==1?'selected':''}}" on-click="@@this.fire('changeValue','ViewType',1,false)">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#list_view"></use>
+                </svg>
+            </div>
+        </div>
+    </div>
+{{/with}}

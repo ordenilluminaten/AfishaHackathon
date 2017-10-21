@@ -10,9 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Models;
+using Models.Afisha;
 using Models.Api.VkApi;
 using Models.AppSettings;
 using Models.Extensions;
+using Models.Filters;
 
 namespace Afisha.Controllers
 {
@@ -21,18 +23,25 @@ namespace Afisha.Controllers
         public IOptions<AppSetting> AppSettings { get; }
         public VkApi Api { get; }
         public UnitOfWork<ApplicationDbContext> Unit { get; }
+        public AfishaData Afisha
+        {
+            get;
+            set;
+        }
 
         public HomeController(IHostingEnvironment environment,
             IHttpContextAccessor accessor,
             IMemoryCache memoryCache,
             IOptions<AppSetting> appSettings,
             VkApi vkApi,
-            UnitOfWork<ApplicationDbContext> unit)
+            UnitOfWork<ApplicationDbContext> unit,
+            AfishaData afisha)
             : base(environment, accessor, memoryCache)
         {
             Unit = unit;
             AppSettings = appSettings;
             Api = vkApi;
+            Afisha = afisha;
         }
 
         /// <summary>
@@ -72,6 +81,19 @@ namespace Afisha.Controllers
             });
 
             return View(request);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Places(PlacesFilter filter)
+        {
+            return Json(true);
+            //var data = await AfishaD.Movies.GetAsync(filter);
+            //return Json(
+            //new
+            //{
+            //    Data = data,
+            //    Filter = filter
+            //});
         }
 
         [HttpPost]

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using ATMIT.Web.Utility.Data;
 
 namespace Models.Afisha {
-    public class Place {
+    public class Place : IEntity {
         public Place() {
             Coordinate = new Coordinate();
             Phones = new List<Phone>();

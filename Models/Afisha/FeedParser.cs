@@ -13,8 +13,9 @@ namespace Models.Afisha {
     public class FeedParser {
         private readonly IMemoryCache p_memoryCache;
         private readonly Dictionary<string, PlaceType> p_typeDictionary = new Dictionary<string, PlaceType>();
-        private readonly Dictionary<int, string> cityIntStringDictionary = new Dictionary<int, string>();
-        private readonly Dictionary<string, int> cityStringIntDictionary = new Dictionary<string, int>();
+        private readonly Dictionary<int, List<Place>> p_cityPlacesDict = new Dictionary<int, List<Place>>();
+        private readonly Dictionary<int, string> p_cityIntStringDictionary = new Dictionary<int, string>();
+        private readonly Dictionary<string, int> p_cityStringIntDictionary = new Dictionary<string, int>();
         private readonly Dictionary<string, Place> p_placeDict = new Dictionary<string, Place>();
 
         private readonly string p_filePath;
@@ -68,13 +69,17 @@ namespace Models.Afisha {
                                     continue;
                                 //-1 для учета позиции запятой
                                 var cityName = str.Substring(p_cityNameBeginIndex, i - p_cityNameBeginIndex);
-                                if (!cityStringIntDictionary.ContainsKey(cityName)) {
-                                    cityStringIntDictionary.Add(cityName, p_idCity);
+                                if (!p_cityStringIntDictionary.ContainsKey(cityName)) {
+                                    p_cityPlacesDict.Add(p_idCity, new List<Place> {
+                                        _place
+                                    });
+                                    p_cityStringIntDictionary.Add(cityName, p_idCity);
                                     _place.IdCity = p_idCity;
-                                    cityIntStringDictionary.Add(p_idCity, cityName);
+                                    p_cityIntStringDictionary.Add(p_idCity, cityName);
                                     p_idCity++;
                                 } else {
-                                    _place.IdCity = cityStringIntDictionary[cityName];
+                                    _place.IdCity = p_cityStringIntDictionary[cityName];
+                                    p_cityPlacesDict[_place.IdCity].Add(_place);
                                 }
                                 _place.Address = str;
                                 break;
@@ -150,7 +155,8 @@ namespace Models.Afisha {
                 }
             }
             p_memoryCache.Set(AfishaData.CachePlaceDictKey, p_placeDict);
-            p_memoryCache.Set(AfishaData.CacheCityDictKey, cityIntStringDictionary);
+            p_memoryCache.Set(AfishaData.CacheCityDictKey, p_cityIntStringDictionary);
+            p_memoryCache.Set(AfishaData.CacheCityPlacesDictKey, p_cityPlacesDict);
             watch.Stop();
             File.WriteAllText("time", watch.Elapsed.ToString("G"));
             //} catch (Exception e) {
