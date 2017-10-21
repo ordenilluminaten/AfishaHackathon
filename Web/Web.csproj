@@ -32,7 +32,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
-    <system.web>
-    <globalization uiCulture="ru-RU" culture="ru-RU" />
-    </system.web>
 </Project>
