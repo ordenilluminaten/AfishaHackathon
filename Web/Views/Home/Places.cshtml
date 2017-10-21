@@ -1,16 +1,15 @@
 ﻿<script id='places-page-template' type="text/html">
 
-    <div id="filter-block">
+    <div id="filter-block" style="padding: 5px 20px;">
         <div class="filter-bar">
             <div id="cat-filter" class="filter mr-2 dropdown" onclick="dropdown.toggle(this, event, 'categories-dropdown')">
-
                 <span>{{parent.data.categories[filter.category]}}</span>
                 <svg width="15" height="15" class="svg-icon">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
                 </svg>
                 <div id="categories-dropdown" class="dropdown-content-closable w-100">
                     {{#each parent.data.categories:i}}
-                        <a href="javascript:;" on-click="@@this.fire('changeValue','category',i),dropdown.hide(this, event, 'categories-dropdown')">{{this}}</a>
+                        <a href="javascript:;" on-click="@@this.fire('changeValue','category',i)">{{this}}</a>
                         {{#if i==0}}
                         <div class="separator"></div>
                         {{/if}}
@@ -29,19 +28,31 @@
                 </svg>
                 <input id="datepicker" type="text" value="@DateTime.Now.Date.ToShortDateString()" />
             </div>-->
-            <div class="filter" style="margin-left: auto;">
-                <svg width="17" height="17" class="svg-icon mr-2 {{filter.viewType=='Grid'?'selected':''}}"
-                 on-click="@@this.fire('changeValue','viewType','Grid',false)">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#card_view"></use>
-                </svg>
-                <svg width="20" height="20" class="svg-icon {{filter.viewType=='List'?'selected':''}}" 
-                on-click="@@this.fire('changeValue','viewType','List',false)">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#list_view"></use>
-                </svg>
+            <div class="d-flex ml-auto">
+               <div id="cat-filter" class="filter mr-2 dropdown" onclick="dropdown.toggle(this, event, 'sort-dropdown')">
+                    <span>{{parent.data.categories[filter.category]}}</span>
+                    <svg width="15" height="15" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
+                    </svg>
+                    <div id="sort-dropdown" class="dropdown-content-closable w-100">
+                        <a href="javascript:;">{{this}}</a>
+                    </div>
+                </div>
+                <div class="filter" >
+                    <svg width="17" height="17" class="svg-icon mr-2 {{filter.viewType=='Grid'?'selected':''}}"
+                    on-click="@@this.fire('changeValue','viewType','Grid',false)">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#card_view"></use>
+                    </svg>
+                    <svg width="20" height="20" class="svg-icon {{filter.viewType=='List'?'selected':''}}" 
+                    on-click="@@this.fire('changeValue','viewType','List',false)">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#list_view"></use>
+                    </svg>
+                </div>
             </div>
+            
         </div>
     </div>
-    <div class='content'>
+    <div class='content' style="padding: 5px 20px;">
         <Paginator />
         <div class='row'>
             {{#each items:i}}
@@ -55,11 +66,7 @@
                 </a>
                 <div class="event-content">
                     <a class="event-title" href="javascript:;" on-click="@@global.router.navigate('place', this)">{{name}}</a>
-                    <div class="small">
-                        {{ProductionYear}} / {{Country}}
-                        {{#if Genres.Links.length > 0}} / {{Genres.Links[0].Name}}{{/if}}
-                        {{#if AgeRestriction != ""}} / <strong>{{AgeRestriction}}</strong>{{/if}}
-                    </div>
+                    <div class="small">{{workingTime}}</div>
                     <div class="event-desc">{{Verdict}}</div>
 
                     <div class="event-counters">

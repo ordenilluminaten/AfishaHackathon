@@ -91,6 +91,20 @@ namespace Afisha.Controllers {
         }
 
         [HttpPost]
+        public async Task<IActionResult> UserEvents(UserEventFilter filter) {
+            var items = await Unit.Get<UserEvent, Guid>().GetList(filter)
+                .Include(x => x.Offers)
+                    .ThenInclude(x => x.User)
+                .Include(x => x.User)
+                .ToArrayAsync();
+            return Json(
+                new {
+                    Items = items,
+                    Filter = filter
+                });
+        }
+
+        [HttpPost]
         [Route(nameof(GetUsersEventsByIds))]
         public async Task<IActionResult> GetUsersEventsByIds(IEnumerable<int> ids) {
             var userEvents = await Unit.Get<UserEvent, Guid>().All

@@ -11,14 +11,14 @@
             data: this.event,
             on: {
                 init: () => {
-                    Request.post({
-                        url: '/GetEventData',
-                        data: {
-                            idEvent: this.event.ID
-                        }
-                    }).then((userEventData) => {
-                        router.ractive.set('userEventData', userEventData);
-                    });
+                    // Request.post({
+                    //     url: '/GetEventData',
+                    //     data: {
+                    //         idEvent: this.event.ID
+                    //     }
+                    // }).then((userEventData) => {
+                    //     router.ractive.set('userEventData', userEventData);
+                    // });
                 },
                 complete: () => {
                     Tabs.init("#page");
@@ -85,7 +85,7 @@
                 }
             }
         });
-        // page.attachChild(this._renderUserEvents(), { target: 'user-events' });
+        page.attachChild(this._renderUserEvents(), { target: 'user-events' });
         return page;
     }
 
@@ -101,7 +101,7 @@
                     }).then(onDone);
                 },
                 Filter: {
-                    ViewType: 0
+                    viewType: 0
                 },
                 getAgeString: (age) => {
                     if (age <= 0) return 'любой';
@@ -114,19 +114,19 @@
                     return gender === 0 ? 'мужской' : gender === 1 ? 'женский' : 'любой';
                 },
                 getUserOffer: (offers, idUser) => {
-                    let i = offers.findIndex(x => x.IdUser === idUser);
+                    let i = offers.findIndex(x => x.idUser === idUser);
                     return i < 0 ? null : offers[i];
                 },
                 getPendingCount: (offers) => {
                     let count = 0;
                     for (let offer of offers) {
-                        if (offer.State === 0)
+                        if (offer.state === 0)
                             count++;
                     }
                     return count;
                 },
                 getAcceptedOffers: (offers) => {
-                    return offers.filter(x => x.State === 1);
+                    return offers.filter(x => x.state === 1);
                 }
             },
             on: {
@@ -139,7 +139,7 @@
                             minDate: new Date(),
                             dateFormat: 'd M Y H:i',
                             onClose: (selectedDates, dateStr, instance) => {
-                                this.set('Filter.Date', selectedDates[0].toLocaleString());
+                                this.set('filter.date', selectedDates[0].toLocaleString());
                                 this.updateItems();
                             }
                         });
@@ -180,9 +180,9 @@
                 removeUserEvent: function (ctx, userEvent) {
                     let msg = 'Вы уверены, что хотите отменить мероприятие? ';
                     //есть хоть один в команде
-                    let acceptedOffer = userEvent.Offers.find(x => x.State == 1)
+                    let acceptedOffer = userEvent.offers.find(x => x.state == 1)
                     if (acceptedOffer != null) {
-                        msg += `Вы будете удалены из мероприятия, а ответственность будет передана ${acceptedOffer.User.FirstName} ${acceptedOffer.User.LastName}`;
+                        msg += `Вы будете удалены из мероприятия, а ответственность будет передана ${acceptedOffer.user.firstName} ${acceptedOffer.user.lastName}`;
                     }
                     var modal = new Modal({
                         title: msg,
@@ -194,7 +194,7 @@
                                         callback: () => {
                                             Request.post({
                                                 url: '/Home/RemoveUserEvent',
-                                                data: { idUserEvent: userEvent.Id }
+                                                data: { idUserEvent: userEvent.id }
                                             }).then(res => {
                                                 if (acceptedOffer != null) {
                                                     toastr.success('Вы удалены из мероприятия', 3000);
