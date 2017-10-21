@@ -101,7 +101,7 @@ namespace Afisha.Controllers {
                     request.CustomData = new CustomData();
                     // request.CustomData.MyPlaces = await GetUsersEventsByIds(new int[CurrentUser.Id]);
 
-                    var userEvents = await Unit.Get<UserEvent, Guid>().All
+                    var events = await Unit.Get<UserEvent, Guid>().All
                             .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
                             .Select(_x => new {
                                 Id = _x.Id,
@@ -112,7 +112,7 @@ namespace Afisha.Controllers {
                             })
                             .ToArrayAsync();
 
-                        var userEventOffers = await Unit.Get<UserEventOffer, Guid>()
+                        var offers = await Unit.Get<UserEventOffer, Guid>()
                         .All
                         .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
                         .Include(_x => _x.UserEvent)
@@ -125,7 +125,10 @@ namespace Afisha.Controllers {
                                 IsOffer = true
                         })
                         .ToArrayAsync();
-                    
+                    request.CustomData.MyPlaces = new {
+                        events = events,
+                        offers = offers
+                    };
                     request.CustomData.IsFamiliarWithBot = CurrentUser.IsFamiliarWithBot;
                     request.CustomData.Notifications = notificationsData.Select(_x => new {
                         _x.Type,
