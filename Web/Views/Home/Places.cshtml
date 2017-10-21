@@ -1,14 +1,18 @@
 ﻿<script id='places-page-template' type="text/html">
+
     <div id="filter-block">
+        <Paginator />
+        
         <div class="filter-bar">
             <div id="cat-filter" class="filter mr-2 dropdown" onclick="dropdown.toggle(this, event, 'categories-dropdown')">
-                <span>{{categories[filter.category]}}</span>
+
+                <span>{{parent.data.categories[filter.category]}}</span>
                 <svg width="15" height="15" class="svg-icon">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
                 </svg>
                 <div id="categories-dropdown" class="dropdown-content w-100">
-                    {{#each categories:i}}
-                        <a href="javascript:;" on-click='@@this.set('')'>{{this}}</a>
+                    {{#each parent.data.categories:i}}
+                        <a href="javascript:;" on-click="@@this.fire('changeValue','category',i)">{{this}}</a>
                         {{#if i==0}}
                         <div class="separator"></div>
                         {{/if}}
@@ -51,7 +55,7 @@
                     {{/if}}
                 </a>
                 <div class="event-content">
-                    <a class="event-title" href="javascript:;" on-click="@@global.router.navigate('event', this)">{{name}}</a>
+                    <a class="event-title" href="javascript:;" on-click="@@global.router.navigate('place', this)">{{name}}</a>
                     <div class="small">
                         {{ProductionYear}} / {{Country}}
                         {{#if Genres.Links.length > 0}} / {{Genres.Links[0].Name}}{{/if}}
@@ -80,5 +84,6 @@
             </div>
             {{/each}}
         </div>
+        <Paginator />
     </div>
 </script>

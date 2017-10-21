@@ -86,7 +86,8 @@ namespace Afisha.Controllers
         [HttpPost]
         public async Task<IActionResult> Places(PlacesFilter filter)
         {
-            var list = Afisha.CityPlaces[1];
+            filter.UseSort = false;
+            var list = Afisha.CityPlaces[1].OrderByDescending(_x => _x.Photos.Count());
             var q = list.AsQueryable();
             filter.Filter(ref q);
 
