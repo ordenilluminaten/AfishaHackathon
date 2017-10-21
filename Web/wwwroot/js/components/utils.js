@@ -3,15 +3,18 @@ var dropdown = {
     listeners: {},
     show: (el, id, onShowCb, onCloseCb) => {
         if(!el.classList.contains('selected')) {
-            dropdown.listeners[id] = function (event) {
+            dropdown.listeners[id] = function (e) {
                 //isClickInside?
-                if (event.target.closest('.dropdown-content') == null && !el.contains(event.target))
+                if (e.target.closest('.dropdown-content') == null && !el.contains(e.target))
                     dropdown.hide(el, id, onCloseCb);
             };
             el.classList.add('selected');
             document.addEventListener('click', dropdown.listeners[id]);
             if(onShowCb != null)
                 onShowCb();
+        }
+        else if(event.target.closest('.dropdown-content') == null) {            
+            dropdown.hide(el, id, onCloseCb);
         }
     },
     hide: (el, id, onShowCb, onCloseCb) => {

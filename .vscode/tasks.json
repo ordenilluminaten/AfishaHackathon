@@ -11,15 +11,6 @@
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
-        },
-        {
-            "taskName": "publish",
-            "command": "cmd",
-            "args": [
-                "chcp 65001",
-                "/p:DeployOnBuild=true",
-                "/p:PublishProfile=Publish"
-            ]
         }
     ]
 }

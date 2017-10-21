@@ -37,10 +37,15 @@
                 await Html.RenderPartialAsync("Paginator");
             }
         </script>
+		<script id="filter-template" type="text/ractive">
+			@{
+				await Html.RenderPartialAsync("Filter");
+			}	
+		</script>
 
         <script id="app-template" type="text/ractive">
             <Header />
-            <Sidebar />
+		    <Filter />
             <div id="page">
                 <div id="page-content">
                     <# page-data />

@@ -1,17 +1,34 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Models.Afisha {
     public enum PlaceType {
+        [Display(Name = "Все места")]
+        All,
+        [Display(Name = "Рестораны")]
         Restaurant,
+        [Display(Name = "Концертные залы")]
         ConcertHall,
-        SportBuilding,
+        [Display(Name = "Спорткомплексы")]
+        SportBuilding,        
+        [Display(Name = "Кинотеатры")]
         Cinema,
-        Museum,
-        Theatre,
-        FitnessCenter,
-        Hotel,
-        Shop,
+        [Display(Name = "Музеи")]
+        Museum, 
+        [Display(Name = "Театры")]       
+        Theatre,      
+        [Display(Name = "Фитнес центры")]  
+        FitnessCenter,        
+        [Display(Name = "Отели")]
+        Hotel,        
+        [Display(Name = "Магазины")]
+        Shop,        
+        [Display(Name = "Клубы")]
         Club,
-        Park,
-        Gallery,
+        [Display(Name = "Парки")]        
+        Park,   
+        [Display(Name = "Галереи")]     
+        Gallery,        
+        [Display(Name = "Выставочный зал")]     
         ShowRoom
     }
 }
