@@ -16,15 +16,21 @@ namespace Models {
         public bool IsFamiliarWithBot { get; set; }
         public DateTime LastEnter { get; set; }
         public string FullName => $"{FirstName} {LastName}";
+        public int? IdCity {get;set;}
+        public float? Longitude {get;set;}
+        public float? Latitude {get;set;}
         public virtual ICollection<UserEvent> UserEvents { get; set; }
 
         public void SetUserData(User _user) {
             Avatar = _user.Avatar;
             FirstName = _user.FirstName;
             LastName = _user.LastName;
-            CanRecieveGroupMessages = CanRecieveGroupMessages;
+            CanRecieveGroupMessages = _user.CanRecieveGroupMessages;
             IsFamiliarWithBot = _user.IsFamiliarWithBot;
-            LastEnter = LastEnter;
+            LastEnter = _user.LastEnter;
+            Longitude = _user.Longitude;
+            Latitude = _user.Latitude;
+            IdCity = _user.IdCity;
         }
     }
 }

@@ -52,6 +52,9 @@ namespace Models.Api.VkApi {
 
         public object Notifications { get; set; }
         public object MyPlaces { get; set; }
+        public float? Longitude {get;set;}
+        public float? Latitude {get;set;}
+        public int? IdCity {get;set;}
     }
     public class ApiResult {
         /// <summary>
