@@ -9,7 +9,7 @@
         </div>
         <div class="right-header">
             <ul class="header-menu">
-                <li class="dropdown" onclick="dropdown.toggle(this,event,'bot-dropdown')">
+                <li class="dropdown" id="bot-dropdown-li" onclick="dropdown.toggle(this,event,'bot-dropdown')">
                     <a href="javascript:;">
                         <svg width="25" height="25" class="svg-icon {{@@this.parent.get('currentUser.customData.isFamiliarWithBot')?'':'bot-icon'}}">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#bot"></use>
@@ -38,12 +38,30 @@
                     @await Html.PartialAsync("Friends")
                 </li>
 
-                <li>
+                <li class="dropdown notification-dropdown"
+                    onclick="dropdown.toggle(this, event, 'notification-dropdown')">
                     <a href="javascript:;" data-toggle="dropdown">
                         <svg width="25" height="25" class="svg-icon">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#notification"></use>
                         </svg>
                     </a>
+                   {{#with parent.customData.notifications}}
+                    <div id="notification-dropdown" class="dropdown-content">
+                        <ul class="dropdown-menu">
+                            <li class="external">
+                                <h3>
+                                    У вас {{notifications.length}} {{DeclOfNum(notifications.length,['новое уведомление','новых уведомления','новых уведомлений'])}}
+                                </h3>
+                            </li>
+                            <li>
+                                <div class="content-wrapper" style="position: relative; overflow: hidden; width: auto; height: 275px;">
+                                    {{#each parent.customData.notifications}}
+                                    {{/each}}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    {{/with}}
                 </li>
 
                 <li>
@@ -55,7 +73,7 @@
                 </li>
                 <li class="dropdown" onclick="dropdown.toggle(this, event, 'city-dropdown')">
                     <a href="javascript:;">
-                         <svg width="25" height="25" class="svg-icon">
+                        <svg width="25" height="25" class="svg-icon">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#location"></use>
                         </svg>
                         <span>Санкт-Петербург</span>

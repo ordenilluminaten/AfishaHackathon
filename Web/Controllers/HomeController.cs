@@ -80,11 +80,32 @@ namespace Afisha.Controllers {
                     CurrentUser.SetUserData(user);
                     HttpContext.Session.Set(nameof(User), CurrentUser);
                     await ctx.SaveChangesAsync();
+
+                    var notificationsData = await ctx.UserNotifications.Where(_x => _x.IdUser == CurrentUser.Id)
+                        .Include(_x => _x.UserEvent)
+                        .Include(_x => _x.UserFrom)
+                        .Select(_x => new {
+                            _x.Type,
+                            Fullname = _x.IdUserFrom != null ? _x.UserFrom.FirstName + " " + _x.UserFrom.LastName : null,
+                            Avatar = _x.IdUserFrom != null ? _x.UserFrom.Avatar : null,
+                            _x.UserEvent.IdPlace,
+                            _x.Date
+                        })
+                        .ToArrayAsync();
+
+                    request.CustomData = new CustomData();
+                    request.CustomData.IsFamiliarWithBot = CurrentUser.IsFamiliarWithBot;
+                    request.CustomData.Notifications = notificationsData.Select(_x => new {
+                        _x.Type,
+                        Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
+                        _x.Fullname,
+                        _x.Avatar,
+                        PlaceName = Afisha.Places[_x.IdPlace].Name
+                    });
                 }
             });
 
-            request.CustomData = new CustomData();
-            request.CustomData.IsFamiliarWithBot = CurrentUser.IsFamiliarWithBot;
+
             return View(request);
         }
 
@@ -216,7 +237,7 @@ namespace Afisha.Controllers {
                 events.Add(new UserPlaces {
                     Id = userEvent.Id,
                     IdPlace = userEvent.IdPlace,
-                    Date = userEvent.Date.ToString(@"MM/dd/yy H:mm:ss"),
+                    Date = userEvent.Date.ToString(@"dd/MM/yy H:mm:ss"),
                     UserTotalCount = userEvent.UserCount,
                     Title = Afisha.Places[userEvent.IdPlace].Name
                 });
@@ -231,7 +252,7 @@ namespace Afisha.Controllers {
                 events.Add(new UserPlaces {
                     Id = userEventOffer.IdUserEvent,
                     IdPlace = userEventOffer.UserEvent.IdPlace,
-                    Date = userEventOffer.Date.ToString("MM/dd/yy H:mm:ss"),
+                    Date = userEventOffer.Date.ToString(@"dd/MM/yy H:mm:ss"),
                     UserTotalCount = userEventOffer.UserEvent.UserCount,
                     Title = Afisha.Places[userEventOffer.UserEvent.IdPlace].Name,
                     IsOffer = true
