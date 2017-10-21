@@ -51,6 +51,7 @@ namespace Models.Api.VkApi {
         public bool IsFamiliarWithBot { get; set; }
 
         public object Notifications { get; set; }
+        public object MyPlaces { get; set; }
     }
     public class ApiResult {
         /// <summary>
