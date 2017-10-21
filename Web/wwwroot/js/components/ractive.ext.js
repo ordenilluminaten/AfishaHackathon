@@ -51,7 +51,7 @@ var PaginationRactive = Ractive.extend({
             }
         };
     },
-    isolated: false,
+    isolated: true,
     components: {
         Paginator: Paginator
     },
@@ -81,27 +81,28 @@ var PaginationRactive = Ractive.extend({
                     return true;
                 },
                 calcPagination: function (_ctx) {
+                    debugger;
                     const filter = self.get('filter');
                     const pages = [];
                     if (filter.pageTotal < 6) {
                         for (var i = 1; i <= filter.pageTotal; i++) {
-                            pages.push({ Num: i, Active: filter.page == i });
+                            pages.push({ num: i, active: filter.page == i });
                         }
                     } else {
                         if (filter.page < 4) {
                             for (var i = 1; i <= 4; i++) {
-                                pages.push({ Num: i, Active: filter.page == i });
+                                pages.push({ num: i, active: filter.page == i });
                             }
-                            pages.push({ Num: filter.pageTotal });
+                            pages.push({ num: filter.pageTotal });
                         } else if (filter.page >= 4 && filter.page < filter.pageTotal - 1) {
                             for (var i = filter.page - 2; i <= filter.page + 1; i++) {
-                                pages.push({ Num: i, Active: filter.page == i });
+                                pages.push({ num: i, active: filter.page == i });
                             }
-                            pages.push({ Num: filter.pageTotal });
+                            pages.push({ num: filter.pageTotal });
                         } else {
-                            pages.push({ Num: 1 });
+                            pages.push({ num: 1 });
                             for (var i = filter.pageTotal - 3; i <= filter.pageTotal; i++) {
-                                pages.push({ Num: i, Active: filter.page == i });
+                                pages.push({ num: i, active: filter.page == i });
                             }
                         }
                     }
@@ -153,7 +154,7 @@ var PaginationRactive = Ractive.extend({
                         self.fire('updateItems');
                     }
                 },
-                "Paginator.selectPage": (_ctx, _page, _isInput) => {
+                selectPage: (_ctx, _page, _isInput) => {
                     if (_isInput) {
                         if (_ctx.original.keyCode === 13) {
                             if (_page <= 0 || _page > self.get('filter.pageTotal') || _page === self.get('filter.page')) {
@@ -186,10 +187,10 @@ var PaginationRactive = Ractive.extend({
             self.set('filter.pageTemp', 1);
         }
         this.set('setData', (_data, _callBack) => {
-debugger;
-            self.set(_data);
-            // _data.filter.pageTemp = _data.filter.page;
-
+            _data.filter.pageTemp = _data.filter.page;
+            self.set('filter', _data.filter);
+            self.set('items', _data.items);
+            
             // if (self.get('filter.sortName') === null) {
             //     if (_data.Filter.sort !== null) {
             //         var split = _data.Filter.sort.split('_');
@@ -201,9 +202,8 @@ debugger;
             //     _data.Filter.sortType = self.get('filter.sortType');
             // }            
             self.fire('calcPagination');
-            if (typeof (_callBack) == 'function') {
+            if (typeof (_callBack) == 'function')
                 _callBack();
-            }
         });
 
         this.observe('filter.page', (_oldVal, _newVal, _key) => {
