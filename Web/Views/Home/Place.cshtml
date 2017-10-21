@@ -5,9 +5,9 @@
         }
 
         .header {
-            height: 45vh;
+            height: 60vh;
             max-height: inherit;
-            min-height: 45vh;
+            min-height: 60vh;
             overflow: hidden;
             position: absolute;
             top: 70px;
@@ -15,6 +15,17 @@
             right: 0;
             width: 100%;
             z-index: -1;
+            > .img-container {                
+                transform: translate(-50%, -50%);
+                filter: blur(75px) brightness(0.9);
+                display: inline-block;
+                width: 100%;
+                position: relative;
+                top: 50%;
+                left: 50%;
+                border: 0;
+                height: 100%;
+            }
         }
 
             .header img {
@@ -155,12 +166,11 @@
         }
     </style>
     <div class="header">
-        <picture>
-            {{#if photos != null && photos.length > 0}}
-            <source srcset="{{photos[0]}}">
-            <img alt="">
-            {{/if}}
-        </picture>
+        {{#if photos != null && photos.length > 0}}
+        <div class="img-container" 
+            style="background-image: url('{{photos[0]}}');">            
+        </div>
+        {{/if}}
     </div>
     <div class="container">
         <div class="content">
