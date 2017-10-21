@@ -86,7 +86,7 @@
             {{#with parent.data.currentUser.friendsEvents as friendsEvents}}
             {{#if friendsEvents != null && friendsEvents.count != 0}}
             <div class="row search">
-                <input type="text">
+                <input type="text" value="{{friendsEvents.seach}}">
                 <button type="button">
                     <svg class="svg-icon" width="20" height="20">
                         <use xlink="http://www.w3.org/1999/xlink" xlink="http://www.w3.org/1999/xlink"
@@ -96,15 +96,17 @@
             </div>
             <div class="row friend-list">
                 {{#each friendsEvents.items: idUser}}
-                {{#with friends.items[idUser] as friend}}
+                {{#with friendFilter(friends.items[idUser], friendsEvents.seach) as friend}}
                 {{#if friend != null}}
-                <div class="col-12 mb-2 friend">
+                <div class="col-3 mb-2 friend">
                     <img class="icon-circle user-avatar" id="header-avatar" src="{{friend.photo_100}}"
                         style="float: left; margin-right: 10px;">
                     <div class="user-info" style="float: left; line-height: 20px;">
                         <p>{{friend.first_name}}</p>
                         <p>{{friend.last_name}}</p>
-                    </div>
+                    </div>             
+                </div>
+                <div class="col-9 mb-2 friend">
                     <table style="line-height: 15px; width: 100%;">
                         <tbody>
                             {{#each friendsEvents.items[idUser] as friendEvents}}
@@ -114,15 +116,9 @@
                                         {{friendEvents.title}}
                                     </a>
                                 </td>
-                                <td>
-                                    {{#if IsOffer}}
-                                    1
-                                    {{else}}
-                                    2
-                                    {{/if}}
+                                <td style="font-size: 11px;color: grey;text-align: right;">
+                                    {{{friendEvents.date}}}
                                 </td>
-                                <td>3 из {{friendEvents.userTotalCount}}</td>
-                                <td>{{friendEvents.date}}</td>
                             </tr>
                             {{/each}}                
                         </tbody>

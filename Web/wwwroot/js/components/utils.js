@@ -27,8 +27,7 @@ var dropdown = {
         if(onCloseCb != null)
             onCloseCb();
     },
-    toggle: (el, e, id, onShowCb, onCloseCb) => {
-        debugger;
+    toggle: (el, e, id, onShowCb, onCloseCb) => {        
         e.preventDefault();
         e.stopPropagation();
 

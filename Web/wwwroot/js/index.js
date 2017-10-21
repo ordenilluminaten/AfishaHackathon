@@ -1,6 +1,22 @@
 ﻿var header = Ractive.extend({
     isolated: false,
     template: '#header-template',
+    data: function () {
+        return {
+            friendFilter: (item, seach) => {
+                if(seach == null || seach == "")
+                    return item;
+                
+                seach = seach.toLowerCase();
+                if((item.first_name != null 
+                        && item.first_name.toLowerCase().includes(seach)) 
+                || (item.last_name != null 
+                        && item.last_name.toLowerCase().includes(seach)))
+                    return item;
+                return null;
+            }
+        }
+    },
     on: {
         setFamiliarWithBot: (_ctx) => {
             Request.post({
@@ -14,7 +30,7 @@
         },
         openGroupDialog: (_ctx, _url) => {
             window.open(_url, '_blank');
-        }
+        }       
     }
 });
 

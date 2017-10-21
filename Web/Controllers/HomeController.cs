@@ -31,7 +31,7 @@ namespace Afisha.Controllers {
         {
             public Guid Id { get; set; }
             public string IdPlace { get; set; }
-            public DateTime Date { get; set; }
+            public string Date { get; set; }
             public int UserTotalCount { get; set; }
             public string Title { get; set; }
             public bool IsOffer { get; set; }
@@ -179,7 +179,7 @@ namespace Afisha.Controllers {
                 {
                     Id = userEvent.Id,
                     IdPlace = userEvent.IdPlace,
-                    Date = userEvent.Date,
+                    Date = userEvent.Date.ToString(@"MM/dd/yy H:mm:ss"),
                     UserTotalCount = userEvent.UserCount,
                     Title = Afisha.Places[userEvent.IdPlace].Name
                 });
@@ -197,7 +197,7 @@ namespace Afisha.Controllers {
                 {
                     Id = userEventOffer.Id,
                     IdPlace = userEventOffer.UserEvent.IdPlace,
-                    Date = userEventOffer.Date,
+                    Date = userEventOffer.Date.ToString("MM/dd/yy H:mm:ss"),
                     UserTotalCount = userEventOffer.UserEvent.UserCount,
                     Title = Afisha.Places[userEventOffer.UserEvent.IdPlace].Name,
                     IsOffer = true
