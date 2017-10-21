@@ -61,88 +61,81 @@ namespace Afisha.Controllers {
             if (Environment.IsDevelopment()) {
                 if (string.IsNullOrEmpty(request.ApiResultJson))
                     request.ApiResultJson = @"{'response':[{'id':46611989,'first_name':'Миша','last_name':'Штанько','nickname':'BenyKrik','city':{'id':2,'title':'Санкт - Петербург'},'country':{'id':1,'title':'Россия'},'photo_200':'https:\/\/ pp.userapi.com\/ c639129\/ v639129989\/ 2ba7f\/ LGwnKIkG1pw.jpg','has_mobile':1,'online':0,'status':'Эй, проснись!Ну ты и соня.Тебя даже вчерашний шторм не разбудил. Говорят, мы уже приплыли в Морровинд.Нас выпустят, это точно!'}]}";
-
             }
-            //обновляем юзера, await можно убрать (наверное)
-            await Task.Run(async () => {
-                var userData = request.ApiResult.Value.UserData;
-                using (var ctx = ContextFactory.Create()) {
-                    var user = await ctx.Users.FirstOrDefaultAsync(_x => _x.Id == userData.Id);
-                    if (user == null) {
-                        user = new User();
-                        await ctx.Users.AddAsync(user);
-                    }
-                    user.Id = userData.Id;
-                    user.Avatar = userData.Photo200;
-                    user.FirstName = userData.Firstname;
-                    user.LastName = userData.Lastname;
-                    user.LastEnter = DateTime.Now;
-                    CurrentUser.SetUserData(user);
-                    HttpContext.Session.Set(nameof(User), CurrentUser);
-                    await ctx.SaveChangesAsync();
 
-                    var notificationsData = await ctx.UserNotifications.Where(_x => _x.IdUser == CurrentUser.Id)
-                        .Include(_x => _x.UserEvent)
-                        .Include(_x => _x.UserFrom)
-                        .Select(_x => new {
-                            Type = _x.Type.ToString(),
-                            UserFrom = _x.IdUserFrom == null ?
-                            null :
-                            new {
-                                _x.UserFrom.FirstName,
-                                _x.UserFrom.LastName,
-                                _x.UserFrom.Avatar
-                            },
-                            _x.UserEvent.IdPlace,
-                            _x.Date
-                        })
-                        .ToArrayAsync();           
+            var userData = request.ApiResult.Value.UserData;
+            var user = await Unit.Get<User>().FindAsync(_x => _x.Id == userData.Id);
+            if (user == null) {
+                user = new User();
+                Unit.Get<User>().Create(user);
+            }
+            user.Id = userData.Id;
+            user.Avatar = userData.Photo200;
+            user.FirstName = userData.Firstname;
+            user.LastName = userData.Lastname;
+            user.LastEnter = DateTime.Now;
+            CurrentUser.SetUserData(user);
+            HttpContext.Session.Set(nameof(User), CurrentUser);
+            await Unit.SaveAsync();
 
-                    request.CustomData = new CustomData();
-                    // request.CustomData.MyPlaces = await GetUsersEventsByIds(new int[CurrentUser.Id]);
+            var notificationsData = await Unit.Get<UserNotification>().All.Where(_x => _x.IdUser == CurrentUser.Id)
+                .Include(_x => _x.UserEvent)
+                .Include(_x => _x.UserFrom)
+                .Select(_x => new {
+                    Type = _x.Type.ToString(),
+                    UserFrom = _x.IdUserFrom == null ?
+                    null :
+                    new {
+                        _x.UserFrom.FirstName,
+                        _x.UserFrom.LastName,
+                        _x.UserFrom.Avatar
+                    },
+                    _x.UserEvent.IdPlace,
+                    _x.Date
+                })
+                .ToArrayAsync();           
 
-                    var events = await Unit.Get<UserEvent, Guid>().All
-                            .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
-                            .Select(_x => new {
-                                Id = _x.Id,
-                                IdPlace = _x.IdPlace,
-                                Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
-                                UserTotalCount = _x.UserCount,
-                                Title = Afisha.Places[_x.IdPlace].Name
-                            })
-                            .ToArrayAsync();
-
-                        var offers = await Unit.Get<UserEventOffer, Guid>()
-                        .All
-                        .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
-                        .Include(_x => _x.UserEvent)
-                        .Select(_x => new {
-                                Id = _x.IdUserEvent,
-                                IdPlace = _x.UserEvent.IdPlace,
-                                Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
-                                UserTotalCount = _x.UserEvent.UserCount,
-                                Title = Afisha.Places[_x.UserEvent.IdPlace].Name,
-                                IsOffer = true
-                        })
-                        .ToArrayAsync();
-                    request.CustomData.MyPlaces = new {
-                        events = events,
-                        offers = offers
-                    };
-                    request.CustomData.IsFamiliarWithBot = CurrentUser.IsFamiliarWithBot;
-                    request.CustomData.Longitude = CurrentUser.Longitude;
-                    request.CustomData.Latitude = CurrentUser.Latitude;
-                    request.CustomData.IdCity = CurrentUser.IdCity;
-
-                    request.CustomData.Notifications = notificationsData.Select(_x => new {
-                        _x.Type,
+            var events = await Unit.Get<UserEvent, Guid>().All
+                    .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
+                    .Select(_x => new {
+                        Id = _x.Id,
+                        IdPlace = _x.IdPlace,
                         Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
-                        _x.UserFrom,
-                        PlaceName = Afisha.Places[_x.IdPlace].Name
-                    });
-                }
-            });
+                        UserTotalCount = _x.UserCount,
+                        Title = Afisha.Places[_x.IdPlace].Name
+                    })
+                    .ToArrayAsync();
 
+                var offers = await Unit.Get<UserEventOffer, Guid>()
+                .All
+                .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
+                .Include(_x => _x.UserEvent)
+                .Select(_x => new {
+                        Id = _x.IdUserEvent,
+                        IdPlace = _x.UserEvent.IdPlace,
+                        Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
+                        UserTotalCount = _x.UserEvent.UserCount,
+                        Title = Afisha.Places[_x.UserEvent.IdPlace].Name,
+                        IsOffer = true
+                })
+                .ToArrayAsync();
+            
+            request.CustomData = new CustomData();
+            request.CustomData.MyPlaces = new {
+                events = events,
+                offers = offers
+            };
+            request.CustomData.IsFamiliarWithBot = CurrentUser.IsFamiliarWithBot;
+            request.CustomData.Longitude = CurrentUser.Longitude;
+            request.CustomData.Latitude = CurrentUser.Latitude;
+            request.CustomData.IdCity = CurrentUser.IdCity;
+
+            request.CustomData.Notifications = notificationsData.Select(_x => new {
+                _x.Type,
+                Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
+                _x.UserFrom,
+                PlaceName = Afisha.Places[_x.IdPlace].Name
+            });
 
             return View(request);
         }

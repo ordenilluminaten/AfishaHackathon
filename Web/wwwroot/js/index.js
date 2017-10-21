@@ -103,12 +103,11 @@ function initYaMap(city){
 }
 
 function initUserLocation() {
-    debugger;
     //пытаемся достать город из бд
-    var lon = appRactive.get('currentUser.customData.longitude');
     var lat = appRactive.get('currentUser.customData.latitude');
+    var lon = appRactive.get('currentUser.customData.longitude');    
     if(lon!=null && lat !=null){
-        setupMap([lon, lat]);
+        setupMap([lat,lon]);
     } else {
         selectCity(1, 'Москва');
     }

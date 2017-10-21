@@ -76,6 +76,7 @@
         </ul>
         <div id="tab-my-events" class="tab active">
             {{#with parent.data.currentUser.customData.myPlaces as myPlaces}}
+            {{#if myPlaces.events != null && myPlaces.offers != null}}
             <table style="line-height: 15px; width: 100%;">
                 <tbody>
                     {{#if myPlaces.events != null}} 
@@ -115,6 +116,7 @@
             {{else}}
             <p style="line-height: 15px;" class="text-center">У вас нет запланированных событий</p>
             {{/if}}
+            {{/with}}
         </div>
         <div id="tab-friend-will-go" class="tab">
             {{#with parent.data.currentUser.friendsEvents as friendsEvents}}
