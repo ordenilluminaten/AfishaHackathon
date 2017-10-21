@@ -50,6 +50,8 @@ namespace Models.Migrations
 
                     b.Property<string>("FirstName");
 
+                    b.Property<bool>("IsFamiliarWithBot");
+
                     b.Property<DateTime>("LastEnter");
 
                     b.Property<string>("LastName");

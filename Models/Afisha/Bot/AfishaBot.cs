@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using ATMIT.Core.Web.Repository;
 using ATMIT.Web.Utility.Tasks;
 using Microsoft.Extensions.Options;
-using Models;
-using Models.Afisha.Bot;
 using Models.Api.VkApi;
 using Models.AppSettings;
-using Models.Notifications;
 using Models.Notifications.EventNotification;
 
-namespace Models.Afisha {
+namespace Models.Afisha.Bot {
     public class AfishaBot : IDisposable {
         public IOptions<AppSetting> AppSettings { get; }
         public UnitOfWork<ApplicationDbContext> Unit { get; }

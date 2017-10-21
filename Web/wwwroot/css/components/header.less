@@ -10,11 +10,10 @@
     z-index: 10;
     position: relative;
     padding: 0 20px;
-          border-bottom: 1px solid #eaeef1;
+    border-bottom: 1px solid #eaeef1;
 
     .header-content {
         height: 100%;
-
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -122,5 +121,40 @@
                 }
             }
         }
+    }
+}
+
+.bot-dropdown {
+    width: 500px;
+    line-height: 20px;
+    padding: 10px;
+
+    ul {
+        list-style: none;
+        padding: 0 10px 10px 10px;
+        line-height: 20px;
+
+        li {
+            cursor: pointer;
+            padding: 5px;
+
+            a {
+                text-decoration: underline;
+            }
+
+            &:hover {
+                background-color: #f1f1f1;
+            }
+        }
+    }
+}
+
+.bot-icon {
+    animation: beat 0.7s infinite alternate;
+}
+
+@keyframes beat {
+    to {
+        transform: scale(1.4);
     }
 }
