@@ -8,12 +8,12 @@
     <environment include="Development">
         <link href="~/bundles/site.css" rel="stylesheet" />
         <link href="~/lib/flatpickr/flatpickr.css" rel="stylesheet" />
-
     </environment>
     <environment exclude="Development">
         <link href="~/bundles/site.min.css" asp-append-version="true" rel="stylesheet" />
         <link href="~/lib/flatpickr/flatpickr.min.css" rel="stylesheet" />
     </environment>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 
     @if (IsSectionDefined("Styles")) {
         @RenderSection("Styles", required: false)
@@ -35,6 +35,7 @@
         <script id="app-template" type="text/ractive">
             <Header />
             <div id="page">
+                <div id="myMap" style="width: 100%; height: 300px"></div>
                 <div id="page-content">
                     <# page-data />
                 </div>

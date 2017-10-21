@@ -66,6 +66,8 @@ var appRactive = Ractive({
         },
         complete: () => {
             router.navigate('places');
+            debugger;
+            initYaMap();
             Tabs.init('#header');
         }
     }
@@ -97,6 +99,48 @@ function getVkfriends() {
 function onInited() {
     getVkfriends();
 }
+
+function initYaMap(city){
+    ymaps.ready(()=>{
+        var map = new ymaps.Map('myMap', {
+            center: [59.94, 30.32],
+            zoom: 9
+        });
+
+        debugger;
+        var myGeocoder = ymaps.geocode("Москва");
+        myGeocoder.then(
+            function (res) {
+                map.setCenter(res.geoObjects.get(0).geometry.getCoordinates(), 9);
+            },
+            function (err) {}
+        );
+        debugger;
+    })
+}
+
+function resetGeoObjects(){
+   
+}
+
+
+// var myObjectManager = new ymaps.ObjectManager({ clusterize: true }),
+// currentId = 0;
+
+// // Добавление единичного объекта.
+// myObjectManager.add({
+//     type: 'Feature',
+//     id: currentId++,
+//     geometry: {
+//         type: 'Point',
+//         coordinates: [56.23, 34.79]
+//     },
+//     properties: {
+//         hintContent: 'Текст всплывающей подсказки',
+//         balloonContent: 'Содержимое балуна'
+//     }
+// });
+// map.geoObjects.add(myObjectManager);
 
 
 
