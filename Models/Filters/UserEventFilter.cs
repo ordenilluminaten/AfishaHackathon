@@ -23,7 +23,6 @@ namespace Models.Filters
 
         public bool? Active { get; set; }
         public string IdPlace { get; set; }
-        public IEnumerable<int> SelectedUserIds { get; set; }
 
         public override void Filter(ref IQueryable<UserEvent> list)
         {
@@ -49,10 +48,7 @@ namespace Models.Filters
             }
 
             if (Date.HasValue)
-                list = list.Where(_x => _x.Date >= Date);
-
-            if (SelectedUserIds.Count() > 0)
-                list = list.Where(_x => SelectedUserIds.Contains(_x.IdUser));
+                list = list.Where(_x => _x.Date >= Date);            
 
             if (!string.IsNullOrEmpty(Search))
             {
