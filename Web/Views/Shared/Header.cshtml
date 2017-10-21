@@ -18,7 +18,9 @@
                     <div id='bot-dropdown' class="dropdown-content bot-dropdown">
                         <div class="alert alert-warning">
                             Вы можете получать уведомления от нашего бота, чтобы всегда быть в курсе событий.
+                            {{#if !@@this.parent.get('currentUser.customData.isFamiliarWithBot') }}
                             <a href="javascript:;" on-click="@@this.fire('setFamiliarWithBot',@@context)">Я ознакомлен</a>
+                            {{/if}}
                         </div>
                         <ul>
                             <li>
