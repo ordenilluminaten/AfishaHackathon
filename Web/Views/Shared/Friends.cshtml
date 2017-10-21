@@ -76,45 +76,41 @@
         </ul>
         <div id="tab-my-events" class="tab active">
             {{#with parent.data.currentUser.customData.myPlaces as myPlaces}}
-            {{#if myPlaces.events != null && myPlaces.offers != null}}
-            <table style="line-height: 15px; width: 100%;">
+            {{#if myPlaces.events.length == 0 || myPlaces.length == 0}}
+            <p style="line-height: 15px;" class="text-center">У вас нет запланированных событий</p>        
+            {{else}}
+                <table style="line-height: 15px; width: 100%;">
                 <tbody>
-                    {{#if myPlaces.events != null}} 
-                    {{#each myPlaces.events as event}}
+                    {{#each myPlaces.events}}
                     <tr>
                         <td>
                             <a href="javascript:;" 
                             on-click="@@this.fire('openPlace',@@context, this.id)"
                             style="text-decoration: underline;color: #00b6ff;">
-                                {{event.title}}
+                                {{title}}
                             </a>
                         </td>
                         <td style="font-size: 11px;color: grey;text-align: right;">
-                            {{{event.date}}}
+                            {{{date}}}
                         </td>
                     </tr>
-                    {{/each}}  
-                    {{/if}}      
-                    {{#if myPlaces.offers != null}}
-                    {{#each myPlaces.offers as offer}}
+                    {{/each}}      
+                    {{#each myPlaces.offers}}
                     <tr>
                         <td>
                             <a href="javascript:;" 
                             on-click="@@this.fire('openPlace',@@context, this.id)"
                             style="text-decoration: underline;color: #00b6ff;">
-                                {{offer.title}}
+                                {{title}}
                             </a>
                         </td>
                         <td style="font-size: 11px;color: grey;text-align: right;">
-                            {{{offer.date}}}
+                            {{{date}}}
                         </td>
                     </tr>
-                    {{/each}}        
-                    {{/if}}     
+                    {{/each}}
                 </tbody>
             </table>
-            {{else}}
-            <p style="line-height: 15px;" class="text-center">У вас нет запланированных событий</p>
             {{/if}}
             {{/with}}
         </div>

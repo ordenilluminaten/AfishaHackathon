@@ -108,7 +108,7 @@ namespace Afisha.Controllers {
 
                 var offers = await Unit.Get<UserEventOffer, Guid>()
                 .All
-                .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
+                .Where(_x => _x.UserEvent.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
                 .Include(_x => _x.UserEvent)
                 .Select(_x => new {
                         Id = _x.IdUserEvent,
@@ -275,7 +275,7 @@ namespace Afisha.Controllers {
 
             var userEventOffers = await Unit.Get<UserEventOffer, Guid>()
             .All
-            .Where(_x => _x.Date >= DateTime.Now && ids.Contains(_x.IdUser))
+            .Where(_x => _x.UserEvent.Date >= DateTime.Now && ids.Contains(_x.IdUser))
             .Include(_x => _x.UserEvent)
             .ToArrayAsync();
 
