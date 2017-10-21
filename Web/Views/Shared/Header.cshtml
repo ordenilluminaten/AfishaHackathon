@@ -58,8 +58,8 @@
                                 <div class="content-wrapper" style="position: relative; overflow: hidden; width: auto; height: 275px;">
                                     {{#each this as notification}}
                                     <div class="col-3 mb-2 friend">
-                                        <img class="icon-circle user-avatar" id="header-avatar" src="{{notification.userFrom.avatar==null?'~/images/event-icon.png':notification.userFrom.avatar}}" />
-                                        style="float: left; margin-right: 10px;">
+                                        <img class="icon-circle user-avatar" id="header-avatar" src="{{notification.userFrom.avatar==null?'~/images/event-icon.png':notification.userFrom.avatar}}" 
+                                             style="float: left; margin-right: 10px;">
                                         <div class="user-info" style="float: left; line-height: 20px;">
                                             <p>{{notification.userFrom.first_name}}</p>
                                             <p>{{notification.userFrom.last_name}}</p>
