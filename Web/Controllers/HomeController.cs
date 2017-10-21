@@ -85,9 +85,14 @@ namespace Afisha.Controllers {
                         .Include(_x => _x.UserEvent)
                         .Include(_x => _x.UserFrom)
                         .Select(_x => new {
-                            _x.Type,
-                            Fullname = _x.IdUserFrom != null ? _x.UserFrom.FirstName + " " + _x.UserFrom.LastName : null,
-                            Avatar = _x.IdUserFrom != null ? _x.UserFrom.Avatar : null,
+                            Type = _x.Type.ToString(),
+                            UserFrom = _x.IdUserFrom == null ?
+                            null :
+                            new {
+                                _x.UserFrom.FirstName,
+                                _x.UserFrom.LastName,
+                                _x.UserFrom.Avatar
+                            },
                             _x.UserEvent.IdPlace,
                             _x.Date
                         })
@@ -125,8 +130,7 @@ namespace Afisha.Controllers {
                     request.CustomData.Notifications = notificationsData.Select(_x => new {
                         _x.Type,
                         Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
-                        _x.Fullname,
-                        _x.Avatar,
+                        _x.UserFrom,
                         PlaceName = Afisha.Places[_x.IdPlace].Name
                     });
                 }
@@ -181,6 +185,7 @@ namespace Afisha.Controllers {
                 State = CompanionState.Pending
             });
             await Unit.SaveAsync();
+
             if (!CurrentUser.CanRecieveGroupMessages)
                 return Json(true);
 
@@ -228,7 +233,7 @@ namespace Afisha.Controllers {
 
             var newMessageData = new MessageData {
                 random_id = DateTime.Now.Ticks,
-                user_id = offer.IdUser,
+                user_id = offer.UserEvent.IdUser,
                 message = $"Пользователь {CurrentUser.FullName} отклонил вашу заявку на совместный поход в " +
                           $"\"{Afisha.Places[offer.UserEvent.IdPlace].Name}\"\n" +
                           $"Перейти: {AppSettings.Value.VkApiSettings.AppUrl}"

@@ -15,7 +15,7 @@ namespace Models {
         public bool CanRecieveGroupMessages { get; set; }
         public bool IsFamiliarWithBot { get; set; }
         public DateTime LastEnter { get; set; }
-        public string FullName => FirstName + LastName;
+        public string FullName => $"{FirstName} {LastName}";
         public virtual ICollection<UserEvent> UserEvents { get; set; }
 
         public void SetUserData(User _user) {
