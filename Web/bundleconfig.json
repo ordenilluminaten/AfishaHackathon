@@ -19,7 +19,7 @@
         "wwwroot/js/pages/Page.js",
         "wwwroot/js/pages/AllPage.js",
         "wwwroot/js/pages/MoviesPage.js",
-        "wwwroot/js/pages/EventPage.js",
+        "wwwroot/js/pages/PlacePage.js",
         "wwwroot/js/pages/Header.js",
         "wwwroot/js/components/utils.js"
       ]
@@ -86,7 +86,7 @@
       "inputFiles": [
         "Views/Home/All.cshtml",
         "Views/Home/Movies.cshtml",
-        "Views/Home/Movie.cshtml",
+        "Views/Home/Place.cshtml",
         "Views/Home/UserEvents.cshtml"
       ]
     }

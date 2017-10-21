@@ -1,21 +1,14 @@
-﻿class EventPage extends Page {
+﻿class PlacePage extends Page {
     constructor(event, parentPage) {
         //TODO select title based on event type
         super('event', event.Name, parentPage);
         this.event = event;
     }
 
-    render(...args) {
-        VK.api('friends.get', {
-        	order: 'hints',
-        	count: 100,
-        	fields: 'nickname,photo_100'
-        }, (data) => {
-        	console.log(data);
-        });
-
+    render(...args) {        
+debugger;
         let page = Ractive({
-            template: '#movie-page-template',
+            template: '#place-page-template',
             data: this.event,
             on: {
                 init: () => {
@@ -94,7 +87,7 @@
                 }
             }
         });
-        page.attachChild(this._renderUserEvents(), { target: 'user-events' });
+        // page.attachChild(this._renderUserEvents(), { target: 'user-events' });
         return page;
     }
 

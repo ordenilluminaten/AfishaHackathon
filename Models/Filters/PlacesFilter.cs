@@ -9,7 +9,7 @@ namespace Models.Filters
     {
         public PlacesFilter()
         {
-            SortName = nameof(UserEvent.Date);
+            SortName = nameof(Place.Id);
             Sort = $"{SortName}:{SortType}";
         }
 
