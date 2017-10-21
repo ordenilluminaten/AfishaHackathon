@@ -25,23 +25,23 @@
 
 <div id="invite-companion-wrapper">
     <script id='invite-companion-template' type="text/ractive">
-        <input name="Id" value="{{Id}}" type="hidden" />
-        <input name="IdPlace" value="{{IdPlace}}" type="hidden" />
-        <input name="IdUser" value="{{IdUser}}" type="hidden" />
+        <input name="Id" value="{{id}}" type="hidden" />
+        <input name="IdPlace" value="{{idPlace}}" type="hidden" />
+        <input name="IdUser" value="{{idUser}}" type="hidden" />
 
         <div id="invite-companion" class="row">
             <div class="col-5">
                 <label>Дата и время</label>
-                <input class="companion-datepicker" value="{{Date}}" name="Date" type="datetime" />
+                <input class="companion-datepicker" value="{{date}}" name="Date" type="datetime" />
 
                 <label>Кол-во человек</label>
-                <input type="number" min="1" max="10" value="{{UserCount}}" name="UserCount" />
+                <input type="number" min="1" max="10" value="{{userCount}}" name="UserCount" />
 
                 <label>Возраст</label>
-                <input class="age" type="number" min="0" max="200" value="{{Age}}" placeholder="0 - любой" name="Age" />
+                <input class="age" type="number" min="0" max="200" value="{{age}}" placeholder="0 - любой" name="Age" />
 
                 <label>Пол</label>
-                <select class="gender" name="Gender" value="{{Gender}}">
+                <select class="gender" name="Gender" value="{{gender}}">
                     @foreach (Gender gender in Enum.GetValues(typeof(Gender))) {
                         <option value="@((int)gender)">@gender.GetDisplayName()</option>
                     }
@@ -49,7 +49,7 @@
             </div>
             <div class="col-7">
                 <label>Комментарий</label>
-                <textarea class="comment" name="Comment" value="{{Comment}}"></textarea>
+                <textarea class="comment" name="Comment" value="{{comment}}"></textarea>
             </div>
         </div>
     </script>
