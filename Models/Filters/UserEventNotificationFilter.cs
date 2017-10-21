@@ -10,15 +10,16 @@ namespace Models.Filters {
             Sort = $"{SortName}:{SortType}";
         }
         public bool IsNotificationDate { get; set; }
-        public DateTime? DateNow { get; set; }
+        public DateTime? Date { get; set; }
 
 
         public override void Filter(ref IQueryable<UserEventNotification> list) {
             DateTime now;
-            now = DateNow ?? DateTime.Now;
+            now = Date ?? DateTime.Now;
 
             if (IsNotificationDate) {
                 var notifyDateEnd = now.AddDays(1);
+                now = now.AddDays(-1);
                 list = list.Where(_x => now <= _x.Date && _x.Date <= notifyDateEnd);
             }
 
