@@ -16,16 +16,14 @@ using Models.AppSettings;
 using Models.Extensions;
 using Models.Filters;
 using ATMIT.Web.Utility;
+using Models.Api.VkApi.VkCallbackAPI.RequestDataModels;
 
 namespace Afisha.Controllers {
     public class HomeController : BaseController {
         public IOptions<AppSetting> AppSettings { get; }
         public VkApi Api { get; }
         public UnitOfWork<ApplicationDbContext> Unit { get; }
-        public AfishaData Afisha {
-            get;
-            set;
-        }
+        public AfishaData Afisha { get; set; }
 
         public class UserPlaces
         {
@@ -136,6 +134,15 @@ namespace Afisha.Controllers {
                 State = CompanionState.Pending
             });
             await Unit.SaveAsync();
+            if(CurrentUser.CanRecieveGroupMessages){
+                var newMessageData = new MessageData {
+                    random_id = DateTime.Now.Ticks,
+                    user_id = userEvent.IdUser,
+                    message = $"Пользователь {CurrentUser.FullName} хочет пойти с Вами в \"{Afisha.Places[userEvent.IdPlace].Name}\"\n"
+                        +$"Перейти: {AppSettings.Value.VkApiSettings.AppUrl}";
+                };
+                await Api.Messages.SendAsync(newMessageData);
+            }
             return Json(true);
         }
 
