@@ -5,16 +5,27 @@
         }
 
         .header {
-            height: 45vh;
+            height: 60vh;
             max-height: inherit;
-            min-height: 45vh;
+            min-height: 60vh;
             overflow: hidden;
             position: absolute;
             top: 70px;
             left: 0;
             right: 0;
             width: 100%;
-            z-index: -1;
+            z-index: -1;    
+        }
+        .header > .img-container {                
+            transform: translate(-50%, -50%);
+            filter: blur(75px) brightness(0.9);
+            display: inline-block;
+            width: 100%;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            border: 0;
+            height: 100%;
         }
 
             .header img {
@@ -155,27 +166,25 @@
         }
     </style>
     <div class="header">
-        <picture>
-            {{#if photos != null && photos.length > 0}}
-            <source srcset="{{photos[0]}}">
-            <img alt="">
-            {{/if}}
-        </picture>
+        {{#if photos != null && photos.length > 0}}
+        <div class="img-container" 
+            style="background-image: url('{{photos[0]}}');">            
+        </div>
+        {{/if}}
     </div>
     <div class="container">
         <div class="content">
             <div class="row">
                 <div class="col-8" style="padding-right: 0;">
-                    <picture>
-                        {{#if photos != null && photos.length > 0}}
-                        <source srcset="{{photos[0]}}">
-                        {{/if}}
-                        <img style="width: 100%;
-                            height: 450px;
-                            margin-bottom: -7px;
-                            border-top-left-radius: 4px;
-                            object-fit: cover;">
-                    </picture>
+                    <div style="background-image: url('{{photos[0]}}');
+                                background-position: center center;
+                                background-repeat: no-repeat;
+                                background-size: cover;
+                                width: 100%;
+                                height: 100%;
+                                min-height: 375px;">
+
+                    </div>
                 </div>
                 <div class="col-4 d-flex flex-column" style="padding-left: 0;">
                     <div class="short-info" style="flex:1">           
@@ -219,10 +228,7 @@
                         </b>
                         <span>{{toFixed(rating,2)}}</span>
                     </div>
-                    2
-                    {{#if userEventData.idUserEvent == null}}
-                    {{id}}
-                    1
+                    {{#if userEventData.idUserEvent == null}}                 
                     <button class="action-btn i-will-go" on-click="@@this.fire('inviteCompanion', @@context, id)">
                         Я пойду
                         <svg width="16" height="16" class="svg-icon">

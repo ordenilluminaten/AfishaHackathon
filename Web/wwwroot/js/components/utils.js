@@ -20,6 +20,7 @@ var dropdown = {
         }
     },
     hide: (el, id, onCloseCb) => {
+        debugger;
         document.removeEventListener('click', dropdown.listeners[id]);
         delete dropdown.listeners[id];
         el.classList.remove('selected');

@@ -1,7 +1,9 @@
 ﻿<header id="header">
     <div class="header-content">
         <div class="left-header">
-            <a href="javascript:;" id="logo">
+            <a href="javascript:;" 
+               on-click="@@global.router.navigate('places')"
+               id="logo">
                 <svg width="200" height="70" class="svg-icon">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#afisha-logo"></use>
                 </svg>
@@ -9,7 +11,7 @@
         </div>
         <div class="right-header">
             <ul class="header-menu">
-                <li class="dropdown" onclick="dropdown.toggle(this,event,'bot-dropdown')">
+                <li class="dropdown" id="bot-dropdown-li" onclick="dropdown.toggle(this,event,'bot-dropdown')">
                     <a href="javascript:;">
                         <svg width="25" height="25" class="svg-icon {{@@this.parent.get('currentUser.customData.isFamiliarWithBot')?'':'bot-icon'}}">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#bot"></use>
@@ -38,12 +40,51 @@
                     @await Html.PartialAsync("Friends")
                 </li>
 
-                <li>
+                <li class="dropdown notification-dropdown" id="notification-dropdown-li"
+                    onclick="dropdown.toggle(this, event, 'notification-dropdown')">
                     <a href="javascript:;" data-toggle="dropdown">
                         <svg width="25" height="25" class="svg-icon">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#notification"></use>
                         </svg>
                     </a>
+                    {{#with @@this.parent.get('currentUser.customData.notifications')}}
+                    <div id="notification-dropdown" class="dropdown-content">
+                        <ul class="dropdown-menu">
+                            <li class="external">
+                                <h4>
+                                    У вас {{this.length==0?'нет':this.length}} {{DeclOfNum(this.length,['новое уведомление','новых уведомления','новых уведомлений'])}}
+                                </h4>
+                                <hr />
+                            </li>
+                            <li>
+                                <div class="content-wrapper" style="position: relative; overflow: hidden; width: auto; height: 275px;">
+                                    {{#each this as notification}}
+                                    <div class="col-3 mb-2 friend">
+                                        <img class="icon-circle user-avatar" id="header-avatar" src="{{notification.userFrom.avatar==null?'~/images/event-icon.png':notification.userFrom.avatar}}" 
+                                             style="float: left; margin-right: 10px;">
+                                        <div class="user-info" style="float: left; line-height: 20px;">
+                                            <p>{{notification.userFrom.first_name}}</p>
+                                            <p>{{notification.userFrom.last_name}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        {{#if notification.type == 'NewOffer'}}
+                                        Новая заявка
+                                        {{elseif notification.type =='OfferAccepted'}}
+                                        Заявка принята
+                                        {{elseif notification.type == 'OfferRejected'}}
+                                        Заявка отклонена
+                                        {{/if}}
+                                    </div>
+                                    <div class="col-3">
+                                        {{notification.placeName}}
+                                    </div>
+                                    {{/each}}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    {{/with}}
                 </li>
 
                 <li>
@@ -55,7 +96,7 @@
                 </li>
                 <li class="dropdown" onclick="dropdown.toggle(this, event, 'city-dropdown')">
                     <a href="javascript:;">
-                         <svg width="25" height="25" class="svg-icon">
+                        <svg width="25" height="25" class="svg-icon">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#location"></use>
                         </svg>
                         <span>Санкт-Петербург</span>

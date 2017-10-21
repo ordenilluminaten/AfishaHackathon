@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Models.Database.Tables;
 using Newtonsoft.Json;
 
 namespace Models.Api.VkApi {
@@ -48,6 +49,9 @@ namespace Models.Api.VkApi {
 
     public class CustomData {
         public bool IsFamiliarWithBot { get; set; }
+
+        public object Notifications { get; set; }
+        public object MyPlaces { get; set; }
         public float? Longitude {get;set;}
         public float? Latitude {get;set;}
         public int? IdCity {get;set;}

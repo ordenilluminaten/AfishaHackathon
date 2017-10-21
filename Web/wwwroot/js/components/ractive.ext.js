@@ -7,7 +7,7 @@ Ractive.defaults.isolated = false;
 Ractive.defaults.enableElement = (_ctx) => {
     if (_ctx.original == null)
         return;
-    _ctx.node.classList.remove('disabled'); 
+    _ctx.node.classList.remove('disabled');
     _ctx.node.removeAttribute('disabled');
 };
 /**
@@ -26,7 +26,9 @@ Ractive.defaults.disableElement = (_ctx) => {
 
     return false;
 };
-
+ractiveHelpers.DeclOfNum = (_number, _stringArray) => {
+    return declOfNum(_number, _stringArray);
+}
 ractiveHelpers.toFixed = function (_number, _count) {
     if (_number == 0 || _number == null || _count == null)
         return 0;
@@ -68,7 +70,7 @@ var PaginationRactive = Ractive.extend({
                     reject();
                 });
             }
-            
+
             self.on({
                 updateItems: function (_ctx) {
                     const getItemsFunc = this.get('getItems');
@@ -145,7 +147,8 @@ var PaginationRactive = Ractive.extend({
                         self.set('filter.selectAll', false);
                     }
                 },
-                changeValue: (_ctx, _name, _value, _needUpdate) => {screenLeft
+                changeValue: (_ctx, _name, _value, _needUpdate) => {
+                    screenLeft
                     self.set('filter.' + _name, _value);
                     if (_needUpdate !== false) {
                         self.set('filter.page', 1);
@@ -188,7 +191,7 @@ var PaginationRactive = Ractive.extend({
             _data.filter.pageTemp = _data.filter.page;
             self.set('filter', _data.filter);
             self.set('items', _data.items);
-            
+
             // if (self.get('filter.sortName') === null) {
             //     if (_data.Filter.sort !== null) {
             //         var split = _data.Filter.sort.split('_');

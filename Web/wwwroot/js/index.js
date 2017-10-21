@@ -24,8 +24,7 @@
                 url: '/home/setFamiliarWithBot'
             }).then(() => {
                 appRactive.set('currentUser.customData.isFamiliarWithBot', true);
-                dropdown.hide(document.getElementById('bot-dropdown'), 'bot-dropdown');
-
+                dropdown.hide(document.getElementById('bot-dropdown-li'), 'bot-dropdown');
             });
         },
         openGroupDialog: (_ctx, _url) => {
@@ -143,6 +142,13 @@ function selectCity(id, name){
 
 function resetGeoObjects(){
    
+}
+
+function declOfNum(_number, _stringArray) {
+    if (_number < 0)
+        _number *= -1;
+    const numArray = [2, 0, 1, 1, 1, 2];
+    return _stringArray[_number % 100 <= 4 || _number % 100 >= 20 ? numArray[_number % 10 < 5 ? _number % 10 : 5] : 2];
 }
 
 
