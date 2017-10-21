@@ -112,7 +112,9 @@
                             {{#each friendsEvents.items[idUser] as friendEvents}}
                             <tr>
                                 <td>
-                                    <a href="javascript:;" style="text-decoration: underline;color: #00b6ff;">
+                                    <a href="javascript:;" 
+                                    on-click="@@this.fire('openPlace',@@context, this.id)"
+                                    style="text-decoration: underline;color: #00b6ff;">
                                         {{friendEvents.title}}
                                     </a>
                                 </td>

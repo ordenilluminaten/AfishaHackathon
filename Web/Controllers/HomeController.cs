@@ -228,7 +228,7 @@ namespace Afisha.Controllers {
                     userDict[userEventOffer.IdUser] = events;
                 }
                 events.Add(new UserPlaces {
-                    Id = userEventOffer.Id,
+                    Id = userEventOffer.IdUserEvent,
                     IdPlace = userEventOffer.UserEvent.IdPlace,
                     Date = userEventOffer.Date.ToString("MM/dd/yy H:mm:ss"),
                     UserTotalCount = userEventOffer.UserEvent.UserCount,
@@ -278,6 +278,16 @@ namespace Afisha.Controllers {
                 throw new NullReferenceException(nameof(dbUser));
             dbUser.IsFamiliarWithBot = true;
             await Unit.SaveAsync();
+        }
+
+        [HttpPost]
+        [Route(nameof(GetUserPlace))]
+        public async Task<IActionResult> GetUserPlace(Guid id) {
+            var userEvent = await Unit.Get<UserEvent>().FindAsync(_x => _x.Id == id);
+            if (userEvent == null)
+                throw new NullReferenceException(nameof(userEvent));
+
+            return Json(Afisha.Places[userEvent.IdPlace]);
         }
     }
 }

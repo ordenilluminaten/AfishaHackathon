@@ -30,7 +30,17 @@
         },
         openGroupDialog: (_ctx, _url) => {
             window.open(_url, '_blank');
-        }       
+        },
+        openPlace: (_ctx, _id) => {
+            Request.post({
+                url: '/GetUserPlace',
+                data: {
+                    id: _id
+                }
+            }).then((place) => {
+                router.navigate('place', place);
+            });
+        }
     }
 });
 
