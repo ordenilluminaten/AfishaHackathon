@@ -19,7 +19,7 @@ namespace Afisha.Controllers.VkCallbackAPI {
             } else {
                 user.CanRecieveGroupMessages = _canRecieveGroupMessages;
                 await Unit.SaveAsync();
-                _messageData.message = "Оповещения успешно включены, спасибо.";
+                _messageData.message = $"Оповещения успешно {(_canRecieveGroupMessages ? "включены" : "отключены")}, спасибо.";
                 await VkApi.Messages.SendAsync(_messageData);
             }
         }
