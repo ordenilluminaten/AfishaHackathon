@@ -24,3 +24,5 @@ Web/time
 Web/Views/Home/Bundle\.cshtml
 
 \.vscode/tasks\.json
+
+Web/Properties/launchSettings\.json
