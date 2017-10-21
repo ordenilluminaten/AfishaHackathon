@@ -1,0 +1,103 @@
+﻿<script id='user-events-template' type="text/html">
+    <div class="filter-block">
+        <div class="filter-bar">
+            <div class="filter selected mr-2">
+                <svg width="15" height="15" class="svg-icon mr-1">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#search"></use>
+                </svg>
+                <input type="text" placeholder="Поиск" value="{{filter.search}}" on-enter="@@this.updateItems()" />
+            </div>
+            <div class="filter mr-2">
+                <svg class="svg-icon" width="15" height="15">
+                    <use xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-events"></use>
+                </svg>
+                <input id="datetimepicker" type="text" value="@DateTime.Now.Date.ToString()" />
+            </div>
+        </div>
+    </div>
+    <div class='row'>
+        {{#if items.length == 0}}
+        <div class="col-12 text-center">Мероприятий не найдено</div>
+        {{else}}
+            {{#each items:i}}
+                {{#with items[i] as userEvent}}
+                <div class="col-12">
+                    <div class="user-event mb-2">
+                        <div class="img">
+                            <a href="javascript:;">
+                                <img class="creator-img" src="{{getUserAvatar(user.avatar)}}" />
+                            </a>
+                            <div class="pending-offers tooltip">
+                                <span class="tooltiptext bottom">Заявки на рассмотрении</span>
+                                <svg class="svg-icon" width="15" height="15">
+                                    <use xlink="http://www.w3.org/1999/xlink" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#users">
+                                    </use>
+                                </svg> {{getPendingCount(offers)}}
+                            </div>
+                        </div>
+                        <div class="info">
+                            <div class="date">{{user.firstName}} {{user.lastName}}, <b>{{getDateString(date)}}</b></div>
+                            <div class="comment">{{comment}}</div>
+                            <div class="targets">
+                                <span class="tag tag-danger">Возраст: {{getAgeString(age)}}</span>
+                                <span class="tag tag-info">Пол: {{getGenderString(gender)}}</span>
+                            </div>
+                            <div class="companions mt-2 d-flex justify-content-around">
+                                {{#with getAcceptedOffers(offers) as acceptedOffers}}
+                                    {{#each Array(userCount):i}}
+                                        {{#if acceptedOffers.length > i}}
+                                            {{#with acceptedOffers[i] as accOffer}}
+                                            <div class="companion" title="{{accOffer.firstname}} {{accOffer.lastname}}">
+                                                <img src="{{getUserAvatar(accOffer.avatar)}}" />
+                                                {{#if userEvent.idUser == currentUser.id}}
+                                                    <div class="remove-offer" on-click="@@this.fire('removeOffer', {}, accOffer.id)">
+                                                        <svg width="10" height="10" class="svg-icon">
+                                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#remove"></use>
+                                                        </svg>
+                                                    </div>
+                                                {{/if}}
+                                            </div>
+                                            {{/with}}
+                                        {{else}}
+                                            <div class="companion tooltip">
+                                                <span class="tooltiptext bottom">Место свободно</span>
+                                                <svg width="40" height="40" class="svg-icon">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#user"></use>
+                                                </svg>
+                                            </div>
+                                        {{/if}}
+                                    {{/each}}
+                                {{/with}}
+                            </div>
+                        </div>
+                        <div class="actions">
+                            {{#if userEvent.idUser === currentUser.id}}
+                                <span>Это ваше мероприятие</span>
+                                <button class="action-btn i-will-not-go" on-click="@@this.fire('removeUserEvent', {}, userEvent)">Отменить</button>
+                            {{else}}
+                                {{#with getUserOffer(offers, currentUser.id) as userOffer}}
+                                    {{#if userOffer == null}}
+                                        {{#if offers.length < userCount}}
+                                        <button class="action-btn i-will-go" on-click="@@this.fire('createOffer', {}, userEvent.id)">Хочу пойти</button>
+                                        {{else}}
+                                        <span>Нет мест</span>
+                                        <button class="action-btn i-will-go" on-click="@@this.fire('notifyMe', {}, userEvent.id)">Оповестить о наличии мест</button>
+                                        {{/if}}
+                                    {{else}}
+                                        {{#if userOffer.state === 0}}
+                                        <span>Вы уже подали заявку на это мероприятие</span>
+                                        {{else}}
+                                        <span>Вы уже идете на это мероприятие</span>
+                                        {{/if}}
+                                        <button class="action-btn i-will-not-go" on-click="@@this.fire('removeOffer', {}, userOffer.id)">Не хочу идти</button>
+                                    {{/if}}
+                                {{/with}}
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+                {{/with}}
+            {{/each}}
+        {{/if}}
+     </div>
+</script>

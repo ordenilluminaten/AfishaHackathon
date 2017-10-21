@@ -136,11 +136,10 @@ namespace Models.Notifications.EventNotification {
             using (var enumerator = eventsIdSet.GetEnumerator()) {
                 while (enumerator.MoveNext()) {
                     var @event = allEvents[enumerator.Current];
-                    //var place = p_afishaData.Places[@event.IdEvent];
-                    var place = string.Empty;
+                    var place = p_afishaData.Places[@event.IdPlace];
                     if (place == null)
                         continue;
-                    var body = $"Не забудьте про мероприятие {place}, оно начинается {@event.Date}\n";
+                    var body = $"У вас было запланировано событие в \"{place}\" , оно начинается {@event.Date}\n";
                     _stringBuilder.Append(body);
                 }
             }
