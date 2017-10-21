@@ -13,6 +13,7 @@
 @section Scripts {
     <script>
         appRactive.set('currentUser', @Json.Serialize(Model.ApiResult.Value.UserData));
-        appRactive.set('categories', @Json.Serialize(Enum<PlaceType>.ToIEnumerable().ToDictionary(_x => (int)_x, _x => _x.GetDisplayName())));        
+        appRactive.set('currentUser.customData', @Json.Serialize(Model.CustomData));
+        appRactive.set('categories', @Json.Serialize(Enum<PlaceType>.ToIEnumerable().ToDictionary(_x => (int)_x, _x => _x.GetDisplayName())));
     </script>
 }

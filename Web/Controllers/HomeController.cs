@@ -17,15 +17,12 @@ using Models.Extensions;
 using Models.Filters;
 using ATMIT.Web.Utility;
 
-namespace Afisha.Controllers
-{
-    public class HomeController : BaseController
-    {
+namespace Afisha.Controllers {
+    public class HomeController : BaseController {
         public IOptions<AppSetting> AppSettings { get; }
         public VkApi Api { get; }
         public UnitOfWork<ApplicationDbContext> Unit { get; }
-        public AfishaData Afisha
-        {
+        public AfishaData Afisha {
             get;
             set;
         }
@@ -48,8 +45,7 @@ namespace Afisha.Controllers
             VkApi vkApi,
             UnitOfWork<ApplicationDbContext> unit,
             AfishaData afisha)
-            : base(environment, accessor, memoryCache)
-        {
+            : base(environment, accessor, memoryCache) {
             Unit = unit;
             AppSettings = appSettings;
             Api = vkApi;
@@ -62,24 +58,19 @@ namespace Afisha.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<IActionResult> Index(FirstRequest request)
-        {
+        public async Task<IActionResult> Index(FirstRequest request) {
             //TODO обработка запроса
-            if (Environment.IsDevelopment())
-            {
+            if (Environment.IsDevelopment()) {
                 if (string.IsNullOrEmpty(request.ApiResultJson))
                     request.ApiResultJson = @"{'response':[{'id':46611989,'first_name':'Миша','last_name':'Штанько','nickname':'BenyKrik','city':{'id':2,'title':'Санкт - Петербург'},'country':{'id':1,'title':'Россия'},'photo_200':'https:\/\/ pp.userapi.com\/ c639129\/ v639129989\/ 2ba7f\/ LGwnKIkG1pw.jpg','has_mobile':1,'online':0,'status':'Эй, проснись!Ну ты и соня.Тебя даже вчерашний шторм не разбудил. Говорят, мы уже приплыли в Морровинд.Нас выпустят, это точно!'}]}";
 
             }
             //обновляем юзера, await можно убрать (наверное)
-            await Task.Run(async () =>
-            {
+            await Task.Run(async () => {
                 var userData = request.ApiResult.Value.UserData;
-                using (var ctx = ContextFactory.Create())
-                {
+                using (var ctx = ContextFactory.Create()) {
                     var user = await ctx.Users.FirstOrDefaultAsync(_x => _x.Id == userData.Id);
-                    if (user == null)
-                    {
+                    if (user == null) {
                         user = new User();
                         await ctx.Users.AddAsync(user);
                     }
@@ -94,19 +85,19 @@ namespace Afisha.Controllers
                 }
             });
 
+            request.CustomData = new CustomData();
+            request.CustomData.IsFamiliarWithBot = CurrentUser.IsFamiliarWithBot;
             return View(request);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Places(PlacesFilter filter)
-        {
+        public async Task<IActionResult> Places(PlacesFilter filter) {
             filter.UseSort = false;
             var list = Afisha.CityPlaces[1].OrderByDescending(_x => _x.Photos.Count());
             var q = list.AsQueryable();
             filter.Filter(ref q);
 
-            return Json(new
-            {
+            return Json(new {
                 Items = q,
                 Filter = filter
             });
@@ -189,19 +180,18 @@ namespace Afisha.Controllers
 
         [HttpGet]
         [Route(nameof(CreateInviteCompanion))]
-        public async Task<IActionResult> CreateInviteCompanion(string idPlace)
-        {
-            return PartialView("InviteCompanionModal", new UserEvent
-            {
+        public async Task<IActionResult> CreateInviteCompanion(string idPlace) {
+            return PartialView("InviteCompanionModal", new UserEvent {
                 IdPlace = idPlace,
                 Date = DateTime.Now
             });
         }
 
+
+
         [HttpPost]
         [Route(nameof(CreateInviteCompanion))]
-        public async Task<IActionResult> CreateInviteCompanion(UserEvent invite)
-        {
+        public async Task<IActionResult> CreateInviteCompanion(UserEvent invite) {
             ModelState.RemoveFor<UserEvent>(_x => _x.Id);
             ModelState.RemoveFor<UserEvent>(_x => _x.IdUser);
             if (!ModelState.IsValid)
@@ -211,10 +201,18 @@ namespace Afisha.Controllers
             Unit.Get<UserEvent>().Create(invite);
             await Unit.SaveAsync();
 
-            return Json(new
-            {
+            return Json(new {
                 idUserEvent = invite.Id
             });
+        }
+
+        [HttpPost]
+        public async Task SetFamiliarWithBot() {
+            var dbUser = await Unit.Get<User>().FindAsync(_x => _x.Id == CurrentUser.Id);
+            if (dbUser == null)
+                throw new NullReferenceException(nameof(dbUser));
+            dbUser.IsFamiliarWithBot = true;
+            await Unit.SaveAsync();
         }
     }
 }

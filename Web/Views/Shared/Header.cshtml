@@ -1,23 +1,39 @@
 ﻿<header id="header">
     <div class="header-content">
         <div class="left-header">
-           <a href="javascript:;" id="logo">
+            <a href="javascript:;" id="logo">
                 <svg width="200" height="70" class="svg-icon">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#afisha-logo"></use>
                 </svg>
-           </a>
+            </a>
         </div>
         <div class="right-header">
             <ul class="header-menu">
-                <li>
-                    <a href="javascript:;" data-toggle="dropdown">
-                        <svg width="25" height="25" class="svg-icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#search"></use>
+                <li class="dropdown" onclick="dropdown.toggle(this,event,'bot-dropdown')">
+                    <a href="javascript:;">
+                        <svg width="25" height="25" class="svg-icon {{@@this.parent.get('currentUser.customData.isFamiliarWithBot')?'':'bot-icon'}}">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#bot"></use>
                         </svg>
                     </a>
+                    <div id='bot-dropdown' class="dropdown-content bot-dropdown">
+                        <div class="alert alert-warning">
+                            Вы можете получать уведомления от нашего бота, чтобы всегда быть в курсе событий.
+                            {{#if !@@this.parent.get('currentUser.customData.isFamiliarWithBot') }}
+                            <a href="javascript:;" on-click="@@this.fire('setFamiliarWithBot',@@context)">Я ознакомлен</a>
+                            {{/if}}
+                        </div>
+                        <ul>
+                            <li>
+                                <a on-click="@@this.fire('openGroupDialog',@@context,'https://vk.com/im?media=&sel=-85606912')">Чтобы разрешить боту писать вам - напишите "бот старт"</a>
+                            </li>
+                            <li>
+                                <a on-click="@@this.fire('openGroupDialog',@@context,'https://vk.com/im?media=&sel=-85606912')">Чтобы получить список команд бота - напишите "бот"</a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
-                <li class="dropdown friends-item" 
+                <li class="dropdown friends-item"
                     onclick="dropdown.toggle(this, event, 'friends-dropdown', Header.openFriends)">
                     @await Html.PartialAsync("Friends")
                 </li>
@@ -42,8 +58,8 @@
                     {{#with parent.data}}
                     <a href="javascript:;">
                         <img id="header-avatar" class="icon-circle user-avatar" src="{{currentUser.photo_200}}">
-                        <span>                                
-                            {{currentUser.first_name}}&nbsp;{{currentUser.last_name}}                                
+                        <span>
+                            {{currentUser.first_name}}&nbsp;{{currentUser.last_name}}
                             <svg width="15" height="15" class="svg-icon">
                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
                             </svg>
