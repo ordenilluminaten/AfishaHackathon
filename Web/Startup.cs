@@ -84,6 +84,7 @@ namespace Afisha {
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting, AfishaData _data) {
+            var a = _data.Places;
             if (env.IsDevelopment()) {
                 //_afishaBot.Start(BotTaskType.NotificationAboutEvent);
                 app.UseDeveloperExceptionPage();

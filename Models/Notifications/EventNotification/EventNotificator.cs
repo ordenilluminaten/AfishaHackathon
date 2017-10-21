@@ -1,25 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ATMIT.Core.Web.Repository;
 using Microsoft.EntityFrameworkCore;
+using Models.Afisha;
 using Models.Api.VkApi;
 using Models.Api.VkApi.VkCallbackAPI.RequestDataModels;
 using Models.Filters;
 
 namespace Models.Notifications.EventNotification {
     public class EventNotificator : BaseNotificator {
-        public UnitOfWork<ApplicationDbContext> Unit { get; }
-        public VkApi VkApi { get; }
+        private readonly AfishaData p_afishaData;
+        private readonly UnitOfWork<ApplicationDbContext> p_unit;
+        private readonly VkApi p_vkApi;
 
-        public EventNotificator(TimeSpan timeSpan, UnitOfWork<ApplicationDbContext> _unit, VkApi _vkApi) : base(timeSpan) {
-            Unit = _unit;
-            VkApi = _vkApi;
+        public EventNotificator(TimeSpan timeSpan, UnitOfWork<ApplicationDbContext> _unit, VkApi _vkApi, AfishaData _afishaData) : base(timeSpan) {
+            p_afishaData = _afishaData;
+            p_unit = _unit;
+            p_vkApi = _vkApi;
         }
         protected override async Task RunLogic(CancellationToken _cancellationToken) {
-            var events = await Unit.Get<UserEvent, Guid>().GetList(new UserEventFilter {
+            var watch = Stopwatch.StartNew();
+            var requestWatch = Stopwatch.StartNew();
+            var events = await p_unit.Get<UserEvent, Guid>().GetList(new UserEventFilter {
+                Date = null,
                 UseBaseFilter = false,
                 UseSort = false,
                 IsNotificationDate = true,
@@ -38,6 +46,12 @@ namespace Models.Notifications.EventNotification {
             })
             .ToListAsync(_cancellationToken);
 
+            if (events.Count == 0)
+                return;
+
+            //var sendedNotifications = Unit.Get<UserEventNotification, Guid>().All.Where(_x=>_x.)
+
+            requestWatch.Stop();
             var allEvents = new Dictionary<int, EventNotificatorModel>();
             var userEventsDict = new Dictionary<int, HashSet<int>>();
 
@@ -54,24 +68,38 @@ namespace Models.Notifications.EventNotification {
                 }
             }
             //TODO:Смержить данные с афишей
-
+            var stringBuilder = new StringBuilder();
             using (var userEvents = userEventsDict.GetEnumerator()) {
                 while (userEvents.MoveNext()) {
                     var current = userEvents.Current;
+                    GetMessageText(stringBuilder, current.Value, allEvents);
                     var message = new MessageData {
                         user_id = current.Key,
                         random_id = DateTime.UtcNow.Ticks,
-                        //message = GetMessageText()
+                        message = stringBuilder.ToString()
                     };
-                    //await VkApi.Messages.SendAsync();
+                    stringBuilder.Clear();
+                    await p_vkApi.Messages.SendAsync(message);
                 }
             }
+            watch.Stop();
+            watch.Reset();
         }
 
-        private string GetMessageText(string eventName, DateTime date, IDictionary<int, EventNotificatorModel> userEvents) {
-            var header = "[Напоминание]\n";
-            var body = $"Не забудьте про мироприятие {eventName}, оно начинается {date}";
-            return header + body;
+        private void GetMessageText(StringBuilder _stringBuilder, IEnumerable<int> eventsIdSet, IDictionary<int, EventNotificatorModel> allEvents) {
+            const string finalMessage = "[Напоминание]\n";
+            _stringBuilder.Append(finalMessage);
+            using (var enumerator = eventsIdSet.GetEnumerator()) {
+                while (enumerator.MoveNext()) {
+                    var @event = allEvents[enumerator.Current];
+                    //var place = p_afishaData.Places[@event.IdEvent];
+                    var place = string.Empty;
+                    if (place == null)
+                        continue;
+                    var body = $"Не забудьте про мероприятие {place}, оно начинается {@event.Date}\n";
+                    _stringBuilder.Append(body);
+                }
+            }
         }
         private void ProcessEventData(IDictionary<int, HashSet<int>> userEventsDict,
             IDictionary<int, EventNotificatorModel> allEventsDict,

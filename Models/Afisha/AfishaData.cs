@@ -14,7 +14,7 @@ namespace Models.Afisha {
 
         }
         public Dictionary<int, List<Place>> CityPlaces => p_cache.Get<Dictionary<int, List<Place>>>(CacheCityPlacesDictKey);
-        public Dictionary<int, Place> Places => p_cache.Get<Dictionary<int, Place>>(CachePlaceDictKey);
+        public Dictionary<string, Place> Places => p_cache.Get<Dictionary<string, Place>>(CachePlaceDictKey);
         public Dictionary<int, string> Cities => p_cache.Get<Dictionary<int, string>>(CacheCityDictKey);
     }
 }
