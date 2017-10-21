@@ -4,8 +4,8 @@ class Header {
     }
 
     static openFriends() {
-        let userIds = [1];
-        userIds = appRactive.get('currrentUser.friends.userIds');
+        let userIds = [];
+        userIds = appRactive.get('currentUser.friends.userIds');
         if(userIds != null && userIds.length > 0) {
             Request.post({
                 url: '/GetUsersEventsByIds',
