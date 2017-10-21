@@ -106,7 +106,7 @@ namespace Afisha.Controllers
                 .GroupBy(_x => _x.IdUser)
                 .ToDictionaryAsync(_x => _x.Key, _x => _x.Select(_y => new {
                     id = _y.Id,
-                    idEvent = _y.IdEvent,
+                    idEvent = _y.IdPlace,
                     date = _y.Date,
                     userTotalCount = _y.UserCount
                 }));
