@@ -144,7 +144,7 @@ namespace Afisha.Controllers {
         public async Task<IActionResult> CreateOffer(Guid idUserEvent) {
 
             var userEvent = await Unit.Get<UserEvent>().FindAsync(_x => _x.Id == idUserEvent,
-                _x => _x.Include(_y => _y.Offers));
+                _x => _x.Include(_y => _y.Offers).Include(_y => _y.User));
             if (userEvent == null)
                 return JsonError("Событие на найдено");
             if (userEvent.UserCount == userEvent.Offers.Count)
@@ -159,7 +159,7 @@ namespace Afisha.Controllers {
             });
             await Unit.SaveAsync();
 
-            if (!CurrentUser.CanRecieveGroupMessages)
+            if (!userEvent.User.CanRecieveGroupMessages)
                 return Json(true);
 
             var newUserNotification = new UserNotification {
@@ -188,11 +188,14 @@ namespace Afisha.Controllers {
 
         [HttpPost]
         public async Task<IActionResult> RemoveOffer(Guid idOffer) {
-            var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.Id == idOffer, _x => _x.Include(_y => _y.UserEvent));
+            var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.Id == idOffer, _x => _x.Include(_y => _y.UserEvent).ThenInclude(_y => _y.User));
             if (offer == null)
                 return JsonError("Заявка на найдена");
             if (offer.IdUser != CurrentUser.Id)
                 return JsonError("Нет доступа к событию");
+
+            if (!offer.UserEvent.User.CanRecieveGroupMessages)
+                return Json(true);
 
             var newUserNotification = new UserNotification {
                 IdUser = offer.IdUser,
