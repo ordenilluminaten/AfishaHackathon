@@ -147,7 +147,7 @@ var PaginationRactive = Ractive.extend({
                         self.set('filter.selectAll', false);
                     }
                 },
-                changeValue: (_ctx, _name, _value, _needUpdate) => {
+                changeValue: (_ctx, _name, _value, _needUpdate) => {screenLeft
                     self.set('filter.' + _name, _value);
                     if (_needUpdate !== false) {
                         self.set('filter.page', 1);

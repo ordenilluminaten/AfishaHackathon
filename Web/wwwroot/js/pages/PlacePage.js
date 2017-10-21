@@ -5,8 +5,7 @@
         this.event = event;
     }
 
-    render(...args) {        
-debugger;
+    render(...args) {   
         let page = Ractive({
             template: '#place-page-template',
             data: this.event,
@@ -18,12 +17,11 @@ debugger;
                             idEvent: this.event.ID
                         }
                     }).then((userEventData) => {
-
                         router.ractive.set('userEventData', userEventData);
                     });
                 },
                 complete: () => {
-                    Tabs.init("#page .tabs");
+                    Tabs.init("#page");
                     VK.Widgets.Comments('reviews', {}, this.event.ID);
                 },
                 inviteCompanion: (ctx, idEvent) => {

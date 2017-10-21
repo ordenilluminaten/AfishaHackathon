@@ -25,7 +25,7 @@ var appRactive = Ractive({
         },
         complete: () => {
             router.navigate('places');
-            Tabs.init(".tabs");
+            Tabs.init('#header');
         }
     }
 });
