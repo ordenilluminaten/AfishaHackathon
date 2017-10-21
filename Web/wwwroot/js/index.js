@@ -66,7 +66,6 @@ var appRactive = Ractive({
         },
         complete: () => {
             router.navigate('places');
-            debugger;
             initYaMap();
             Tabs.init('#header');
         }
@@ -87,7 +86,6 @@ function getVkfriends() {
             count++;
             return item.id;
         });
-
         appRactive.set("currentUser.friends", {
             count: count,
             userIds: userIds,
@@ -100,23 +98,47 @@ function onInited() {
     getVkfriends();
 }
 
+var yaMap = null;
 function initYaMap(city){
-    ymaps.ready(()=>{
-        var map = new ymaps.Map('myMap', {
-            center: [59.94, 30.32],
+    ymaps.ready(initUserLocation);
+}
+
+function initUserLocation() {
+    debugger;
+    //пытаемся достать город из бд
+    var lon = appRactive.get('currentUser.customData.longitude');
+    var lat = appRactive.get('currentUser.customData.latitude');
+    if(lon!=null && lat !=null){
+        setupMap([lon, lat]);
+    } else {
+        selectCity(1, 'Москва');
+    }
+}
+
+function setupMap(coords){
+    if(yaMap == null){
+        yaMap = new ymaps.Map('myMap', {
+            center: coords,
             zoom: 9
         });
+    }else{
+        yaMap.setCenter(coords, 9);
+    }
+}
 
-        debugger;
-        var myGeocoder = ymaps.geocode("Москва");
-        myGeocoder.then(
-            function (res) {
-                map.setCenter(res.geoObjects.get(0).geometry.getCoordinates(), 9);
-            },
-            function (err) {}
-        );
-        debugger;
-    })
+function selectCity(id, name){
+    ymaps.geocode(name).then(res => {
+        let coords = res.geoObjects.get(0).geometry.getCoordinates();
+        setupMap(coords);
+        Request.post({
+            url:'/Home/SelectCity',
+            data:{
+                idCity: id,
+                lat: coords[0],
+                lon: coords[1]
+            }
+        })
+    });
 }
 
 function resetGeoObjects(){

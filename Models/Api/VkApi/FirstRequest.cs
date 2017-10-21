@@ -48,6 +48,9 @@ namespace Models.Api.VkApi {
 
     public class CustomData {
         public bool IsFamiliarWithBot { get; set; }
+        public float? Longitude {get;set;}
+        public float? Latitude {get;set;}
+        public int? IdCity {get;set;}
     }
     public class ApiResult {
         /// <summary>

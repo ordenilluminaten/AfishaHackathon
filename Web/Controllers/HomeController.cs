@@ -64,28 +64,46 @@ namespace Afisha.Controllers {
 
             }
             //обновляем юзера, await можно убрать (наверное)
-            await Task.Run(async () => {
-                var userData = request.ApiResult.Value.UserData;
-                using (var ctx = ContextFactory.Create()) {
-                    var user = await ctx.Users.FirstOrDefaultAsync(_x => _x.Id == userData.Id);
-                    if (user == null) {
-                        user = new User();
-                        await ctx.Users.AddAsync(user);
-                    }
-                    user.Id = userData.Id;
-                    user.Avatar = userData.Photo200;
-                    user.FirstName = userData.Firstname;
-                    user.LastName = userData.Lastname;
-                    user.LastEnter = DateTime.Now;
-                    CurrentUser.SetUserData(user);
-                    HttpContext.Session.Set(nameof(User), CurrentUser);
-                    await ctx.SaveChangesAsync();
+            
+            var userData = request.ApiResult.Value.UserData;
+            using (var ctx = ContextFactory.Create()) {
+                var user = await ctx.Users.FirstOrDefaultAsync(_x => _x.Id == userData.Id);
+                if (user == null) {
+                    user = new User();
+                    await ctx.Users.AddAsync(user);
                 }
-            });
-
+                user.Id = userData.Id;
+                user.Avatar = userData.Photo200;
+                user.FirstName = userData.Firstname;      
+                user.LastName = userData.Lastname;
+                user.LastEnter = DateTime.Now;
+                CurrentUser.SetUserData(user);
+                HttpContext.Session.Set(nameof(User), CurrentUser);
+                await ctx.SaveChangesAsync();
+            }
+            
             request.CustomData = new CustomData();
             request.CustomData.IsFamiliarWithBot = CurrentUser.IsFamiliarWithBot;
+            request.CustomData.Longitude = CurrentUser.Longitude;
+            request.CustomData.Latitude = CurrentUser.Latitude;
+            request.CustomData.IdCity = CurrentUser.IdCity;
             return View(request);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SelectCity(int? idCity, float? lat, float? lon) {
+           using (var ctx = ContextFactory.Create()) {
+                var user = await ctx.Users.FirstOrDefaultAsync(_x => _x.Id == CurrentUser.Id);
+                if (user == null)
+                    return JsonError("Пользователь не найден");
+                user.IdCity = idCity;
+                user.Latitude = lat;
+                user.Longitude = lon;
+                CurrentUser.SetUserData(user);
+                HttpContext.Session.Set(nameof(User), CurrentUser);
+                await ctx.SaveChangesAsync();
+            }
+            return Json(true);
         }
 
         [HttpPost]
