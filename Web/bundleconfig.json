@@ -17,8 +17,7 @@
         "wwwroot/js/components/modal.js",
         "wwwroot/js/components/nav-tabs.js",
         "wwwroot/js/pages/Page.js",
-        "wwwroot/js/pages/AllPage.js",
-        "wwwroot/js/pages/MoviesPage.js",
+        "wwwroot/js/pages/PlacesPage.js",
         "wwwroot/js/pages/PlacePage.js",
         "wwwroot/js/pages/Header.js",
         "wwwroot/js/components/utils.js"
@@ -84,7 +83,7 @@
     {
       "outputFileName": "Views/Home/Bundle.cshtml",
       "inputFiles": [
-        "Views/Home/All.cshtml",
+        "Views/Home/Places.cshtml",
         "Views/Home/Movies.cshtml",
         "Views/Home/Place.cshtml",
         "Views/Home/UserEvents.cshtml"

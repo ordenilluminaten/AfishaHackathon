@@ -11,8 +11,9 @@ namespace Models.Filters
         {
             SortName = nameof(Place.Id);
             Sort = $"{SortName}:{SortType}";
+            ViewType = ListViewType.Grid;
         }
-
+        
         public PlaceType Category { get; set; }
 
         public override void Filter(ref IQueryable<Place> list)

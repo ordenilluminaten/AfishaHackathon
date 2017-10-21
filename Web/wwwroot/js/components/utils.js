@@ -76,8 +76,7 @@ var router = {
         appRactive.set('currentPage', router.current);
     },
     pages: {
-        all: () => new AllPage(),
-        movies: () => new MoviesPage(),
+        places: () => new PlacesPage(),
         place: (parentPage, args) => new PlacePage(args[0], parentPage)
     }
 }

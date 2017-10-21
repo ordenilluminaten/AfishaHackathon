@@ -3,32 +3,14 @@
     template: '#header-template'
 });
 
-var sidebar = Ractive.extend({
-    isolated: false,
-    template: '#sidebar-template'
-});
-
-var filter = Ractive.extend({
-    isolated: false,
-    template: '#filter-template'
-});
-
 var appRactive = Ractive({
     target: '#app-wrapper',
     template: '#app-template',
     components: {
-        Header: header,
-        Sidebar: sidebar,
-        Filter: filter
+        Header: header          
     },
     data: {
-        currentPage: null,
-        filter: {
-            Category: 0,
-            Search: null,
-            ViewType: 0,
-            Sort: 'id'
-        }
+        currentPage: null    
     },
     on: {
         init: () => {
@@ -42,7 +24,7 @@ var appRactive = Ractive({
             }
         },
         complete: () => {
-            router.navigate('all');
+            router.navigate('places');
             Tabs.init(".tabs");
         }
     }

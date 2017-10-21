@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    @*<link rel="stylesheet" href="https://vk.com/css/al/fonts_cnt.css">*@
 
     <environment include="Development">
         <link href="~/bundles/site.css" rel="stylesheet" />
@@ -22,11 +21,6 @@
 </head>
 <body>
     <div id="app-wrapper">
-        <script id="sidebar-template" type="text/ractive">
-            @{
-                await Html.RenderPartialAsync("Sidebar"); 
-            }
-        </script>
         <script id="header-template" type="text/ractive">
             @{
                 await Html.RenderPartialAsync("Header");
@@ -37,15 +31,9 @@
                 await Html.RenderPartialAsync("Paginator");
             }
         </script>
-		<script id="filter-template" type="text/ractive">
-			@{
-				await Html.RenderPartialAsync("Filter");
-			}	
-		</script>
 
         <script id="app-template" type="text/ractive">
             <Header />
-		    <Filter />
             <div id="page">
                 <div id="page-content">
                     <# page-data />
@@ -74,8 +62,7 @@
         
         @* pages *@
         <script src="~/js/pages/Page.js"></script>
-        <script src="~/js/pages/AllPage.js"></script>
-        <script src="~/js/pages/MoviesPage.js"></script>
+        <script src="~/js/pages/PlacesPage.js"></script>
         <script src="~/js/pages/PlacePage.js"></script>
         <script src="~/js/pages/Header.js"></script>
 

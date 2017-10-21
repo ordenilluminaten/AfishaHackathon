@@ -112,7 +112,7 @@ namespace Afisha.Controllers
 
             return Json(new {
                 items = userEvents,
-                count = userEvents.Count
+                count = userEvents.Count                
             });
         }
     }

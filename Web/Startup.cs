@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Models.Afisha;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Text;
 
 namespace Afisha {
     public class Startup {
@@ -66,7 +68,7 @@ namespace Afisha {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc()
                 .AddJsonOptions(options => {
-                    options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                    options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
             services.AddMemoryCache();

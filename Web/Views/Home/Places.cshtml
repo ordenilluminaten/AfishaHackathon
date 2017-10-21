@@ -1,0 +1,84 @@
+﻿<script id='places-page-template' type="text/html">
+    <div id="filter-block">
+        <div class="filter-bar">
+            <div id="cat-filter" class="filter mr-2 dropdown" onclick="dropdown.toggle(this, event, 'categories-dropdown')">
+                <span>{{categories[filter.category]}}</span>
+                <svg width="15" height="15" class="svg-icon">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
+                </svg>
+                <div id="categories-dropdown" class="dropdown-content w-100">
+                    {{#each categories:i}}
+                        <a href="javascript:;" on-click='@@this.set('')'>{{this}}</a>
+                        {{#if i==0}}
+                        <div class="separator"></div>
+                        {{/if}}
+                    {{/each}}
+                </div>
+            </div>
+            <div class="filter">
+                <svg width="15" height="15" class="svg-icon mr-1">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#search"></use>
+                </svg>
+                <input type="text" placeholder="Поиск" value="{{filter.search}}" on-enter="@@this.updateItems()" />
+            </div>
+            <!--<div class="filter mr-2">
+                <svg class="svg-icon" width="15" height="15">
+                    <use xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-events"></use>
+                </svg>
+                <input id="datepicker" type="text" value="@DateTime.Now.Date.ToShortDateString()" />
+            </div>-->
+            <div class="filter" style="margin-left: auto;">
+                <svg width="17" height="17" class="svg-icon mr-2 {{filter.viewType=='Grid'?'selected':''}}"
+                 on-click="@@this.fire('changeValue','viewType','Grid',false)">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#card_view"></use>
+                </svg>
+                <svg width="20" height="20" class="svg-icon {{filter.viewType=='List'?'selected':''}}" 
+                on-click="@@this.fire('changeValue','viewType','List',false)">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#list_view"></use>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div class='content'>
+        <div class='row'>
+            {{#each items:i}}
+            <div class="event {{filter.viewType=='Grid'?'event-grid col-3':'event-list col-12'}} movie mb-3">
+                <a href="javascript:;" on-click="@@global.router.navigate('event', this)">
+                    {{#if photos != null && photos.length > 0}}
+                    <img class="img-preview col-md-12 col-sm-12 col-xs-12" src="{{photos[0]}}">
+                    {{else}}
+                    <img class="img-preview col-md-12 col-sm-12 col-xs-12" src="/images/no-image.gif">
+                    {{/if}}
+                </a>
+                <div class="event-content">
+                    <a class="event-title" href="javascript:;" on-click="@@global.router.navigate('event', this)">{{name}}</a>
+                    <div class="small">
+                        {{ProductionYear}} / {{Country}}
+                        {{#if Genres.Links.length > 0}} / {{Genres.Links[0].Name}}{{/if}}
+                        {{#if AgeRestriction != ""}} / <strong>{{AgeRestriction}}</strong>{{/if}}
+                    </div>
+                    <div class="event-desc">{{Verdict}}</div>
+
+                    <div class="event-counters">
+                        <span class="icon-counter rating mr-2">
+                            <svg width="16" height="16" class="svg-icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#rating"></use>
+                            </svg> {{toFixed(parseFloat(Rating),2)}}
+                        </span>
+                        <span class="icon-counter comments mr-2">
+                            <svg width="16" height="16" class="svg-icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#comments"></use>
+                            </svg> 23
+                        </span>
+                        <span class="icon-counter">
+                            <svg width="16" height="16" class="svg-icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#going"></use>
+                            </svg> 100
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</script>

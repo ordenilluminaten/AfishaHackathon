@@ -7,7 +7,7 @@ Ractive.defaults.isolated = false;
 Ractive.defaults.enableElement = (_ctx) => {
     if (_ctx.original == null)
         return;
-    _ctx.node.classList.remove('disabled');
+    _ctx.node.classList.remove('disabled'); 
     _ctx.node.removeAttribute('disabled');
 };
 /**
@@ -43,10 +43,10 @@ var Paginator = Ractive.extend({
 var PaginationRactive = Ractive.extend({
     data: function () {
         return {
-            Items: [],
+            items: [],
             getSortType: function (_name) {
-                if (_name === this.get('Filter.SortName'))
-                    return this.get('Filter.SortType');
+                if (_name === this.get('filter.sortName'))
+                    return this.get('filter.sortType');
                 return 'unsorted';
             }
         };
@@ -76,98 +76,99 @@ var PaginationRactive = Ractive.extend({
                         console.log('Функция getItems не назначена');
                         return false;
                     }
-                    getItemsFunc(this.get('Filter'), this.get('SetData'));
+                    debugger;
+                    getItemsFunc(this.get('filter'), this.get('setData'));
                     return true;
                 },
                 calcPagination: function (_ctx) {
-                    const filter = self.get('Filter');
+                    const filter = self.get('filter');
                     const pages = [];
-                    if (filter.PageTotal < 6) {
-                        for (var i = 1; i <= filter.PageTotal; i++) {
-                            pages.push({ Num: i, Active: filter.Page == i });
+                    if (filter.pageTotal < 6) {
+                        for (var i = 1; i <= filter.pageTotal; i++) {
+                            pages.push({ Num: i, Active: filter.page == i });
                         }
                     } else {
-                        if (filter.Page < 4) {
+                        if (filter.page < 4) {
                             for (var i = 1; i <= 4; i++) {
-                                pages.push({ Num: i, Active: filter.Page == i });
+                                pages.push({ Num: i, Active: filter.page == i });
                             }
-                            pages.push({ Num: filter.PageTotal });
-                        } else if (filter.Page >= 4 && filter.Page < filter.PageTotal - 1) {
-                            for (var i = filter.Page - 2; i <= filter.Page + 1; i++) {
-                                pages.push({ Num: i, Active: filter.Page == i });
+                            pages.push({ Num: filter.pageTotal });
+                        } else if (filter.page >= 4 && filter.page < filter.pageTotal - 1) {
+                            for (var i = filter.page - 2; i <= filter.page + 1; i++) {
+                                pages.push({ Num: i, Active: filter.page == i });
                             }
-                            pages.push({ Num: filter.PageTotal });
+                            pages.push({ Num: filter.pageTotal });
                         } else {
                             pages.push({ Num: 1 });
-                            for (var i = filter.PageTotal - 3; i <= filter.PageTotal; i++) {
-                                pages.push({ Num: i, Active: filter.Page == i });
+                            for (var i = filter.pageTotal - 3; i <= filter.pageTotal; i++) {
+                                pages.push({ Num: i, Active: filter.page == i });
                             }
                         }
                     }
-                    self.set('Pages', pages);
+                    self.set('pages', pages);
                 },
                 changeSort: function (_ctx, _name) {
-                    const sortType = self.get('Filter.SortType') === 'asc' ? 'desc' : 'asc';
-                    self.set('Filter.SortType', sortType);
-                    self.set('Filter.SortName', _name);
-                    self.set('Filter.Sort', _name + ':' + sortType);
-                    self.set('Filter.Page', 1);
+                    const sortType = self.get('filter.sortType') === 'asc' ? 'desc' : 'asc';
+                    self.set('filter.sortType', sortType);
+                    self.set('filter.sortName', _name);
+                    self.set('filter.sort', _name + ':' + sortType);
+                    self.set('filter.page', 1);
                     self.fire('updateItems');
                 },
                 changeSelectValue: function (_ctx) {
-                    const sort = self.get('Filter.Sort');
+                    const sort = self.get('filter.sort');
                     if (sort.indexOf(':') != -1) {
                         const splittedVal = sort.split(':');
 
-                        self.set('Filter.SortName', splittedVal[0]);
-                        self.set('Filter.SortType', splittedVal[1]);
+                        self.set('filter.sortName', splittedVal[0]);
+                        self.set('filter.sortType', splittedVal[1]);
 
-                        self.set('Filter.Page', 1);
+                        self.set('filter.page', 1);
                         self.fire('updateItems');
                     }
                 },
                 toggleAll: function (_ctx) {
-                    if (this.get('Filter.SelectAll')) {
-                        this.set('Filter.SelectedItems', []);
+                    if (this.get('filter.selectAll')) {
+                        this.set('filter.selectedItems', []);
                     } else {
-                        const items = this.get('Items');
+                        const items = this.get('items');
                         const itemsIds = [];
                         for (let i = 0; i < items.length; i++) {
                             itemsIds.push(items[i].Id);
                         }
-                        this.set('Filter.SelectedItems', itemsIds);
+                        this.set('filter.selectedItems', itemsIds);
                     }
                 },
                 toggleRow: (_ctx, _id) => {
-                    const items = self.get('Filter.SelectedItems');
+                    const items = self.get('filter.selectedItems');
                     const index = items.indexOf(_id);
                     if (index !== -1) {
-                        self.set('Filter.SelectAll', false);
+                        self.set('filter.selectAll', false);
                     }
                 },
                 changeValue: (_ctx, _name, _value, _needUpdate) => {
-                    self.set('Filter.' + _name, _value);
+                    self.set('filter.' + _name, _value);
                     if (_needUpdate !== false) {
-                        self.set('Filter.Page', 1);
+                        self.set('filter.page', 1);
                         self.fire('updateItems');
                     }
                 },
                 "Paginator.selectPage": (_ctx, _page, _isInput) => {
                     if (_isInput) {
                         if (_ctx.original.keyCode === 13) {
-                            if (_page <= 0 || _page > self.get('Filter.PageTotal') || _page === self.get('Filter.Page')) {
-                                self.set('Filter.PageTemp', self.get('Filter.Page'));
+                            if (_page <= 0 || _page > self.get('filter.pageTotal') || _page === self.get('filter.page')) {
+                                self.set('filter.pageTemp', self.get('filter.page'));
                                 return;
                             }
-                            self.set('Filter.Page', _page);
+                            self.set('filter.page', _page);
                             self.fire('updateItems');
                         }
                     } else {
-                        if (_page <= 0 || _page > self.get('Filter.PageTotal') || _page === self.get('Filter.Page')) {
-                            self.set('Filter.PageTemp', self.get('Filter.Page'));
+                        if (_page <= 0 || _page > self.get('filter.pageTotal') || _page === self.get('filter.page')) {
+                            self.set('filter.pageTemp', self.get('filter.page'));
                             return;
                         }
-                        self.set('Filter.Page', _page);
+                        self.set('filter.page', _page);
                         self.fire('updateItems');
                     }
                 }
@@ -175,45 +176,39 @@ var PaginationRactive = Ractive.extend({
         }
 
         // минимум для запроса
-        var dataItems = self.get('Items');
+        var dataItems = self.get('items');
         if (dataItems != undefined && dataItems.length !== 0) {
-            self.set('Items', dataItems);
-            self.set('Filter.PageTemp', self.get('Filter.Page'));
+            self.set('items', dataItems);
+            self.set('filter.pageTemp', self.get('filter.page'));
             self.fire('calcPagination');
         } else {
-            self.set('Items', []);
-            self.set('Filter.PageTemp', 1);
+            self.set('items', []);
+            self.set('filter.pageTemp', 1);
         }
-        this.set('SetData', (_data, _callBack) => {
+        this.set('setData', (_data, _callBack) => {
+debugger;
+            self.set(_data);
+            // _data.filter.pageTemp = _data.filter.page;
 
-            if (typeof(_data.Items) == 'undefined') {
-                var res = JSON.parse(_data.Data);
-                self.set('Items', res[Object.keys(res)[0]].Items);
-            } else {
-                self.set('Items', _data.Items);
-            }
-            _data.Filter.PageTemp = _data.Filter.Page;
-
-            if (self.get('Filter.SortName') === null) {
-                if (_data.Filter.Sort !== null) {
-                    var split = _data.Filter.Sort.split('_');
-                    _data.Filter.SortName = split[0];
-                    _data.Filter.SortType = split[1];
-                }
-            } else {
-                _data.Filter.SortName = self.get('Filter.SortName');
-                _data.Filter.SortType = self.get('Filter.SortType');
-            }
-            self.set('Filter', _data.Filter);
+            // if (self.get('filter.sortName') === null) {
+            //     if (_data.Filter.sort !== null) {
+            //         var split = _data.Filter.sort.split('_');
+            //         _data.Filter.sortName = split[0];
+            //         _data.Filter.sortType = split[1];
+            //     }
+            // } else {
+            //     _data.Filter.sortName = self.get('filter.sortName');
+            //     _data.Filter.sortType = self.get('filter.sortType');
+            // }            
             self.fire('calcPagination');
             if (typeof (_callBack) == 'function') {
                 _callBack();
             }
         });
 
-        this.observe('Filter.Page', (_oldVal, _newVal, _key) => {
+        this.observe('filter.page', (_oldVal, _newVal, _key) => {
             if (_newVal !== _oldVal) {
-                self.set('Filter.SelectAll', false);
+                self.set('filter.selectAll', false);
             }
         });
 

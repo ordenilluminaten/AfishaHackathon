@@ -5,8 +5,9 @@ class Header {
 
     static openFriends() {
         debugger;
-        let userIds = appRactive.get('currrentUser.friends.userIds');
-        if(userIds != null && userIds.length > 0) {
+        let userIds = [1];
+        // userIds = appRactive.get('currrentUser.friends.userIds');
+        // if(userIds != null && userIds.length > 0) {
             Request.post({
                 url: '/GetUsersEventsByIds',
                 data: {
@@ -15,6 +16,6 @@ class Header {
             }).then((friendsEvents) => {
                 appRactive.set('currrentUser.friendsEvents', friendsEvents);                                                 
             });
-        }     
+        // }     
     }
 }
