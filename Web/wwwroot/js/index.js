@@ -89,6 +89,9 @@ function getVkfriends() {
             count: count,
             userIds: userIds,
             items: friends
+        }).then(() => {
+            Header.refreshMyPlaces();
+            Header.refreshFriendPlaces();
         });
     });
 }

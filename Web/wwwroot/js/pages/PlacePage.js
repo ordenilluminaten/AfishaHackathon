@@ -67,6 +67,7 @@
                                                 router.ractive.set('userEventData.idUserEvent', data.idUserEvent);
                                                 this.userEventsRactive.updateItems();
                                                 Modal.close('invite-companion-modal');
+                                                Header.refreshMyPlaces();
                                             });
                                         }
                                     },
@@ -150,6 +151,7 @@
                         data: { idUserEvent: idUserEvent }
                     }).then(res => {
                         toastr.success('Заявка успешно отправлена', 3000);
+                        Header.refreshMyPlaces();                        
                         this.updateItems();
                     });
                 },
@@ -167,6 +169,8 @@
                                                 data: { idOffer: idOffer }
                                             }).then(res => {
                                                 toastr.success('Заявка успешно удалена', 3000);
+                                                Header.refreshMyPlaces();   
+                                                Header.refreshFriendPlaces();
                                                 this.updateItems();
                                             });
                                             modal.close();
@@ -202,6 +206,8 @@
                                                     toastr.success('Мероприятие успешно удалено', 3000);
                                                 }
                                                 router.ractive.set('userEventData.idUserEvent', null);
+                                                Header.refreshMyPlaces();   
+                                                Header.refreshFriendPlaces();
                                                 this.updateItems();
                                             });
                                             modal.close();

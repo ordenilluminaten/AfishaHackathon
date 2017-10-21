@@ -19,14 +19,17 @@ using ATMIT.Web.Utility;
 using Models.Api.VkApi.VkCallbackAPI.RequestDataModels;
 using Models.Database.Tables;
 
-namespace Afisha.Controllers {
-    public class HomeController : BaseController {
+namespace Afisha.Controllers
+{
+    public class HomeController : BaseController
+    {
         public IOptions<AppSetting> AppSettings { get; }
         public VkApi Api { get; }
         public UnitOfWork<ApplicationDbContext> Unit { get; }
         public AfishaData Afisha { get; set; }
 
-        public class UserPlaces {
+        public class UserPlaces
+        {
             public Guid Id { get; set; }
             public string IdPlace { get; set; }
             public string Date { get; set; }
@@ -43,7 +46,8 @@ namespace Afisha.Controllers {
             VkApi vkApi,
             UnitOfWork<ApplicationDbContext> unit,
             AfishaData afisha)
-            : base(environment, accessor, memoryCache) {
+            : base(environment, accessor, memoryCache)
+        {
             Unit = unit;
             AppSettings = appSettings;
             Api = vkApi;
@@ -56,16 +60,19 @@ namespace Afisha.Controllers {
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<IActionResult> Index(FirstRequest request) {
+        public async Task<IActionResult> Index(FirstRequest request)
+        {
             //TODO обработка запроса
-            if (Environment.IsDevelopment()) {
+            if (Environment.IsDevelopment())
+            {
                 if (string.IsNullOrEmpty(request.ApiResultJson))
                     request.ApiResultJson = @"{'response':[{'id':46611989,'first_name':'Миша','last_name':'Штанько','nickname':'BenyKrik','city':{'id':2,'title':'Санкт - Петербург'},'country':{'id':1,'title':'Россия'},'photo_200':'https:\/\/ pp.userapi.com\/ c639129\/ v639129989\/ 2ba7f\/ LGwnKIkG1pw.jpg','has_mobile':1,'online':0,'status':'Эй, проснись!Ну ты и соня.Тебя даже вчерашний шторм не разбудил. Говорят, мы уже приплыли в Морровинд.Нас выпустят, это точно!'}]}";
             }
 
             var userData = request.ApiResult.Value.UserData;
             var user = await Unit.Get<User>().FindAsync(_x => _x.Id == userData.Id);
-            if (user == null) {
+            if (user == null)
+            {
                 user = new User();
                 Unit.Get<User>().Create(user);
             }
@@ -81,11 +88,13 @@ namespace Afisha.Controllers {
             var notificationsData = await Unit.Get<UserNotification>().All.Where(_x => _x.IdUser == CurrentUser.Id)
                 .Include(_x => _x.UserEvent)
                 .Include(_x => _x.UserFrom)
-                .Select(_x => new {
+                .Select(_x => new
+                {
                     Type = _x.Type.ToString(),
                     UserFrom = _x.IdUserFrom == null ?
                     null :
-                    new {
+                    new
+                    {
                         _x.UserFrom.FirstName,
                         _x.UserFrom.LastName,
                         _x.UserFrom.Avatar
@@ -93,44 +102,16 @@ namespace Afisha.Controllers {
                     _x.UserEvent.IdPlace,
                     _x.Date
                 })
-                .ToArrayAsync();           
-
-            var events = await Unit.Get<UserEvent, Guid>().All
-                    .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
-                    .Select(_x => new {
-                        Id = _x.Id,
-                        IdPlace = _x.IdPlace,
-                        Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
-                        UserTotalCount = _x.UserCount,
-                        Title = Afisha.Places[_x.IdPlace].Name
-                    })
-                    .ToArrayAsync();
-
-                var offers = await Unit.Get<UserEventOffer, Guid>()
-                .All
-                .Where(_x => _x.UserEvent.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
-                .Include(_x => _x.UserEvent)
-                .Select(_x => new {
-                        Id = _x.IdUserEvent,
-                        IdPlace = _x.UserEvent.IdPlace,
-                        Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
-                        UserTotalCount = _x.UserEvent.UserCount,
-                        Title = Afisha.Places[_x.UserEvent.IdPlace].Name,
-                        IsOffer = true
-                })
                 .ToArrayAsync();
-            
+
             request.CustomData = new CustomData();
-            request.CustomData.MyPlaces = new {
-                events = events,
-                offers = offers
-            };
             request.CustomData.IsFamiliarWithBot = CurrentUser.IsFamiliarWithBot;
             request.CustomData.Longitude = CurrentUser.Longitude;
             request.CustomData.Latitude = CurrentUser.Latitude;
             request.CustomData.IdCity = CurrentUser.IdCity;
 
-            request.CustomData.Notifications = notificationsData.Select(_x => new {
+            request.CustomData.Notifications = notificationsData.Select(_x => new
+            {
                 _x.Type,
                 Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
                 _x.UserFrom,
@@ -139,10 +120,48 @@ namespace Afisha.Controllers {
 
             return View(request);
         }
+        [HttpPost]
+        [Route(nameof(GetMyPlaces))]
+        public async Task<IActionResult> GetMyPlaces()
+        {
+            var events = await Unit.Get<UserEvent, Guid>().All
+                .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
+                .Select(_x => new
+                {
+                    Id = _x.Id,
+                    IdPlace = _x.IdPlace,
+                    Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
+                    UserTotalCount = _x.UserCount,
+                    Title = Afisha.Places[_x.IdPlace].Name
+                })
+                .ToArrayAsync();
+
+            var offers = await Unit.Get<UserEventOffer, Guid>()
+            .All
+            .Where(_x => _x.UserEvent.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
+            .Include(_x => _x.UserEvent)
+            .Select(_x => new
+            {
+                Id = _x.IdUserEvent,
+                IdPlace = _x.UserEvent.IdPlace,
+                Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
+                UserTotalCount = _x.UserEvent.UserCount,
+                Title = Afisha.Places[_x.UserEvent.IdPlace].Name,
+                IsOffer = true
+            })
+            .ToArrayAsync();
+            return Json(new
+            {
+                events = events,
+                offers = offers
+            });
+        }
 
         [HttpPost]
-        public async Task<IActionResult> SelectCity(int? idCity, float? lat, float? lon) {
-           using (var ctx = ContextFactory.Create()) {
+        public async Task<IActionResult> SelectCity(int? idCity, float? lat, float? lon)
+        {
+            using (var ctx = ContextFactory.Create())
+            {
                 var user = await ctx.Users.FirstOrDefaultAsync(_x => _x.Id == CurrentUser.Id);
                 if (user == null)
                     return JsonError("Пользователь не найден");
@@ -157,34 +176,39 @@ namespace Afisha.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> Places(PlacesFilter filter) {
+        public async Task<IActionResult> Places(PlacesFilter filter)
+        {
             filter.UseSort = false;
             var list = Afisha.CityPlaces[1].OrderByDescending(_x => _x.Photos.Count());
             var q = list.AsQueryable();
             filter.Filter(ref q);
 
-            return Json(new {
+            return Json(new
+            {
                 Items = q,
                 Filter = filter
             });
         }
 
         [HttpPost]
-        public async Task<IActionResult> UserEvents(UserEventFilter filter) {
+        public async Task<IActionResult> UserEvents(UserEventFilter filter)
+        {
             var items = await Unit.Get<UserEvent, Guid>().GetList(filter)
                 .Include(x => x.Offers)
                     .ThenInclude(x => x.User)
                 .Include(x => x.User)
                 .ToArrayAsync();
             return Json(
-                new {
+                new
+                {
                     Items = items,
                     Filter = filter
                 });
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOffer(Guid idUserEvent) {
+        public async Task<IActionResult> CreateOffer(Guid idUserEvent)
+        {
 
             var userEvent = await Unit.Get<UserEvent>().FindAsync(_x => _x.Id == idUserEvent,
                 _x => _x.Include(_y => _y.Offers).Include(_y => _y.User));
@@ -194,7 +218,8 @@ namespace Afisha.Controllers {
                 return JsonError("В данном событии сейчас нет свободных мест");
             if (userEvent.Offers.Any(_x => _x.IdUser == CurrentUser.Id))
                 return JsonError("Вы уже состоите в данном событии");
-            userEvent.Offers.Add(new UserEventOffer {
+            userEvent.Offers.Add(new UserEventOffer
+            {
                 IdUserEvent = idUserEvent,
                 Date = DateTime.Now,
                 IdUser = CurrentUser.Id,
@@ -205,7 +230,8 @@ namespace Afisha.Controllers {
             if (!userEvent.User.CanRecieveGroupMessages)
                 return Json(true);
 
-            var newUserNotification = new UserNotification {
+            var newUserNotification = new UserNotification
+            {
                 IdUser = userEvent.IdUser,
                 IdUserEvent = userEvent.Id,
                 IdUserFrom = CurrentUser.Id,
@@ -216,7 +242,8 @@ namespace Afisha.Controllers {
             Unit.DbContext.UserNotifications.Add(newUserNotification);
             await Unit.SaveAsync();
 
-            var newMessageData = new MessageData {
+            var newMessageData = new MessageData
+            {
                 random_id = DateTime.Now.Ticks,
                 user_id = userEvent.IdUser,
                 message = $"Пользователь {CurrentUser.FullName} хочет пойти с Вами в" +
@@ -230,7 +257,8 @@ namespace Afisha.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveOffer(Guid idOffer) {
+        public async Task<IActionResult> RemoveOffer(Guid idOffer)
+        {
             var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.Id == idOffer, _x => _x.Include(_y => _y.UserEvent).ThenInclude(_y => _y.User));
             if (offer == null)
                 return JsonError("Заявка на найдена");
@@ -240,7 +268,8 @@ namespace Afisha.Controllers {
             if (!offer.UserEvent.User.CanRecieveGroupMessages)
                 return Json(true);
 
-            var newUserNotification = new UserNotification {
+            var newUserNotification = new UserNotification
+            {
                 IdUser = offer.IdUser,
                 IdUserEvent = offer.IdUserEvent,
                 IdUserFrom = CurrentUser.Id,
@@ -250,7 +279,8 @@ namespace Afisha.Controllers {
 
             Unit.DbContext.UserNotifications.Add(newUserNotification);
 
-            var newMessageData = new MessageData {
+            var newMessageData = new MessageData
+            {
                 random_id = DateTime.Now.Ticks,
                 user_id = offer.UserEvent.IdUser,
                 message = $"Пользователь {CurrentUser.FullName} отклонил вашу заявку на совместный поход в " +
@@ -267,7 +297,8 @@ namespace Afisha.Controllers {
 
         [HttpPost]
         [Route(nameof(GetUsersEventsByIds))]
-        public async Task<IActionResult> GetUsersEventsByIds(int[] ids) {
+        public async Task<IActionResult> GetUsersEventsByIds(int[] ids)
+        {
             var userDict = new Dictionary<int, List<UserPlaces>>();
             var userEvents = await Unit.Get<UserEvent, Guid>().All
                 .Where(_x => _x.Date >= DateTime.Now && ids.Contains(_x.IdUser))
@@ -279,13 +310,16 @@ namespace Afisha.Controllers {
             .Include(_x => _x.UserEvent)
             .ToArrayAsync();
 
-            foreach (var userEvent in userEvents) {
+            foreach (var userEvent in userEvents)
+            {
                 List<UserPlaces> events = null;
-                if (!userDict.TryGetValue(userEvent.IdUser, out events)) {
+                if (!userDict.TryGetValue(userEvent.IdUser, out events))
+                {
                     events = new List<UserPlaces>();
                     userDict[userEvent.IdUser] = events;
                 }
-                events.Add(new UserPlaces {
+                events.Add(new UserPlaces
+                {
                     Id = userEvent.Id,
                     IdPlace = userEvent.IdPlace,
                     Date = userEvent.Date.ToString(@"dd/MM/yy H:mm:ss"),
@@ -294,13 +328,16 @@ namespace Afisha.Controllers {
                 });
             }
 
-            foreach (var userEventOffer in userEventOffers) {
+            foreach (var userEventOffer in userEventOffers)
+            {
                 List<UserPlaces> events = null;
-                if (!userDict.TryGetValue(userEventOffer.IdUser, out events)) {
+                if (!userDict.TryGetValue(userEventOffer.IdUser, out events))
+                {
                     events = new List<UserPlaces>();
                     userDict[userEventOffer.IdUser] = events;
                 }
-                events.Add(new UserPlaces {
+                events.Add(new UserPlaces
+                {
                     Id = userEventOffer.IdUserEvent,
                     IdPlace = userEventOffer.UserEvent.IdPlace,
                     Date = userEventOffer.Date.ToString(@"dd/MM/yy H:mm:ss"),
@@ -310,7 +347,8 @@ namespace Afisha.Controllers {
                 });
             }
 
-            return Json(new {
+            return Json(new
+            {
                 items = userDict,
                 count = userDict.Count
             });
@@ -318,8 +356,10 @@ namespace Afisha.Controllers {
 
         [HttpGet]
         [Route(nameof(CreateInviteCompanion))]
-        public async Task<IActionResult> CreateInviteCompanion(string idPlace) {
-            return PartialView("InviteCompanionModal", new UserEvent {
+        public async Task<IActionResult> CreateInviteCompanion(string idPlace)
+        {
+            return PartialView("InviteCompanionModal", new UserEvent
+            {
                 IdPlace = idPlace,
                 Date = DateTime.Now
             });
@@ -329,7 +369,8 @@ namespace Afisha.Controllers {
 
         [HttpPost]
         [Route(nameof(CreateInviteCompanion))]
-        public async Task<IActionResult> CreateInviteCompanion(UserEvent invite) {
+        public async Task<IActionResult> CreateInviteCompanion(UserEvent invite)
+        {
             ModelState.RemoveFor<UserEvent>(_x => _x.Id);
             ModelState.RemoveFor<UserEvent>(_x => _x.IdUser);
             if (!ModelState.IsValid)
@@ -339,13 +380,15 @@ namespace Afisha.Controllers {
             Unit.Get<UserEvent>().Create(invite);
             await Unit.SaveAsync();
 
-            return Json(new {
+            return Json(new
+            {
                 idUserEvent = invite.Id
             });
         }
 
         [HttpPost]
-        public async Task SetFamiliarWithBot() {
+        public async Task SetFamiliarWithBot()
+        {
             var dbUser = await Unit.Get<User>().FindAsync(_x => _x.Id == CurrentUser.Id);
             if (dbUser == null)
                 throw new NullReferenceException(nameof(dbUser));
@@ -355,7 +398,8 @@ namespace Afisha.Controllers {
 
         [HttpPost]
         [Route(nameof(GetUserPlace))]
-        public async Task<IActionResult> GetUserPlace(Guid id) {
+        public async Task<IActionResult> GetUserPlace(Guid id)
+        {
             var userEvent = await Unit.Get<UserEvent>().FindAsync(_x => _x.Id == id);
             if (userEvent == null)
                 throw new NullReferenceException(nameof(userEvent));
