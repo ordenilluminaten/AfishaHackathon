@@ -85,9 +85,14 @@ namespace Afisha.Controllers {
                         .Include(_x => _x.UserEvent)
                         .Include(_x => _x.UserFrom)
                         .Select(_x => new {
-                            _x.Type,
-                            Fullname = _x.IdUserFrom != null ? _x.UserFrom.FirstName + " " + _x.UserFrom.LastName : null,
-                            Avatar = _x.IdUserFrom != null ? _x.UserFrom.Avatar : null,
+                            Type = _x.Type.ToString(),
+                            UserFrom = _x.IdUserFrom == null ?
+                            null :
+                            new {
+                                _x.UserFrom.FirstName,
+                                _x.UserFrom.LastName,
+                                _x.UserFrom.Avatar
+                            },
                             _x.UserEvent.IdPlace,
                             _x.Date
                         })
@@ -98,8 +103,7 @@ namespace Afisha.Controllers {
                     request.CustomData.Notifications = notificationsData.Select(_x => new {
                         _x.Type,
                         Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
-                        _x.Fullname,
-                        _x.Avatar,
+                        _x.UserFrom,
                         PlaceName = Afisha.Places[_x.IdPlace].Name
                     });
                 }

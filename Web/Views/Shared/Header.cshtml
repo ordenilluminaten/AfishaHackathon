@@ -38,24 +38,45 @@
                     @await Html.PartialAsync("Friends")
                 </li>
 
-                <li class="dropdown notification-dropdown"
+                <li class="dropdown notification-dropdown" id="notification-dropdown-li"
                     onclick="dropdown.toggle(this, event, 'notification-dropdown')">
                     <a href="javascript:;" data-toggle="dropdown">
                         <svg width="25" height="25" class="svg-icon">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#notification"></use>
                         </svg>
                     </a>
-                   {{#with parent.customData.notifications}}
+                    {{#with @@this.parent.get('currentUser.customData.notifications')}}
                     <div id="notification-dropdown" class="dropdown-content">
                         <ul class="dropdown-menu">
                             <li class="external">
-                                <h3>
-                                    У вас {{notifications.length}} {{DeclOfNum(notifications.length,['новое уведомление','новых уведомления','новых уведомлений'])}}
-                                </h3>
+                                <h4>
+                                    У вас {{this.length==0?'нет':this.length}} {{DeclOfNum(this.length,['новое уведомление','новых уведомления','новых уведомлений'])}}
+                                </h4>
+                                <hr />
                             </li>
                             <li>
                                 <div class="content-wrapper" style="position: relative; overflow: hidden; width: auto; height: 275px;">
                                     {{#each parent.customData.notifications}}
+                                    <div class="col-3 mb-2 friend">
+                                        <img class="icon-circle user-avatar" id="header-avatar" src="{{this.userFrom.avatar==null?'~/images/event-icon.png':this.userFrom.avatar}}" />
+                                        style="float: left; margin-right: 10px;">
+                                        <div class="user-info" style="float: left; line-height: 20px;">
+                                            <p>{{this.userFrom.first_name}}</p>
+                                            <p>{{this.userFrom.last_name}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        {{#if this.type == 'NewOffer'}}
+                                        Новая заявка
+                                        {{elseif this.type =='OfferAccepted'}}
+                                        Заявка принята
+                                        {{elseif this.type == 'OfferRejected'}}
+                                        Заявка отклонена
+                                        {{/if}}
+                                    </div>
+                                    <div class="col-3">
+                                        {{this.placeName}}
+                                    </div>
                                     {{/each}}
                                 </div>
                             </li>
