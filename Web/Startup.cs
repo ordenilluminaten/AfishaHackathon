@@ -73,13 +73,14 @@ namespace Afisha {
             services.AddTransient<FeedParser>();
             services.AddSingleton<AfishaData>();
             services.AddSingleton<VkApi>();
+            services.AddSingleton<EventNotificator>();
             services.AddSingleton<AfishaBot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSetting> _appSetting, AfishaData _data, AfishaBot _afishaBot) {
             if (env.IsDevelopment()) {
-                _afishaBot.Start(BotTaskType.NotificationAboutEvent);
+                //_afishaBot.Start(BotTaskType.NotificationAboutEvent);
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
