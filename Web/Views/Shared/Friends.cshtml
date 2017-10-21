@@ -114,6 +114,13 @@
                                         {{friendEvents.title}}
                                     </a>
                                 </td>
+                                <td>
+                                    {{#if IsOffer}}
+                                    1
+                                    {{else}}
+                                    2
+                                    {{/if}}
+                                </td>
                                 <td>3 из {{friendEvents.userTotalCount}}</td>
                                 <td>{{friendEvents.date}}</td>
                             </tr>

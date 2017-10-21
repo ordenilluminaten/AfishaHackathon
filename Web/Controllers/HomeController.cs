@@ -37,6 +37,7 @@ namespace Afisha.Controllers
             public DateTime Date { get; set; }
             public int UserTotalCount { get; set; }
             public string Title { get; set; }
+            public bool IsOffer { get; set; }
         }
 
 
@@ -132,14 +133,27 @@ namespace Afisha.Controllers
         public async Task<IActionResult> GetUsersEventsByIds(IEnumerable<int> ids)
         {
             var userDict = new Dictionary<int, List<UserPlaces>>();
-            var userEvents = await Unit.Get<UserEvent, Guid>().All
-                .Where(_x => ids.Contains(_x.IdUser))
-                .ToArrayAsync();
+            var userEvents = await Unit.Get<UserEvent, Guid>().GetList(new UserEventFilter
+            {
+                UseBaseFilter = false,
+                SelectedUserIds = ids
+            })
+            .ToArrayAsync();
+
+            var userEventOffers = await Unit.Get<UserEventOffer, Guid>()
+            .GetList(new UserEventOfferFilter
+            {
+                UseBaseFilter = false,
+                SelectedUserIds = ids
+            })
+            .Include(_x => _x.UserEvent)
+            .ToArrayAsync();
 
             foreach (var userEvent in userEvents)
             {
                 List<UserPlaces> events = null;
-                if (!userDict.TryGetValue(userEvent.IdUser, out events)) {
+                if (!userDict.TryGetValue(userEvent.IdUser, out events))
+                {
                     events = new List<UserPlaces>();
                     userDict[userEvent.IdUser] = events;
                 }
@@ -150,6 +164,25 @@ namespace Afisha.Controllers
                     Date = userEvent.Date,
                     UserTotalCount = userEvent.UserCount,
                     Title = Afisha.Places[userEvent.IdPlace].Name
+                });
+            }
+
+            foreach (var userEventOffer in userEventOffers)
+            {
+                List<UserPlaces> events = null;
+                if (!userDict.TryGetValue(userEventOffer.IdUser, out events))
+                {
+                    events = new List<UserPlaces>();
+                    userDict[userEventOffer.IdUser] = events;
+                }
+                events.Add(new UserPlaces
+                {
+                    Id = userEventOffer.Id,
+                    IdPlace = userEventOffer.UserEvent.IdPlace,
+                    Date = userEventOffer.Date,
+                    UserTotalCount = userEventOffer.UserEvent.UserCount,
+                    Title = Afisha.Places[userEventOffer.UserEvent.IdPlace].Name,
+                    IsOffer = true
                 });
             }
 
@@ -191,3 +224,4 @@ namespace Afisha.Controllers
         }
     }
 }
+
