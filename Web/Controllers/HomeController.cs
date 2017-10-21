@@ -91,9 +91,36 @@ namespace Afisha.Controllers {
                             _x.UserEvent.IdPlace,
                             _x.Date
                         })
-                        .ToArrayAsync();
+                        .ToArrayAsync();           
 
                     request.CustomData = new CustomData();
+                    // request.CustomData.MyPlaces = await GetUsersEventsByIds(new int[CurrentUser.Id]);
+
+                    var userEvents = await Unit.Get<UserEvent, Guid>().All
+                            .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
+                            .Select(_x => new {
+                                Id = _x.Id,
+                                IdPlace = _x.IdPlace,
+                                Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
+                                UserTotalCount = _x.UserCount,
+                                Title = Afisha.Places[_x.IdPlace].Name
+                            })
+                            .ToArrayAsync();
+
+                        var userEventOffers = await Unit.Get<UserEventOffer, Guid>()
+                        .All
+                        .Where(_x => _x.Date >= DateTime.Now && _x.IdUser.Equals(CurrentUser.Id))
+                        .Include(_x => _x.UserEvent)
+                        .Select(_x => new {
+                                Id = _x.IdUserEvent,
+                                IdPlace = _x.UserEvent.IdPlace,
+                                Date = _x.Date.ToString(@"dd/MM/yy H:mm:ss"),
+                                UserTotalCount = _x.UserEvent.UserCount,
+                                Title = Afisha.Places[_x.UserEvent.IdPlace].Name,
+                                IsOffer = true
+                        })
+                        .ToArrayAsync();
+                    
                     request.CustomData.IsFamiliarWithBot = CurrentUser.IsFamiliarWithBot;
                     request.CustomData.Notifications = notificationsData.Select(_x => new {
                         _x.Type,
@@ -219,12 +246,12 @@ namespace Afisha.Controllers {
         public async Task<IActionResult> GetUsersEventsByIds(int[] ids) {
             var userDict = new Dictionary<int, List<UserPlaces>>();
             var userEvents = await Unit.Get<UserEvent, Guid>().All
-                .Where(_x => ids.Contains(_x.IdUser))
+                .Where(_x => _x.Date >= DateTime.Now && ids.Contains(_x.IdUser))
                 .ToArrayAsync();
 
             var userEventOffers = await Unit.Get<UserEventOffer, Guid>()
             .All
-            .Where(_x => ids.Contains(_x.IdUser))
+            .Where(_x => _x.Date >= DateTime.Now && ids.Contains(_x.IdUser))
             .Include(_x => _x.UserEvent)
             .ToArrayAsync();
 

@@ -6,7 +6,7 @@ namespace Models.Afisha {
         private readonly IMemoryCache p_cache;
         public const string CachePlaceDictKey = "places";
         public const string CacheCityDictKey = "cities";
-        public const string CacheCityPlacesDictKey = "cities";
+        public const string CacheCityPlacesDictKey = "cityPlaces";
 
         public AfishaData(IMemoryCache _cache, FeedParser _parser) {
             p_cache = _cache;

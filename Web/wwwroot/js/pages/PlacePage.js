@@ -22,7 +22,7 @@
                 },
                 complete: () => {
                     Tabs.init("#page");
-                    VK.Widgets.Comments('reviews', {}, this.event.ID);
+                    VK.Widgets.Comments('reviews', {}, this.event.id);
                 },
                 inviteCompanion: (ctx, idPlace) => {
                     var modal = new Modal({
@@ -94,7 +94,7 @@
             template: '#user-events-template',
             data: {
                 getItems: (filter, onDone) => {
-                    filter.IdPlace = this.event.ID;
+                    filter.IdPlace = this.event.id;
                     Request.post({
                         url: '/Home/UserEvents',
                         data: filter
