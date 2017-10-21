@@ -86,14 +86,15 @@ namespace Afisha.Controllers
         [HttpPost]
         public async Task<IActionResult> Places(PlacesFilter filter)
         {
-            return Json(true);
-            //var data = await AfishaD.Movies.GetAsync(filter);
-            //return Json(
-            //new
-            //{
-            //    Data = data,
-            //    Filter = filter
-            //});
+            var list = Afisha.CityPlaces[1];
+            var q = list.AsQueryable();
+            filter.Filter(ref q);
+
+            return Json(new
+            {
+                Items = q,
+                Filter = filter
+            });
         }
 
         [HttpPost]
