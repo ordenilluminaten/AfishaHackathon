@@ -161,11 +161,31 @@ namespace Afisha.Controllers {
 
         [HttpPost]
         public async Task<IActionResult> RemoveOffer(Guid idOffer) {
-            var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.Id == idOffer);
+            var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.Id == idOffer, _x => _x.Include(_y => _y.UserEvent));
             if (offer == null)
                 return JsonError("Заявка на найдена");
             if (offer.IdUser != CurrentUser.Id)
                 return JsonError("Нет доступа к событию");
+
+            var newUserNotification = new UserNotification {
+                IdUser = offer.IdUser,
+                IdUserEvent = offer.IdUserEvent,
+                IdUserFrom = CurrentUser.Id,
+                Type = UserNotificationType.OfferRejected,
+                Date = DateTime.Now
+            };
+
+            Unit.DbContext.UserNotifications.Add(newUserNotification);
+
+            var newMessageData = new MessageData {
+                random_id = DateTime.Now.Ticks,
+                user_id = offer.IdUser,
+                message = $"Пользователь {CurrentUser.FullName} отклонил вашу заявку на совместный поход в " +
+                          $"\"{Afisha.Places[offer.UserEvent.IdPlace].Name}\"\n" +
+                          $"Перейти: {AppSettings.Value.VkApiSettings.AppUrl}"
+            };
+
+            await Api.Messages.SendAsync(newMessageData);
 
             Unit.Get<UserEventOffer>().Delete(offer);
             await Unit.SaveAsync();
