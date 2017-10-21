@@ -96,26 +96,33 @@
             </div>
             <div class="row friend-list">
                 {{#each friendsEvents.items: idUser}}
-                {{#with firends[idUser] as friend}}
+                {{#with friends.items[idUser] as friend}}
                 {{#if friend != null}}
                 <div class="col-12 mb-2 friend">
                     <img class="icon-circle user-avatar" id="header-avatar" src="{{friend.photo_100}}"
                         style="float: left; margin-right: 10px;">
                     <div class="user-info" style="float: left; line-height: 20px;">
-                        <p>{{friend.frist_name}}</p>
+                        <p>{{friend.first_name}}</p>
                         <p>{{friend.last_name}}</p>
                     </div>
                     <table style="line-height: 15px; width: 100%;">
                         <tbody>
-                            {{#each friendsEvents.items[idUser].events as event}}
+                            {{#each friendsEvents.items[idUser] as friendEvents}}
                             <tr>
                                 <td>
                                     <a href="javascript:;" style="text-decoration: underline;color: #00b6ff;">
-                                        {{event.title}}
+                                        {{friendEvents.title}}
                                     </a>
                                 </td>
-                                <td>3 из {{event.userTotalCount}}</td>
-                                <td>{{event.date}}</td>
+                                <td>
+                                    {{#if IsOffer}}
+                                    1
+                                    {{else}}
+                                    2
+                                    {{/if}}
+                                </td>
+                                <td>3 из {{friendEvents.userTotalCount}}</td>
+                                <td>{{friendEvents.date}}</td>
                             </tr>
                             {{/each}}                
                         </tbody>
