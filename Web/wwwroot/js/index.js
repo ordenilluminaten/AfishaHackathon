@@ -1,16 +1,31 @@
 ﻿var header = Ractive.extend({
     isolated: false,
-    template: '#header-template'
+    template: '#header-template',
+    on: {
+        setFamiliarWithBot: (_ctx) => {
+            Request.post({
+                method: Request.method.post,
+                url: '/home/setFamiliarWithBot'
+            }).then(() => {
+                appRactive.set('currentUser.customData.isFamiliarWithBot', true);
+                dropdown.hide(document.getElementById('bot-dropdown'), 'bot-dropdown');
+
+            });
+        },
+        openGroupDialog: (_ctx, _url) => {
+            window.open(_url, '_blank');
+        }
+    }
 });
 
 var appRactive = Ractive({
     target: '#app-wrapper',
     template: '#app-template',
     components: {
-        Header: header          
+        Header: header
     },
     data: {
-        currentPage: null    
+        currentPage: null
     },
     on: {
         init: () => {
@@ -49,7 +64,7 @@ function getVkfriends() {
             count: count,
             userIds: userIds,
             items: friends
-        });       
+        });
     });
 }
 

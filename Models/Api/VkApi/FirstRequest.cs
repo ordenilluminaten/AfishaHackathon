@@ -43,8 +43,12 @@ namespace Models.Api.VkApi {
 
         [FromQuery(Name = "viewer_type")]
         public int ViewerType { get; set; }
+        public CustomData CustomData { get; set; }
     }
 
+    public class CustomData {
+        public bool IsFamiliarWithBot { get; set; }
+    }
     public class ApiResult {
         /// <summary>
         /// Все ответы от API
