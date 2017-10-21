@@ -108,5 +108,29 @@ namespace Afisha.Controllers {
                 count = userEvents.Count
             });
         }
+
+        [HttpGet]
+        [Route(nameof(CreateInviteCompanion))]
+        public async Task<IActionResult> CreateInviteCompanion(int idEvent) {
+            return PartialView("InviteCompanionModal", new UserEvent {
+                // IdEvent = idEvent,
+                IdUser = CurrentUser.Id,
+                Date = DateTime.Now
+            });
+        }
+
+        [HttpPost]
+        [Route(nameof(CreateInviteCompanion))]
+        public async Task<IActionResult> CreateInviteCompanion(UserEvent invite) {
+            if (!ModelState.IsValid)
+                return JsonModelState(ModelState);
+
+            Unit.Get<UserEvent>().Create(invite);
+            await Unit.SaveAsync();
+
+            return Json(new {
+                idUserEvent = invite.Id
+            });
+        }     
     }
 }
