@@ -40,7 +40,7 @@ namespace Models {
         public virtual User User { get; set; }
 
         [Required]
-        public int IdEvent { get; set; }
+        public string IdPlace { get; set; }
 
         [Range(1, 10)]
         public int UserCount { get; set; }

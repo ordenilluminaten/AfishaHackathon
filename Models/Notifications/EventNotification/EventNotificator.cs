@@ -10,9 +10,15 @@ using Microsoft.EntityFrameworkCore;
 using Models.Afisha;
 using Models.Api.VkApi;
 using Models.Api.VkApi.VkCallbackAPI.RequestDataModels;
+using Models.Database.Tables;
 using Models.Filters;
 
 namespace Models.Notifications.EventNotification {
+    public class UserEventNotificationData {
+        public int IdUser { get; set; }
+        public string IdPlace { get; set; }
+        public bool IsSended { get; set; }
+    }
     public class EventNotificator : BaseNotificator {
         private readonly AfishaData p_afishaData;
         private readonly UnitOfWork<ApplicationDbContext> p_unit;
@@ -26,8 +32,10 @@ namespace Models.Notifications.EventNotification {
         protected override async Task RunLogic(CancellationToken _cancellationToken) {
             var watch = Stopwatch.StartNew();
             var requestWatch = Stopwatch.StartNew();
+            var now = DateTime.Now;
             var events = await p_unit.Get<UserEvent, Guid>().GetList(new UserEventFilter {
                 Date = null,
+                DateNow = now,
                 UseBaseFilter = false,
                 UseSort = false,
                 IsNotificationDate = true,
@@ -35,12 +43,12 @@ namespace Models.Notifications.EventNotification {
             })
             .Select(_x => new EventNotificatorModel {
                 IdUser = _x.IdUser,
-                IdEvent = _x.IdEvent,
+                IdPlace = _x.IdPlace,
                 Date = _x.Date,
                 Offers = _x.Offers.Where(_y => _y.State == CompanionState.Accepted && _y.User.CanRecieveGroupMessages)
                                   .Select(_y => new EventNotificatorModel {
                                       IdUser = _y.IdUser,
-                                      IdEvent = _y.UserEvent.IdEvent,
+                                      IdPlace = _y.UserEvent.IdPlace,
                                       Date = _y.UserEvent.Date
                                   })
             })
@@ -49,11 +57,20 @@ namespace Models.Notifications.EventNotification {
             if (events.Count == 0)
                 return;
 
-            //var sendedNotifications = Unit.Get<UserEventNotification, Guid>().All.Where(_x=>_x.)
+            var sendedNotifications = p_unit.Get<UserEventNotification, Guid>()
+                .GetList(new UserEventNotificationFilter {
+                    DateNow = now,
+                    UseBaseFilter = false,
+                    UseSort = false,
+                    IsNotificationDate = true
+                })
+                .Select(_x => new UserEventNotificationData { IdUser = _x.IdUser, IdPlace = _x.IdPlace, IsSended = _x.IsSended })
+                .GroupBy(_x => _x.IdUser)
+                .ToDictionaryAsync(_x => _x.Key, _cancellationToken);
 
             requestWatch.Stop();
-            var allEvents = new Dictionary<int, EventNotificatorModel>();
-            var userEventsDict = new Dictionary<int, HashSet<int>>();
+            var allEvents = new Dictionary<string, EventNotificatorModel>();
+            var userEventsDict = new Dictionary<int, HashSet<string>>();
 
             using (var eventsEnumerator = events.GetEnumerator()) {
                 while (eventsEnumerator.MoveNext()) {
@@ -86,7 +103,7 @@ namespace Models.Notifications.EventNotification {
             watch.Reset();
         }
 
-        private void GetMessageText(StringBuilder _stringBuilder, IEnumerable<int> eventsIdSet, IDictionary<int, EventNotificatorModel> allEvents) {
+        private void GetMessageText(StringBuilder _stringBuilder, IEnumerable<string> eventsIdSet, IDictionary<string, EventNotificatorModel> allEvents) {
             const string finalMessage = "[Напоминание]\n";
             _stringBuilder.Append(finalMessage);
             using (var enumerator = eventsIdSet.GetEnumerator()) {
@@ -101,35 +118,35 @@ namespace Models.Notifications.EventNotification {
                 }
             }
         }
-        private void ProcessEventData(IDictionary<int, HashSet<int>> userEventsDict,
-            IDictionary<int, EventNotificatorModel> allEventsDict,
+        private void ProcessEventData(IDictionary<int, HashSet<string>> userEventsDict,
+            IDictionary<string, EventNotificatorModel> allEventsDict,
             EventNotificatorModel _data) {
             var isUserInUserEventsDict =
-                userEventsDict.TryGetValue(_data.IdUser, out HashSet<int> userEventSet);
+                userEventsDict.TryGetValue(_data.IdUser, out HashSet<string> userEventSet);
 
-            if (allEventsDict.ContainsKey(_data.IdEvent)) {
+            if (allEventsDict.ContainsKey(_data.IdPlace)) {
                 //Тут мероприятие уже было, поэтому надо проверить нет ли его в сет у пользователя
                 if (isUserInUserEventsDict) {
-                    if (!userEventSet.Contains(_data.IdEvent))
-                        userEventSet.Add(_data.IdEvent);
+                    if (!userEventSet.Contains(_data.IdPlace))
+                        userEventSet.Add(_data.IdPlace);
                 } else {
                     userEventsDict.Add(
                         _data.IdUser,
-                        new HashSet<int> {
-                            _data.IdEvent
+                        new HashSet<string> {
+                            _data.IdPlace
                         });
                 }
             } else {
-                allEventsDict.Add(_data.IdEvent, _data);
+                allEventsDict.Add(_data.IdPlace, _data);
                 //Если ивента нет в общем списке ивентов и пользователь уже в словаре
                 //тогда мы имеем право сразу добавить
                 if (isUserInUserEventsDict) {
-                    userEventSet.Add(_data.IdEvent);
+                    userEventSet.Add(_data.IdPlace);
                 } else {
                     userEventsDict.Add(
                         _data.IdUser,
-                        new HashSet<int> {
-                            _data.IdEvent
+                        new HashSet<string> {
+                            _data.IdPlace
                         });
                 }
             }
