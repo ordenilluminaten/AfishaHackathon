@@ -96,7 +96,7 @@
             </div>
             <div class="row friend-list">
                 {{#each friendsEvents.items: idUser}}
-                {{#with friends[idUser] as friend}}
+                {{#with friends.items[idUser] as friend}}
                 {{#if friend != null}}
                 <div class="col-12 mb-2 friend">
                     <img class="icon-circle user-avatar" id="header-avatar" src="{{friend.photo_100}}"
