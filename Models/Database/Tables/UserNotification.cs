@@ -12,6 +12,7 @@ namespace Models.Database.Tables {
         public Guid IdUserEvent { get; set; }
         public UserEvent UserEvent { get; set; }
         public DateTime Date { get; set; }
+        public DateTime? DateReaded { get; set; }
         public UserNotificationType Type { get; set; }
         [ForeignKey(nameof(User))]
         public int IdUser { get; set; }

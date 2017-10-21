@@ -17,6 +17,7 @@ using Models.Extensions;
 using Models.Filters;
 using ATMIT.Web.Utility;
 using Models.Api.VkApi.VkCallbackAPI.RequestDataModels;
+using Models.Database.Tables;
 
 namespace Afisha.Controllers {
     public class HomeController : BaseController {
@@ -133,6 +134,17 @@ namespace Afisha.Controllers {
             await Unit.SaveAsync();
             if (!CurrentUser.CanRecieveGroupMessages)
                 return Json(true);
+
+            var newUserNotification = new UserNotification {
+                IdUser = userEvent.IdUser,
+                IdUserEvent = userEvent.Id,
+                IdUserFrom = CurrentUser.Id,
+                Type = UserNotificationType.NewOffer,
+                Date = DateTime.Now
+            };
+
+            Unit.DbContext.UserNotifications.Add(newUserNotification);
+            await Unit.SaveAsync();
 
             var newMessageData = new MessageData {
                 random_id = DateTime.Now.Ticks,
