@@ -27,7 +27,7 @@ namespace Models.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<int>("IdEvent");
+                    b.Property<string>("IdPlace");
 
                     b.Property<int>("IdUser");
 
@@ -72,7 +72,8 @@ namespace Models.Migrations
 
                     b.Property<int>("Gender");
 
-                    b.Property<int>("IdEvent");
+                    b.Property<string>("IdPlace")
+                        .IsRequired();
 
                     b.Property<int>("IdUser");
 

@@ -1,5 +1,5 @@
 namespace Models.Afisha.Bot {
     public class BotCommands {
-        public const string Start = "старт";
+        public const string Start = "бот старт";
     }
 }

@@ -1,0 +1,64 @@
+@using Models;
+@using ATMIT.Web.Utility;
+@model UserEvent
+<style>
+    #invite-companion input, #invite-companion select {
+        width: 100%;
+        padding: 1px 0;
+        border: 1px solid #e6e6e6;
+        border-radius: 4px;
+        min-height: 23px;
+        text-align: center;
+    }
+
+    #invite-companion .comment {
+        width: 100%;
+        overflow-y: auto;
+        resize: none;
+        min-height: 167px;
+        max-height: 167px;
+        border: 1px solid #e6e6e6;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+</style>
+
+<div id="invite-companion-wrapper">
+    <script id='invite-companion-template' type="text/ractive">
+        <input name="Id" value="{{Id}}" type="hidden" />
+        <input name="IdEvent" value="{{IdEvent}}" type="hidden" />
+        <input name="IdUser" value="{{IdUser}}" type="hidden" />
+
+        <div id="invite-companion" class="row">
+            <div class="col-5">
+                <label>Дата и время</label>
+                <input class="companion-datepicker" value="{{Date}}" name="Date" type="datetime" />
+
+                <label>Кол-во человек</label>
+                <input type="number" min="1" max="10" value="{{UserCount}}" name="UserCount" />
+
+                <label>Возраст</label>
+                <input class="age" type="number" min="0" max="200" value="{{Age}}" placeholder="0 - любой" name="Age" />
+
+                <label>Пол</label>
+                <select class="gender" name="Gender" value="{{Gender}}">
+                    @foreach (Gender gender in Enum.GetValues(typeof(Gender))) {
+                        <option value="@((int)gender)">@gender.GetDisplayName()</option>
+                    }
+                </select>
+            </div>
+            <div class="col-7">
+                <label>Комментарий</label>
+                <textarea class="comment" name="Comment" value="{{Comment}}"></textarea>
+            </div>
+        </div>
+    </script>
+</div>
+<script>
+    var viewData = @(Json.Serialize(Model));
+    var inviteRactive = Ractive({
+        target: '#invite-companion-wrapper',
+        template: '#invite-companion-template',
+        data: viewData
+    });
+</script>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ATMIT.Web.Utility;
 using Models;
 using Models.Afisha.Bot;
 using Models.Api.VkApi.VkCallbackAPI;
@@ -9,14 +10,20 @@ namespace Afisha.Controllers.VkCallbackAPI {
 
     public partial class APIController {
         public async Task<bool> ProcessNewMessage(PrivateMessage _message) {
+            if (_message.Body.IsNullOrWhiteSpace()) {
+                return false;
+            }
+            var splittedBody = _message.Body.Split(" ");
+            if (splittedBody.Length == 0 || splittedBody[0].ToLower() != "бот")
+                return false;
             //messages.send
             await VkApi.Messages.MarkAsReadAsync(_message.IdUser, _message.Id);
-            var messageData = new MessageData() {
+            var messageData = new MessageData {
                 user_id = _message.IdUser,
                 random_id = DateTime.UtcNow.Ticks
             };
             if (_message.Body.Trim().ToLower() != BotCommands.Start) {
-                messageData.message = "Извините, но сейчас я знаю только слово \"старт\".";
+                messageData.message = "Извините, но сейчас я знаю только слово \"бот старт\".";
                 await VkApi.Messages.SendAsync(messageData);
             } else {
                 var user = await Unit.Get<User>().FindAsync(_x => _x.Id == _message.IdUser);

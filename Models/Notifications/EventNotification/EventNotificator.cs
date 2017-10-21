@@ -35,93 +35,99 @@ namespace Models.Notifications.EventNotification {
         }
 
         protected override async Task RunLogic(CancellationToken _cancellationToken) {
-            var watch = Stopwatch.StartNew();
-            var requestWatch = Stopwatch.StartNew();
-            var now = DateTime.Now;
-            var events = await p_unit.Get<UserEvent, Guid>().GetList(new UserEventFilter {
-                Date = null,
-                DateNow = now,
-                UseBaseFilter = false,
-                UseSort = false,
-                IsNotificationDate = true,
-                IsUserCanRecieveNotification = true
-            })
-            .Select(_x => new EventNotificatorModel {
-                IdUser = _x.IdUser,
-                IdPlace = _x.IdPlace,
-                Date = _x.Date,
-                Offers = _x.Offers.Where(_y => _y.State == CompanionState.Accepted && _y.User.CanRecieveGroupMessages)
-                                  .Select(_y => new EventNotificatorModel {
-                                      IdUser = _y.IdUser,
-                                      IdPlace = _y.UserEvent.IdPlace,
-                                      Date = _y.UserEvent.Date
-                                  })
-            })
-            .ToListAsync(_cancellationToken);
+            try {
+                var watch = Stopwatch.StartNew();
+                var requestWatch = Stopwatch.StartNew();
+                var now = DateTime.Now;
 
-            if (events.Count == 0)
-                return;
-
-            var sendedNotifications = await p_unit.Get<UserEventNotification, Guid>()
-                .GetList(new UserEventNotificationFilter {
+                var events = await p_unit.Get<UserEvent, Guid>().GetList(new UserEventFilter {
+                    Date = null,
                     DateNow = now,
                     UseBaseFilter = false,
                     UseSort = false,
-                    IsNotificationDate = true
+                    IsNotificationDate = true,
+                    IsUserCanRecieveNotification = true
                 })
-                .Select(_x => new UserEventNotificationData { IdUser = _x.IdUser, IdPlace = _x.IdPlace, IsSended = _x.IsSended })
-                .GroupBy(_x => _x.IdUser)
-                .ToDictionaryAsync(_x => _x.Key, _cancellationToken);
+                .Select(_x => new EventNotificatorModel {
+                    IdUser = _x.IdUser,
+                    IdPlace = _x.IdPlace,
+                    Date = _x.Date,
+                    Offers = _x.Offers.Where(_y => _y.State == CompanionState.Accepted && _y.User.CanRecieveGroupMessages)
+                                      .Select(_y => new EventNotificatorModel {
+                                          IdUser = _y.IdUser,
+                                          IdPlace = _y.UserEvent.IdPlace,
+                                          Date = _y.UserEvent.Date
+                                      })
+                })
+                .ToListAsync(_cancellationToken);
 
-            requestWatch.Stop();
-            var allEvents = new Dictionary<string, EventNotificatorModel>();
-            var userEventsDict = new Dictionary<int, HashSet<string>>();
+                if (events.Count == 0)
+                    return;
 
-            using (var eventsEnumerator = events.GetEnumerator()) {
-                while (eventsEnumerator.MoveNext()) {
-                    var @event = eventsEnumerator.Current;
-                    if (sendedNotifications.ContainsKey(@event.IdUser)) {
-                        var sendedNotification = sendedNotifications[@event.IdUser]
-                            .FirstOrDefault(_x => _x.IdPlace == @event.IdPlace && _x.IsSended);
-                        if (sendedNotification != null)
-                            continue;
-                    }
-                    ProcessEventData(userEventsDict, allEvents, @event);
-                    using (var offersEnumerator = @event.Offers.GetEnumerator()) {
-                        while (offersEnumerator.MoveNext()) {
-                            var offerEvent = offersEnumerator.Current;
-                            ProcessEventData(userEventsDict, allEvents, offerEvent);
+                var sendedNotifications = await p_unit.Get<UserEventNotification, Guid>()
+                    .GetList(new UserEventNotificationFilter {
+                        Date = now,
+                        UseBaseFilter = false,
+                        UseSort = false,
+                        IsNotificationDate = true
+                    })
+                    .Select(_x => new UserEventNotificationData { IdUser = _x.IdUser, IdPlace = _x.IdPlace, IsSended = _x.IsSended })
+                    .GroupBy(_x => _x.IdUser)
+                    .ToDictionaryAsync(_x => _x.Key, _cancellationToken);
+
+                requestWatch.Stop();
+                var allEvents = new Dictionary<string, EventNotificatorModel>();
+                var userEventsDict = new Dictionary<int, HashSet<string>>();
+
+                using (var eventsEnumerator = events.GetEnumerator()) {
+                    while (eventsEnumerator.MoveNext()) {
+                        var @event = eventsEnumerator.Current;
+                        if (sendedNotifications.ContainsKey(@event.IdUser)) {
+                            var sendedNotification = sendedNotifications[@event.IdUser]
+                                .FirstOrDefault(_x => _x.IdPlace == @event.IdPlace && _x.IsSended);
+                            if (sendedNotification != null)
+                                continue;
+                        }
+                        ProcessEventData(userEventsDict, allEvents, @event);
+                        using (var offersEnumerator = @event.Offers.GetEnumerator()) {
+                            while (offersEnumerator.MoveNext()) {
+                                var offerEvent = offersEnumerator.Current;
+                                ProcessEventData(userEventsDict, allEvents, offerEvent);
+                            }
                         }
                     }
                 }
-            }
 
-            var stringBuilder = new StringBuilder();
-            using (var userEvents = userEventsDict.GetEnumerator()) {
-                while (userEvents.MoveNext()) {
-                    var current = userEvents.Current;
-                    GetMessageText(stringBuilder, current.Value, allEvents);
-                    var message = new MessageData {
-                        user_id = current.Key,
-                        random_id = DateTime.UtcNow.Ticks,
-                        message = stringBuilder.ToString()
-                    };
-                    stringBuilder.Clear();
-                    var result = await p_vkApi.Messages.SendAsync(message);
-                    var resultObj = JObject.Parse(result);
-                    var hasError = resultObj["error"] != null;
-                    foreach (var @event in allEvents) {
-                        var newNotification = new UserEventNotification {
-                            Date = DateTime.Now,
-                            IdPlace = @event.Value.IdPlace,
-                            IdUser = @event.Value.IdUser,
-                            IsSended = hasError
+                var stringBuilder = new StringBuilder();
+                using (var userEvents = userEventsDict.GetEnumerator()) {
+                    while (userEvents.MoveNext()) {
+                        var current = userEvents.Current;
+                        GetMessageText(stringBuilder, current.Value, allEvents);
+                        var message = new MessageData {
+                            user_id = current.Key,
+                            random_id = DateTime.UtcNow.Ticks,
+                            message = stringBuilder.ToString()
                         };
-                        p_unit.Get<UserEventNotification>().Create(newNotification);
+                        stringBuilder.Clear();
+                        var result = await p_vkApi.Messages.SendAsync(message);
+                        var resultObj = JObject.Parse(result);
+                        var hasError = !resultObj.TryGetValue("error", out var jToken);
+                        foreach (var @event in allEvents) {
+                            var newNotification = new UserEventNotification {
+                                Date = DateTime.Now,
+                                IdPlace = @event.Value.IdPlace,
+                                IdUser = @event.Value.IdUser,
+                                IsSended = hasError
+                            };
+                            p_unit.DbContext.Add(newNotification);
+                        }
                     }
                 }
+                await p_unit.SaveAsync();
+            } catch (Exception e) {
+                Console.WriteLine(e);
+                throw;
             }
-            await p_unit.SaveAsync();
         }
 
         private void GetMessageText(StringBuilder _stringBuilder, IEnumerable<string> eventsIdSet, IDictionary<string, EventNotificatorModel> allEvents) {
@@ -130,11 +136,10 @@ namespace Models.Notifications.EventNotification {
             using (var enumerator = eventsIdSet.GetEnumerator()) {
                 while (enumerator.MoveNext()) {
                     var @event = allEvents[enumerator.Current];
-                    //var place = p_afishaData.Places[@event.IdEvent];
-                    var place = string.Empty;
+                    var place = p_afishaData.Places[@event.IdPlace];
                     if (place == null)
                         continue;
-                    var body = $"Не забудьте про мероприятие {place}, оно начинается {@event.Date}\n";
+                    var body = $"У вас было запланировано событие в \"{place}\" , оно начинается {@event.Date}\n";
                     _stringBuilder.Append(body);
                 }
             }
