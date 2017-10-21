@@ -121,22 +121,16 @@ namespace Afisha.Controllers {
 
         [HttpPost]
         [Route(nameof(GetUsersEventsByIds))]
-        public async Task<IActionResult> GetUsersEventsByIds(IEnumerable<int> ids)
+        public async Task<IActionResult> GetUsersEventsByIds(int[] ids)
         {
             var userDict = new Dictionary<int, List<UserPlaces>>();
-            var userEvents = await Unit.Get<UserEvent, Guid>().GetList(new UserEventFilter
-            {
-                UseBaseFilter = false,
-                SelectedUserIds = ids
-            })
-            .ToArrayAsync();
+            var userEvents = await Unit.Get<UserEvent, Guid>().All
+                .Where(_x => ids.Contains(_x.IdUser))
+                .ToArrayAsync();
 
             var userEventOffers = await Unit.Get<UserEventOffer, Guid>()
-            .GetList(new UserEventOfferFilter
-            {
-                UseBaseFilter = false,
-                SelectedUserIds = ids
-            })
+            .All
+            .Where(_x => ids.Contains(_x.IdUser))
             .Include(_x => _x.UserEvent)
             .ToArrayAsync();
 
