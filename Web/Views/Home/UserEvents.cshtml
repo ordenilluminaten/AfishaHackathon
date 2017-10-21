@@ -49,7 +49,7 @@
                                             {{#with acceptedOffers[i] as accOffer}}
                                             <div class="companion" title="{{accOffer.firstname}} {{accOffer.lastname}}">
                                                 <img src="{{getUserAvatar(accOffer.avatar)}}" />
-                                                {{#if userEvent.idUser == currentUser.id}}
+                                                {{#if userEvent.idUser == @@this.parent.parent.get('currentUser.id')}}
                                                     <div class="remove-offer" on-click="@@this.fire('removeOffer', {}, accOffer.id)">
                                                         <svg width="10" height="10" class="svg-icon">
                                                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#remove"></use>
@@ -71,11 +71,11 @@
                             </div>
                         </div>
                         <div class="actions">
-                            {{#if userEvent.idUser === currentUser.id}}
+                            {{#if userEvent.idUser === @@this.parent.parent.get('currentUser.id')}}
                                 <span>Это ваше мероприятие</span>
                                 <button class="action-btn i-will-not-go" on-click="@@this.fire('removeUserEvent', {}, userEvent)">Отменить</button>
                             {{else}}
-                                {{#with getUserOffer(offers, currentUser.id) as userOffer}}
+                                {{#with getUserOffer(offers, @@this.parent.parent.get('currentUser.id')) as userOffer}}
                                     {{#if userOffer == null}}
                                         {{#if offers.length < userCount}}
                                         <button class="action-btn i-will-go" on-click="@@this.fire('createOffer', {}, userEvent.id)">Хочу пойти</button>
@@ -85,13 +85,16 @@
                                         {{/if}}
                                     {{else}}
                                         {{#if userOffer.state === 0}}
-                                        <span>Вы уже подали заявку на это мероприятие</span>
+                                        <span>Вы подали заявку на это мероприятие</span>
                                         {{else}}
-                                        <span>Вы уже идете на это мероприятие</span>
+                                        <span>Вы идете на это мероприятие</span>
                                         {{/if}}
                                         <button class="action-btn i-will-not-go" on-click="@@this.fire('removeOffer', {}, userOffer.id)">Не хочу идти</button>
                                     {{/if}}
                                 {{/with}}
+                            {{/if}}
+                            {{#if offers.length < userCount}}
+                                <button class="action-btn invite-friend" on-click="@@this.fire('inviteFriend')">Пригласить друга</button>
                             {{/if}}
                         </div>
                     </div>

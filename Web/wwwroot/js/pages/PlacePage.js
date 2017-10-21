@@ -90,7 +90,7 @@
     }
 
     _renderUserEvents() {
-        return PaginationRactive({
+        this.userEventsRactive = PaginationRactive({
             template: '#user-events-template',
             data: {
                 getItems: (filter, onDone) => {
@@ -211,8 +211,62 @@
                             }
                         }
                     });
+                },
+                inviteFriend: function(){
+                    var modal = new Modal({
+                        id: 'invite-friends-modal',
+                        title: 'Пригласить друзей',
+                        type: ModalType.custom,
+                        content:{
+                            html:'<div id="invite-friends-wrapper"></div>',
+                            ractiveOptions:{
+                                enable: true,
+                                wrapper: 'invite-friends-wrapper',
+                                template: 'invite-friends-template',
+                                data:{
+                                    filter:{
+                                        search:null
+                                    },
+                                    filterFriends: (friends, filter)=>{
+                                        if(filter.search == null || filter.search.length == 0)
+                                            return friends;
+                                        let search = filter.search.toLowerCase();
+                                        let res = [];
+                                        for (var key in friends) {
+                                            let friend = friends[key];
+                                            if(friend.first_name.toLowerCase().includes(search)
+                                            || friend.last_name.toLowerCase().includes(search)
+                                            || friend.id.toString().includes(search))
+                                            res.push(friend);
+                                        }
+                                        return res;
+                                    }
+                                },
+                                events: {
+                                    inviteFriend: (ctx, idFriend) => {
+                                        Request
+                                    }
+                                }
+                            }   
+                        },
+                        types: {
+                            custom: {
+                                buttons: {
+                                    cancel: {
+                                        class: 'btn-default',
+                                        text: 'Закрыть',
+                                        attrs: {},
+                                        callback: () => {
+                                            Modal.close('invite-friends-modal');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });
+        return this.userEventsRactive;
     }
 }

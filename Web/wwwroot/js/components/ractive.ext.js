@@ -76,12 +76,10 @@ var PaginationRactive = Ractive.extend({
                         console.log('Функция getItems не назначена');
                         return false;
                     }
-                    debugger;
                     getItemsFunc(this.get('filter'), this.get('setData'));
                     return true;
                 },
                 calcPagination: function (_ctx) {
-                    debugger;
                     const filter = self.get('filter');
                     const pages = [];
                     if (filter.pageTotal < 6) {

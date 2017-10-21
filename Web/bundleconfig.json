@@ -86,7 +86,8 @@
         "Views/Home/Places.cshtml",
         "Views/Home/Movies.cshtml",
         "Views/Home/Place.cshtml",
-        "Views/Home/UserEvents.cshtml"
+        "Views/Home/UserEvents.cshtml",
+        "Views/Home/InviteFriendsModal.cshtml"
       ]
     }
   ]

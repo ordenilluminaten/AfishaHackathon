@@ -12,9 +12,9 @@ class Modal {
 
 		this._init().then(() => {
 			this.options.onLoaded();
-			if (this.options.content.ractiveOptions.enable === true) {
-				this._createRactive();
-			}
+			 if (this.options.content.ractiveOptions.enable === true) {
+			 	this._createRactive();
+			 }
 		});
 		this.show();
 	}
@@ -63,9 +63,7 @@ class Modal {
 					url: null,
 					data: {
 
-					},
-					parentRactive: null,
-					ractive: null
+					}
 				}
 			},
 			type: ModalType.alert,
@@ -201,10 +199,11 @@ class Modal {
 	}
 
 	_createRactive() {
+		debugger;
 		this.options.content.ractiveOptions.ractive = new Ractive({
 			el: `#${this.options.content.ractiveOptions.wrapper}`,
 			template: `#${this.options.content.ractiveOptions.template}`,
-			data: function () {
+			data: () => {
 				return this.options.content.ractiveOptions.data;
 			},
 			on: this.options.content.ractiveOptions.events

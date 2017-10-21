@@ -116,6 +116,39 @@ namespace Afisha.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> CreateOffer(Guid idUserEvent) {
+            var userEvent = await Unit.Get<UserEvent>().FindAsync(_x => _x.Id == idUserEvent,
+                _x => _x.Include(_y => _y.Offers));
+            if (userEvent == null)
+                return JsonError("Событие на найдено");
+            if (userEvent.UserCount == userEvent.Offers.Count)
+                return JsonError("В данном событии сейчас нет свободных мест");
+            if (userEvent.Offers.Any(_x => _x.IdUser == CurrentUser.Id))
+                return JsonError("Вы уже состоите в данном событии");
+            userEvent.Offers.Add(new UserEventOffer {
+                IdUserEvent = idUserEvent,
+                Date = DateTime.Now,
+                IdUser = CurrentUser.Id,
+                State = CompanionState.Pending
+            });
+            await Unit.SaveAsync();
+            return Json(true);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveOffer(Guid idOffer) {
+            var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.Id == idOffer);
+            if (offer == null)
+                return JsonError("Заявка на найдена");
+            if (offer.IdUser != CurrentUser.Id)
+                return JsonError("Нет доступа к событию");
+
+            Unit.Get<UserEventOffer>().Delete(offer);
+            await Unit.SaveAsync();
+            return Json(true);
+        }
+
+        [HttpPost]
         [Route(nameof(GetUsersEventsByIds))]
         public async Task<IActionResult> GetUsersEventsByIds(IEnumerable<int> ids)
         {

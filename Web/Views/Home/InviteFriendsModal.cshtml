@@ -1,0 +1,37 @@
+<script id="invite-friends-template" type="text/html">
+    <div class="filter-block">
+        <div class="filter-bar">
+            <div class="filter selected mr-2">
+                <svg class="svg-icon mr-1" width="15" height="15">
+                    <use xlink="http://www.w3.org/1999/xlink" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#search"></use>
+                </svg> 
+                <input type="text" placeholder="Поиск" value="{{filter.search}}">
+            </div> 
+        </div>
+    </div>
+    <div class='row' style='max-height: 400px;'>
+        {{#if @@global.appRactive.get('currentUser.friends.count') == 0}}
+            <div class="col-12 mt-2 text-center">Друзья не найдены</div>
+            {{else}}
+            {{#with filterFriends(@@global.appRactive.get('currentUser.friends.items'), this.filter) as filteredFriends}}
+                {{#if filteredFriends.length == 0}}
+                <div class="col-12 text-center">Друзья не найдены</div>
+                {{else}}
+                    {{#each filteredFriends}}
+                    <div class="col-12 mt-2 mb-2">
+                        <div class="d-flex justify-content-between">
+                            <div class='d-flex'>
+                                <img class="icon-circle user-avatar mr-2" src="{{photo_100}}" />
+                                <div>{{first_name}} {{last_name}}</div>
+                            </div>
+                            <div>
+                                <button class='action-btn i-will-go' on-click="@@this.fire('inviteFriend',{}, this.id)">Пригласить</button>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                {{/if}}
+            {{/with}}
+        {{/if}}
+    </div>
+</script>
