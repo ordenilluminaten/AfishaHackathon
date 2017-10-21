@@ -9,10 +9,10 @@ namespace Models.Database.Tables {
         [Key]
         public Guid Id { get; set; }
         [ForeignKey(nameof(UserEvent))]
-        public string IdUserEvent { get; set; }
-        public UserEvent UserEvent {get;set;}
+        public Guid IdUserEvent { get; set; }
+        public UserEvent UserEvent { get; set; }
         public DateTime Date { get; set; }
-        public UserNotificationType Type {get;set;}
+        public UserNotificationType Type { get; set; }
         [ForeignKey(nameof(User))]
         public int IdUser { get; set; }
         public User User { get; set; }

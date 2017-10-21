@@ -133,6 +133,7 @@ namespace Afisha.Controllers {
             await Unit.SaveAsync();
             if (!CurrentUser.CanRecieveGroupMessages)
                 return Json(true);
+
             var newMessageData = new MessageData {
                 random_id = DateTime.Now.Ticks,
                 user_id = userEvent.IdUser,
@@ -140,7 +141,9 @@ namespace Afisha.Controllers {
                           $" \"{Afisha.Places[userEvent.IdPlace].Name}\"\n" +
                           $"Перейти: {AppSettings.Value.VkApiSettings.AppUrl}"
             };
+
             await Api.Messages.SendAsync(newMessageData);
+
             return Json(true);
         }
 
