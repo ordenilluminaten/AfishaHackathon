@@ -7,11 +7,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using ATMIT.Core.Web.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Models.Afisha;
 using Models.Api.VkApi;
 using Models.Api.VkApi.VkCallbackAPI.RequestDataModels;
+using Models.AppSettings;
 using Models.Database.Tables;
 using Models.Filters;
+using Newtonsoft.Json.Linq;
 
 namespace Models.Notifications.EventNotification {
     public class UserEventNotificationData {
@@ -24,11 +27,13 @@ namespace Models.Notifications.EventNotification {
         private readonly UnitOfWork<ApplicationDbContext> p_unit;
         private readonly VkApi p_vkApi;
 
-        public EventNotificator(TimeSpan timeSpan, UnitOfWork<ApplicationDbContext> _unit, VkApi _vkApi, AfishaData _afishaData) : base(timeSpan) {
+        public EventNotificator(IOptions<AppSetting> _appSettings, UnitOfWork<ApplicationDbContext> _unit, VkApi _vkApi, AfishaData _afishaData) {
+            Timeout = TimeSpan.FromSeconds(_appSettings.Value.AfishaBotSettings.EventNotificationLoopIntervalInSec);
             p_afishaData = _afishaData;
             p_unit = _unit;
             p_vkApi = _vkApi;
         }
+
         protected override async Task RunLogic(CancellationToken _cancellationToken) {
             var watch = Stopwatch.StartNew();
             var requestWatch = Stopwatch.StartNew();
@@ -57,7 +62,7 @@ namespace Models.Notifications.EventNotification {
             if (events.Count == 0)
                 return;
 
-            var sendedNotifications = p_unit.Get<UserEventNotification, Guid>()
+            var sendedNotifications = await p_unit.Get<UserEventNotification, Guid>()
                 .GetList(new UserEventNotificationFilter {
                     DateNow = now,
                     UseBaseFilter = false,
@@ -75,6 +80,12 @@ namespace Models.Notifications.EventNotification {
             using (var eventsEnumerator = events.GetEnumerator()) {
                 while (eventsEnumerator.MoveNext()) {
                     var @event = eventsEnumerator.Current;
+                    if (sendedNotifications.ContainsKey(@event.IdUser)) {
+                        var sendedNotification = sendedNotifications[@event.IdUser]
+                            .FirstOrDefault(_x => _x.IdPlace == @event.IdPlace && _x.IsSended);
+                        if (sendedNotification != null)
+                            continue;
+                    }
                     ProcessEventData(userEventsDict, allEvents, @event);
                     using (var offersEnumerator = @event.Offers.GetEnumerator()) {
                         while (offersEnumerator.MoveNext()) {
@@ -84,7 +95,7 @@ namespace Models.Notifications.EventNotification {
                     }
                 }
             }
-            //TODO:Смержить данные с афишей
+
             var stringBuilder = new StringBuilder();
             using (var userEvents = userEventsDict.GetEnumerator()) {
                 while (userEvents.MoveNext()) {
@@ -96,11 +107,21 @@ namespace Models.Notifications.EventNotification {
                         message = stringBuilder.ToString()
                     };
                     stringBuilder.Clear();
-                    await p_vkApi.Messages.SendAsync(message);
+                    var result = await p_vkApi.Messages.SendAsync(message);
+                    var resultObj = JObject.Parse(result);
+                    var hasError = resultObj["error"] != null;
+                    foreach (var @event in allEvents) {
+                        var newNotification = new UserEventNotification {
+                            Date = DateTime.Now,
+                            IdPlace = @event.Value.IdPlace,
+                            IdUser = @event.Value.IdUser,
+                            IsSended = hasError
+                        };
+                        p_unit.Get<UserEventNotification>().Create(newNotification);
+                    }
                 }
             }
-            watch.Stop();
-            watch.Reset();
+            await p_unit.SaveAsync();
         }
 
         private void GetMessageText(StringBuilder _stringBuilder, IEnumerable<string> eventsIdSet, IDictionary<string, EventNotificatorModel> allEvents) {

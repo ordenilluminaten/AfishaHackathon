@@ -34,4 +34,5 @@ namespace Models.Api.VkApi {
             _data.access_token = VkApiSettings.CallBackApiServiceToken;
         }
     }
+
 }
