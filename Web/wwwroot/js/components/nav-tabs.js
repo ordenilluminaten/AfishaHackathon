@@ -10,8 +10,7 @@ class Tabs {
     
         for (i = 0; i < tab_lists_anchors.length; i++) {
     
-            document.querySelectorAll(`${selector} .tabs li a`)[i].addEventListener('click', function(e) {            
-                debugger;    
+            document.querySelectorAll(`${selector} .tabs li a`)[i].addEventListener('click', function(e) {
                 for (i = 0; i < divs.length; i++) 
                     divs[i].style.display = "none";
     

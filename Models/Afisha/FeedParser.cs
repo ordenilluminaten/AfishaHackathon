@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -103,7 +104,7 @@ namespace Models.Afisha {
                             break;
                         }
                     case "rating": {
-                            _place.Rating = float.Parse(_element.Value.Replace('.', ','));
+                            _place.Rating = float.Parse(_element.Value, CultureInfo.InvariantCulture);
                             break;
                         }
                     case "number": {
@@ -120,13 +121,13 @@ namespace Models.Afisha {
                             if (string.IsNullOrEmpty(_element.Value))
                                 _place.Coordinate = null;
                             else
-                                _place.Coordinate.Lat = double.Parse(_element.Value.Replace('.', ','));
+                                _place.Coordinate.Lat = double.Parse(_element.Value, CultureInfo.InvariantCulture);
                             break;
                         }
                     case "lon": {
                             if (_place.Coordinate == null)
                                 break;
-                            _place.Coordinate.Lon = double.Parse(_element.Value.Replace('.', ','));
+                            _place.Coordinate.Lon = double.Parse(_element.Value, CultureInfo.InvariantCulture);
                             break;
                         }
                     case "photo": {
