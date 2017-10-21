@@ -117,6 +117,7 @@ namespace Afisha.Controllers {
 
         [HttpPost]
         public async Task<IActionResult> CreateOffer(Guid idUserEvent) {
+
             var userEvent = await Unit.Get<UserEvent>().FindAsync(_x => _x.Id == idUserEvent,
                 _x => _x.Include(_y => _y.Offers));
             if (userEvent == null)
