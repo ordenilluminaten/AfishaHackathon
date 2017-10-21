@@ -17,7 +17,7 @@ var dropdown = {
             dropdown.hide(el, id, onCloseCb);
         }
     },
-    hide: (el, id, onShowCb, onCloseCb) => {
+    hide: (el, id, onCloseCb) => {
         document.removeEventListener('click', dropdown.listeners[id]);
         delete dropdown.listeners[id];
         el.classList.remove('selected');

@@ -1,63 +1,44 @@
 ﻿{{#with parent.data}}
-<div class="pagination-menu row">
-
-    <div class="col-lg-6 col-xs-12">
-        <div class="container">
-            <div class="row justify-content-start">
-                <ul class="list-inline">                    
-                    <li class="list-inline-item"><label class="control-label">Кол-во:&nbsp;<b>{{filter.itemsTotal}}</b></label></li>
-                    {{#if filter.itemsTotal > 25}}
-                    <li class="list-inline-item"><label class="control-label">Кол-во на стр:</label></li>
-                    <li class="list-inline-item">
-                        <select class="form-control form-control-sm" on-change="@@this.parent.fire('changeValue',@@context,'take',filter.take)" value="{{filter.take}}">
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                    </li>
-                    {{/if}}
-                </ul>
-            </div>
-        </div>
-    </div>
-
-
-    {{#if filter.pageTotal > 1}}
-    <div class="col-lg-6 col-xs-12">
-        <div class="container">
-            <div class="row justify-content-lg-end">
-                <div class="col-xs-12">
-                    <div class="input-group input-group-sm">
-                        <ul class="pagination pagination-sm">
-                            {{#if filter.page == 1}}
-                            <li class="page-item disabled">
-                                <a class="page-link" href="javascript:;"><span aria-hidden="true">&laquo;</span></a>
-                            </li>
-                            {{else}}
-                            <li class="page-item" on-click="@@this.parent.fire('selectPage',@@context,filter.page-1)">
-                                <a class="page-link" href="javascript:;"><span aria-hidden="true">&laquo;</span></a>
-                            </li>
-                            {{/if}}
-                            {{#each pages}}
-                            <li class="page-item {{active==true?'active':''}}" on-click="@@this.parent.fire('selectPage',@@context,num)">
-                                <a class="page-link" href="javascript:;">{{Num}}</a>
-                            </li>
-                            {{/each}}
-                            {{#if filter.page == filter.pageTotal}}
-                            <li class="page-item disabled">
-                                <a class="page-link" href="javascript:;"><span aria-hidden="true">&raquo;</span></a>
-                            </li>
-                            {{else}}
-                            <li class="page-item" on-click="@@this.parent.fire('selectPage',@@context,filter.page+1)">
-                                <a class="page-link" href="javascript:;"><span aria-hidden="true">&raquo;</span></a>
-                            </li>
-                            {{/if}}
-                        </ul>
+<div class="mb-3 d-flex justify-content-between">
+    <div>
+        <ul class="horizontal">
+            <li><label class="control-label">Найдено:&nbsp;<b>{{filter.itemsTotal}}</b></label></li>
+            <li>
+                <label class="control-label">&nbsp;На стр:</label>
+                <div style="display:table-cell;">
+                    <div class="filter dropdown" style="width: 80px;" onclick="dropdown.toggle(this, event, 'take-dropdown')">
+                        <span>{{filter.take}}</span>
+                        <svg width="15" height="15" class="svg-icon">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
+                        </svg>
+                        <div id="take-dropdown" class="dropdown-content w-100">
+                            <a href="javascript:;" on-click="@@this.parent.fire('changeValue',@@context,'take',25)">25</a>
+                            <a href="javascript:;" on-click="@@this.parent.fire('changeValue',@@context,'take',50)">50</a>
+                            <a href="javascript:;" on-click="@@this.parent.fire('changeValue',@@context,'take',100)">100</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </li>
+        </ul>
     </div>
-    {{/if}}
+    <div>
+        {{#if filter.pageTotal > 1}}
+            <div class="pagination">
+                {{#if filter.page == 1}}
+                    <a class="disabled" href="javascript:;"><span aria-hidden="true">&laquo;</span></a>
+                {{else}}
+                    <a on-click="@@this.parent.fire('selectPage',@@context,filter.page-1)" href="javascript:;"><span aria-hidden="true">&laquo;</span></a>
+                {{/if}}
+                {{#each pages}}
+                <a class="{{active==true?'active':''}}" href="javascript:;" on-click="@@this.parent.fire('selectPage',@@context,num)">{{num}}</a>
+                {{/each}}
+                {{#if filter.page == filter.pageTotal}}
+                 <a class="disabled" href="javascript:;"><span aria-hidden="true">&raquo;</span></a>
+                {{else}}
+                 <a href="javascript:;" on-click="@@this.parent.fire('selectPage',@@context,filter.page+1)"><span aria-hidden="true">&raquo;</span></a>
+                {{/if}}
+            </div>
+        {{/if}}
+    </div>
 </div>
 {{/with}}

@@ -1,17 +1,12 @@
 {
     "version": "0.1.0",
-    "command": "cmd",
+    "command": "dotnet",
     "isShellCommand": true,
     "args": [],
     "tasks": [
         {
             "taskName": "build",
             "args": [
-                "/C",
-                "@chcp 65001",
-                "&&",
-                "dotnet",
-                "build",
                 "${workspaceRoot}/Web/Web.csproj"
             ],
             "isBuildCommand": true,

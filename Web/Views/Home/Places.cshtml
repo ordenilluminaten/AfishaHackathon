@@ -1,8 +1,6 @@
 ﻿<script id='places-page-template' type="text/html">
 
     <div id="filter-block">
-        <Paginator />
-        
         <div class="filter-bar">
             <div id="cat-filter" class="filter mr-2 dropdown" onclick="dropdown.toggle(this, event, 'categories-dropdown')">
 
@@ -10,9 +8,9 @@
                 <svg width="15" height="15" class="svg-icon">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
                 </svg>
-                <div id="categories-dropdown" class="dropdown-content w-100">
+                <div id="categories-dropdown" class="dropdown-content-closable w-100">
                     {{#each parent.data.categories:i}}
-                        <a href="javascript:;" on-click="@@this.fire('changeValue','category',i)">{{this}}</a>
+                        <a href="javascript:;" on-click="@@this.fire('changeValue','category',i),dropdown.hide(this, event, 'categories-dropdown')">{{this}}</a>
                         {{#if i==0}}
                         <div class="separator"></div>
                         {{/if}}
@@ -44,6 +42,7 @@
         </div>
     </div>
     <div class='content'>
+        <Paginator />
         <div class='row'>
             {{#each items:i}}
             <div class="event {{filter.viewType=='Grid'?'event-grid col-3':'event-list col-12'}} movie mb-3">
@@ -67,7 +66,7 @@
                         <span class="icon-counter rating mr-2">
                             <svg width="16" height="16" class="svg-icon">
                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#rating"></use>
-                            </svg> {{toFixed(parseFloat(Rating),2)}}
+                            </svg> {{toFixed(parseFloat(rating),2)}}
                         </span>
                         <span class="icon-counter comments mr-2">
                             <svg width="16" height="16" class="svg-icon">

@@ -8,49 +8,48 @@
         margin: 10px 0;
     }
 
-    .filter {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border: 1px solid #d9d9d9;
-        border-radius: 2px;
-        height: 35px;
-        padding: 0 10px;
-
-        svg {
-            margin-right: 5px;
-            fill: #909090;
-
-            &.selected {
-                fill: black;
-            }
-        }
-    }
-
     input[type=text] {
         border: 0;
+        font-size: 15px;
     }
 
     input[type=text]:focus {
         border: 0;
         outline: none;
     }
-   #cat-filter{
-        width: 200px;
 
-   }
+    #cat-filter{
+        width: 200px;
+    }
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    height: 35px;
+    padding: 0 10px;
+
+    svg {
+        margin-right: 5px;
+        fill: #909090;
+
+        &.selected {
+            fill: black;
+        }
+    }
 }
 
 .event {
     display: flex;
 
-
     &.event-grid {
         flex-direction: column;
 
         img.img-preview {
-            max-height: 250px;
-            height: 250px;
+            height: 100px;
         }
     }
 
@@ -66,7 +65,7 @@
 
     img.img-preview {
         padding: 0;
-        object-fit: contain;
+        object-fit: cover;
     }
 
     .event-content {
@@ -145,7 +144,6 @@
     display: flex;
     justify-content: space-between;
 
-
     .info {
         flex: 1;
 
@@ -211,5 +209,39 @@
         button.i-will-go {
             height: 30px !important;
         }
+    }
+}
+
+
+ul.horizontal{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li{
+        display: inline;
+    }
+}
+
+.pagination {
+    display: flex;
+
+    a {
+        padding: 4px 9px;
+        text-decoration: none;
+        transition: background-color .3s;
+        border: 1px solid #ddd;
+        height: 35px;
+
+        &.active {
+            background-color: #3C4A5B;
+            color: white;
+            border: 1px solid #636363;
+        }
+        &.disabled{
+            cursor: not-allowed;
+            color: #ccc;
+        }
+        &:hover:not(.active) {background-color: #ddd;}
     }
 }
