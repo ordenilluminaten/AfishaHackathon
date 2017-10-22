@@ -1,7 +1,11 @@
-﻿<header id="header">
+﻿
+<style>
+
+</style>
+<header id="header">
     <div class="header-content">
         <div class="left-header">
-            <a href="javascript:;" 
+            <a href="javascript:;"
                on-click="@@global.router.navigate('places')"
                id="logo">
                 <svg width="200" height="70" class="svg-icon">
@@ -39,54 +43,77 @@
                     onclick="dropdown.toggle(this, event, 'friends-dropdown', Header.refreshMyPlaces)">
                     @await Html.PartialAsync("Friends")
                 </li>
-
+                {{#with @@this.parent.get('currentUser.customData.notifications')}}
                 <li class="dropdown notification-dropdown" id="notification-dropdown-li"
                     onclick="dropdown.toggle(this, event, 'notification-dropdown')">
-                    <a href="javascript:;" data-toggle="dropdown">
+                    <a href="javascript:;" data-toggle="dropdown" style="position: relative">
+                        {{#if this!= null && this.length!=0}}
+                        <span style="position: absolute" class="notification-badge">{{this.length}}</span>
+                        {{/if}}
                         <svg width="25" height="25" class="svg-icon">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#notification"></use>
                         </svg>
                     </a>
-                    {{#with @@this.parent.get('currentUser.customData.notifications')}}
+
                     <div id="notification-dropdown" class="dropdown-content">
                         <ul class="dropdown-menu">
                             <li class="external">
                                 <h4>
                                     У вас {{this.length==0?'нет':this.length}} {{DeclOfNum(this.length,['новое уведомление','новых уведомления','новых уведомлений'])}}
                                 </h4>
-                                <hr />
                             </li>
                             <li>
-                                <div class="content-wrapper" style="position: relative; overflow: hidden; width: auto; height: 275px;">
+                                <div class="content-wrapper" style="position: relative; overflow: hidden; overflow-y: auto;  width: auto;min-height: 80px; max-height: 300px;">
                                     {{#each this as notification}}
-                                    <div class="col-3 mb-2 friend">
-                                        <img class="icon-circle user-avatar" id="header-avatar" src="{{notification.userFrom.avatar==null?'~/images/event-icon.png':notification.userFrom.avatar}}" 
-                                             style="float: left; margin-right: 10px;">
-                                        <div class="user-info" style="float: left; line-height: 20px;">
-                                            <p>{{notification.userFrom.first_name}}</p>
-                                            <p>{{notification.userFrom.last_name}}</p>
+                                    <div style="border-bottom:1px solid rgb(218, 217, 217);" class="mb-2">
+                                        <div>
+                                            <span>
+                                                <img class="icon-circle user-avatar" id="header-avatar" src="{{notification.userFrom.avatar==null?'~/images/event-icon.png':notification.userFrom.avatar}}"
+                                                     style="float: left; margin-right: 10px;">
+                                            </span>
+                                            <div>
+                                                <span style="font-weight: bold">
+                                                    {{notification.userFrom.firstName}}
+                                                    {{notification.userFrom.lastName}}
+                                                </span>
+
+                                                <span style="float: right; font-size: 12px; color: rgb(169, 166, 166)">
+                                                    {{notification.date}}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                {{#if notification.type == 'NewOffer'}}
+                                                Новая заявка на поход в "{{notification.placeName}}"
+                                                {{elseif notification.type =='OfferAccepted'}}
+                                                Заявка на поход в "{{notification.placeName}}" принята
+                                                {{elseif notification.type == 'OfferRejected'}}
+                                                Заявка на поход в "{{notification.placeName}}" отклонена
+                                                {{/if}}
+                                            </div>
+                                            <div class="text-center mb-2" style="clear: both;">
+                                                {{#if notification.type == 'NewOffer'}}
+                                                <button class="vk-btn">
+                                                    <svg width="12" height="12" style="fill:#fff" class="svg-icon">
+                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#check"></use>
+                                                    </svg>
+                                                </button>
+                                                <button class="vk-btn danger">
+                                                    <svg width="12" height="12" style="fill:#fff" class="svg-icon">
+                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#remove"></use>
+                                                    </svg>
+                                                </button>
+                                                {{/if}}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-3">
-                                        {{#if notification.type == 'NewOffer'}}
-                                        Новая заявка
-                                        {{elseif notification.type =='OfferAccepted'}}
-                                        Заявка принята
-                                        {{elseif notification.type == 'OfferRejected'}}
-                                        Заявка отклонена
-                                        {{/if}}
-                                    </div>
-                                    <div class="col-3">
-                                        {{notification.placeName}}
                                     </div>
                                     {{/each}}
                                 </div>
                             </li>
                         </ul>
                     </div>
-                    {{/with}}
-                </li>
 
+                </li>
+                {{/with}}
                 <li>
                     <a href="javascript:;" data-toggle="dropdown">
                         <svg width="25" height="25" class="svg-icon">

@@ -5,7 +5,7 @@
         this.event = event;
     }
 
-    render(...args) {   
+    render(...args) {
         let page = Ractive({
             template: '#place-page-template',
             data: this.event,
@@ -218,32 +218,32 @@
                         }
                     });
                 },
-                inviteFriend: function(){
+                inviteFriend: function () {
                     var modal = new Modal({
                         id: 'invite-friends-modal',
                         title: 'Пригласить друзей',
                         type: ModalType.custom,
-                        content:{
-                            html:'<div id="invite-friends-wrapper"></div>',
-                            ractiveOptions:{
+                        content: {
+                            html: '<div id="invite-friends-wrapper"></div>',
+                            ractiveOptions: {
                                 enable: true,
                                 wrapper: 'invite-friends-wrapper',
                                 template: 'invite-friends-template',
-                                data:{
-                                    filter:{
-                                        search:null
+                                data: {
+                                    filter: {
+                                        search: null
                                     },
-                                    filterFriends: (friends, filter)=>{
-                                        if(filter.search == null || filter.search.length == 0)
+                                    filterFriends: (friends, filter) => {
+                                        if (filter.search == null || filter.search.length == 0)
                                             return friends;
                                         let search = filter.search.toLowerCase();
                                         let res = [];
                                         for (var key in friends) {
                                             let friend = friends[key];
-                                            if(friend.first_name.toLowerCase().includes(search)
-                                            || friend.last_name.toLowerCase().includes(search)
-                                            || friend.id.toString().includes(search))
-                                            res.push(friend);
+                                            if (friend.first_name.toLowerCase().includes(search)
+                                                || friend.last_name.toLowerCase().includes(search)
+                                                || friend.id.toString().includes(search))
+                                                res.push(friend);
                                         }
                                         return res;
                                     }
@@ -253,7 +253,7 @@
                                         Request
                                     }
                                 }
-                            }   
+                            }
                         },
                         types: {
                             custom: {

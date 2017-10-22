@@ -162,21 +162,20 @@
 
 #notification-dropdown {
     ul {
-        right: 0;
-        left: auto;
-        width: 275px;
+        width: 400px;
         list-style: none;
-        padding: 10px;
         line-height: 20px;
+        padding: 0;
 
         li {
-            padding: 5px;
+            padding: 10px;
         }
 
         li.external {
+            padding: 15px;
+            background-color: #f0f0f0;
             display: block;
             overflow: hidden;
-            padding: 15px;
             letter-spacing: .5px;
             -webkit-border-radius: 4px 4px 0 0;
             -moz-border-radius: 4px 4px 0 0;
@@ -189,8 +188,6 @@
 
 .notification-badge {
     font-size: 11px !important;
-    width: 22px;
-    height: 22px;
     line-height: 1.4;
     font-weight: 600;
     color: #fff;
@@ -201,5 +198,11 @@
     text-shadow: none !important;
     text-align: center;
     vertical-align: middle;
-    background-color: #ed6b75;
+    background: rgba(237,107,111,0.8);
+    line-height: 16px;
+    height: 16px;
+    width: 16px;
+    top: 35px;
+    right: 12px;
+    position: absolute;
 }

@@ -88,9 +88,8 @@ namespace Afisha.Controllers
             var notificationsData = await Unit.Get<UserNotification>().All.Where(_x => _x.IdUser == CurrentUser.Id)
                 .Include(_x => _x.UserEvent)
                 .Include(_x => _x.UserFrom)
-                .Select(_x => new
-                {
-                    Type = _x.Type.ToString(),
+                .Select(_x => new {
+                    Type = _x.Type.ToString("G"),
                     UserFrom = _x.IdUserFrom == null ?
                     null :
                     new
@@ -158,10 +157,8 @@ namespace Afisha.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SelectCity(int? idCity, float? lat, float? lon)
-        {
-            using (var ctx = ContextFactory.Create())
-            {
+        public async Task<IActionResult> SelectCity(int? idCity, float? lat, float? lon) {
+            using (var ctx = ContextFactory.Create()) {
                 var user = await ctx.Users.FirstOrDefaultAsync(_x => _x.Id == CurrentUser.Id);
                 if (user == null)
                     return JsonError("Пользователь не найден");
