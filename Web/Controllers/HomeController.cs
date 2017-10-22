@@ -414,6 +414,28 @@ namespace Afisha.Controllers {
 
             return Json(Afisha.Places[userEvent.IdPlace]);
         }
+        [HttpPost]
+        public async Task<IActionResult> RemoveUserEvent(Guid idUserEvent) {
+            var userEvent = await Unit.Get<UserEvent>().FindAsync(_x => _x.Id == idUserEvent,
+                x => x.Include(y => y.Offers));
+            if (userEvent == null)
+                return JsonError("Мероприятие на найдено");
+            if (userEvent.IdUser != CurrentUser.Id)
+                return JsonError("Нет доступа к мероприятию");
+            //ищем первого активного
+            var firstAcceptedOffer = userEvent.Offers.FirstOrDefault(_x => _x.State == CompanionState.Accepted);
+            //даем ему ответственность за мероприятие
+            if (firstAcceptedOffer != null) {
+                userEvent.IdUser = firstAcceptedOffer.IdUser;
+            } else {
+                foreach (var offer in userEvent.Offers) {
+                    Unit.Get<UserEventOffer>().Delete(offer);
+                }
+                Unit.Get<UserEvent>().Delete(userEvent);
+            }
+            await Unit.SaveAsync();
+            return Json(true);
+        }
     }
 }
 
