@@ -30,7 +30,7 @@
         acceptOffer: (_ctx, idEvent, idUser) => {
             Request.post({
                 method: Request.method.post,
-                url: '/home/setFamiliarWithBot',
+                url: '/home/acceptOffer',
                 data: {
                     idEvent,
                     idUser
