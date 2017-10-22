@@ -32,7 +32,7 @@
                 method: Request.method.post,
                 url: '/acceptOffer',
                 data: {
-                    idEvent,
+                    idUserEvent:idEvent,
                     idUser
                 }
             }).then(() => {

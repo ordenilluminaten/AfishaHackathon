@@ -292,13 +292,13 @@
                         </div>              
                         <div id="tab-gallery" class="tab">
                             {{#if photos != null && photos.length > 0}}
-                            <div class="slider">
+                            <div class="slider justify-content-center">
                                 {{#each photos: i}}
                                 <input type="radio" name="slide_switch" id="gallery-{{i}}" checked="checked" />
                                 <label for="gallery-{{i}}">
                                     <img src="{{photos[i]}}" />
                                 </label>
-                                <img src="{{photos[i]}}" />
+                                <img src="{{photos[i]}}" style="height: 320px;" />
                                 {{/each}}
                             </div>                            
                             {{/if}}
