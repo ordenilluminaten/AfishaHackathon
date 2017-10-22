@@ -43,11 +43,11 @@ namespace Afisha.Controllers.VkCallbackAPI {
 
             switch (messageBody) {
                 case BotCommands.Stop: {
-                        await SetToggleNotification(messageData, _message, true);
+                        await SetToggleNotification(messageData, _message, false);
                         break;
                     }
                 case BotCommands.Start: {
-                        await SetToggleNotification(messageData, _message, false);
+                        await SetToggleNotification(messageData, _message, true);
                         break;
                     }
                 case BotCommands.Bot:

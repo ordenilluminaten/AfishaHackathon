@@ -25,7 +25,8 @@
                     Tabs.init("#page");
                     VK.Widgets.Comments('reviews', {}, this.event.id);
                 },
-                inviteCompanion: (ctx, idPlace) => {
+                inviteCompanion: (ctx) => {
+                    debugger;
                     var modal = new Modal({
                         id: 'invite-companion-modal',
                         title: 'Пригласить спутников',
@@ -34,7 +35,7 @@
                                 method: 'GET',
                                 url: '/CreateInviteCompanion',
                                 data: {
-                                    idPlace: idPlace
+                                    idPlace: this.event.id
                                 }
                             }
                         },

@@ -13,11 +13,11 @@
                 </svg>
                 <input id="datetimepicker" type="text" value="@DateTime.Now.Date.ToString()" />
             </div>
-            {{#if userEventData.idUserEvent == null}}
-            <button class="vk-btn" style="width:200px;height: 35px;" on-click="@@this.parent.fire('inviteCompanion', @@context, id)">
-                Я пойду
-            </button>
-            {{/if}}
+                {{#if @@global.router.ractive.get('userEventData.idUserEvent') == null}}
+                <button class="vk-btn" style="width:200px;height: 35px;" on-click="@@this.parent.fire('inviteCompanion', @@context)">
+                    Я пойду
+                </button>
+                {{/if}}
         </div>
     </div>
     <div class='row'>

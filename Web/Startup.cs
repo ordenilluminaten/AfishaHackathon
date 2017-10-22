@@ -88,6 +88,7 @@ namespace Afisha {
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
             } else {
+                _afishaBot.Start(BotTaskType.NotificationAboutEvent);
                 //app.UseExceptionHandler("/Home/Error");
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
