@@ -6,7 +6,7 @@ var dropdown = {
         if(!el.classList.contains('selected')) {
             dropdown.listeners[id] = function (e) {
                 //isClickInside?
-                debugger;
+                
                 if (e.target.closest('.dropdown-content') == null && !el.contains(e.target))
                     dropdown.hide(el, id, onCloseCb);
             };
@@ -20,7 +20,7 @@ var dropdown = {
         }
     },
     hide: (el, id, onCloseCb) => {
-        debugger;
+        
         document.removeEventListener('click', dropdown.listeners[id]);
         delete dropdown.listeners[id];
         el.classList.remove('selected');
@@ -62,6 +62,7 @@ var router = {
     current: null,
     ractive: null,
     navigate: (idPage, ...args) => {
+        debugger;
         if (router.pages[idPage] == null)
             return;
         let prevPage = router.current;
