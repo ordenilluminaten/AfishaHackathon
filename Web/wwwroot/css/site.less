@@ -41,75 +41,73 @@
     }
 }
 
-.event {
+.event-card{
+    position: relative;
     display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 
-    &.event-grid {
-        flex-direction: column;
-
-        img.img-preview {
-            height: 100px;
-        }
+    .img-block{
+        position: static;
+        -webkit-flex-shrink: 0;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        height: 200px;
+        width: 100%;
+        border-radius: 3px 3px 0 0;
+        background-position: center !important;
+        background-size: cover !important;
     }
 
-    &.event-list {
-        flex-direction: row;
-
-        img.img-preview {
-            width: 173.75px;
-            max-width: 173.75px;
-            margin-right: 10px;
-        }
-    }
-
-    img.img-preview {
-        padding: 0;
-        object-fit: cover;
-    }
-
-    .event-content {
-        display: flex;
-        flex-direction: column;
-
-        .event-title {
+    .event-content{
+        padding: 0 20px 20px;
+        
+        .event-title{
+            display: block;
+            -webkit-flex-shrink: 0;
+            -ms-flex-negative: 0;
+            flex-shrink: 0;
+            max-height: 75px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
             font-weight: 500;
-            font-size: 17px;
-            line-height: 24px;
+            font-size: 20px;
+            line-height: 25px;
+            color: currentColor;
+            text-overflow: ellipsis;
+            word-wrap: break-word;
             color: #4c5d6e;
         }
 
-        .event-desc {
-            font-size: 13px;
-        }
-
-        .small {
-            font-size: 11px;
-            line-height: 15px;
-        }
-
-        .event-desc, .small {
-            font-weight: 400;
+        .event-schedule, .event-location {
+            display: flex;
+            align-items: center;
             line-height: 20px;
-            color: #99a8b7;
-        }
+            font-size: 13px;
 
-        .event-counters {
-            color: #99a8b7;
-            padding-top: 5px;
-
-            .icon-counter {
-                font-size: 11.5px;
-                font-weight: bold;
-
-                &.rating {
-                    color: red;
-
-                    svg {
-                        fill: red;
-                    }
-                }
+            &>svg {
+                flex:0.1;
+            }
+            &>div{
+                flex:1;
             }
         }
+    }
+
+    .event-stats{
+        display: flex;
+        justify-content: space-around;  
+        border-top: 1px solid #eae7e7;
+         
+        & > div {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            svg{
+                margin-right: 5px;
+            }
+        }                                                                                                                        
     }
 }
 

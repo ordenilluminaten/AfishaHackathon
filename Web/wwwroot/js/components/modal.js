@@ -199,7 +199,7 @@ class Modal {
 	}
 
 	_createRactive() {
-		debugger;
+		
 		this.options.content.ractiveOptions.ractive = new Ractive({
 			el: `#${this.options.content.ractiveOptions.wrapper}`,
 			template: `#${this.options.content.ractiveOptions.template}`,
