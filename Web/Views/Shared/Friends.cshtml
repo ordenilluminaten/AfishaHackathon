@@ -59,12 +59,14 @@
     <div class="tabs">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item w-50 text-center">
-                <a class="nav-link active" data-toggle="tab" href="#tab-my-events">
+                <a class="nav-link active" data-toggle="tab" href="#tab-my-events"
+                   onclick="Header.refreshMyPlaces();">
                     Мои     
                 </a>
             </li>
             <li class="nav-item w-50 text-center">
-                <a class="nav-link" data-toggle="tab" href="#tab-friend-will-go">
+                <a class="nav-link" data-toggle="tab" href="#tab-friend-will-go"
+                   onclick="Header.refreshFriendPlaces();">
                     Друзья
                     {{#with parent.data.currentUser.friendsEvents as friendsEvents}}
                         {{#if friendsEvents != null && friendsEvents.count != 0}}
@@ -75,46 +77,42 @@
             </li>
         </ul>
         <div id="tab-my-events" class="tab active">
-            {{#with parent.data.currentUser.customData.myPlaces as myPlaces}}
-            {{#if myPlaces.events != null && myPlaces.offers != null}}
-            <table style="line-height: 15px; width: 100%;">
+            {{#with parent.data.currentUser.myPlaces as myPlaces}}
+            {{#if myPlaces.events.length == 0 || myPlaces.length == 0}}
+            <p style="line-height: 15px;" class="text-center">У вас нет запланированных событий</p>        
+            {{else}}
+                <table style="line-height: 15px; width: 100%;">
                 <tbody>
-                    {{#if myPlaces.events != null}} 
-                    {{#each myPlaces.events as event}}
+                    {{#each myPlaces.events}}
                     <tr>
                         <td>
                             <a href="javascript:;" 
                             on-click="@@this.fire('openPlace',@@context, this.id)"
                             style="text-decoration: underline;color: #00b6ff;">
-                                {{event.title}}
+                                {{title}}
                             </a>
                         </td>
                         <td style="font-size: 11px;color: grey;text-align: right;">
-                            {{{event.date}}}
+                            {{{date}}}
                         </td>
                     </tr>
-                    {{/each}}  
-                    {{/if}}      
-                    {{#if myPlaces.offers != null}}
-                    {{#each myPlaces.offers as offer}}
+                    {{/each}}      
+                    {{#each myPlaces.offers}}
                     <tr>
                         <td>
                             <a href="javascript:;" 
                             on-click="@@this.fire('openPlace',@@context, this.id)"
                             style="text-decoration: underline;color: #00b6ff;">
-                                {{offer.title}}
+                                {{title}}
                             </a>
                         </td>
                         <td style="font-size: 11px;color: grey;text-align: right;">
-                            {{{offer.date}}}
+                            {{{date}}}
                         </td>
                     </tr>
-                    {{/each}}        
-                    {{/if}}     
+                    {{/each}}
                 </tbody>
             </table>
-            {{else}}
-            <p style="line-height: 15px;" class="text-center">У вас нет запланированных событий</p>
             {{/if}}
             {{/with}}
         </div>

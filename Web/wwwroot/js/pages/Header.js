@@ -3,7 +3,15 @@ class Header {
 
     }
 
-    static openFriends() {
+    static refreshMyPlaces() {
+        Request.post({
+            url: '/GetMyPlaces'
+        }).then((myPlaces) => {
+            appRactive.set('currentUser.myPlaces', myPlaces);                                                 
+        });  
+    }
+    static refreshFriendPlaces() {
+        debugger;
         let userIds = [];
         userIds = appRactive.get('currentUser.friends.userIds');
         if(userIds != null && userIds.length > 0) {
