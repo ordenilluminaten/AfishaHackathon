@@ -139,7 +139,7 @@ namespace Models.Notifications.EventNotification {
                     var place = p_afishaData.Places[@event.IdPlace];
                     if (place == null)
                         continue;
-                    var body = $"У вас было запланировано событие в \"{place}\" , оно начинается {@event.Date}\n";
+                    var body = $"У вас было запланировано событие в \"{place.Name}\" , оно начинается {@event.Date}\n";
                     _stringBuilder.Append(body);
                 }
             }
