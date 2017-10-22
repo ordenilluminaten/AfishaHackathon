@@ -4,13 +4,13 @@
     data: function () {
         return {
             friendFilter: (item, seach) => {
-                if(seach == null || seach == "")
+                if (seach == null || seach == "")
                     return item;
-                
+
                 seach = seach.toLowerCase();
-                if((item.first_name != null 
-                        && item.first_name.toLowerCase().includes(seach)) 
-                || (item.last_name != null 
+                if ((item.first_name != null
+                    && item.first_name.toLowerCase().includes(seach))
+                    || (item.last_name != null
                         && item.last_name.toLowerCase().includes(seach)))
                     return item;
                 return null;
@@ -26,6 +26,19 @@
                 appRactive.set('currentUser.customData.isFamiliarWithBot', true);
                 dropdown.hide(document.getElementById('bot-dropdown-li'), 'bot-dropdown');
             });
+        },
+        acceptOffer: (_ctx, idEvent, idUser) => {
+            Request.post({
+                method: Request.method.post,
+                url: '/acceptOffer',
+                data: {
+                    idEvent,
+                    idUser
+                }
+            }).then(() => {
+                Header.refreshMyNotifications();
+            });
+
         },
         openGroupDialog: (_ctx, _url) => {
             window.open(_url, '_blank');
@@ -92,6 +105,7 @@ function getVkfriends() {
         }).then(() => {
             Header.refreshMyPlaces();
             Header.refreshFriendPlaces();
+            Header.refreshMyNotifications();
         });
     });
 }
@@ -101,23 +115,23 @@ function onInited() {
 }
 
 var yaMap = null;
-function initYaMap(city){
+function initYaMap(city) {
     ymaps.ready(initUserLocation);
 }
 
 function initUserLocation() {
     //пытаемся достать город из бд
     var lat = appRactive.get('currentUser.customData.latitude');
-    var lon = appRactive.get('currentUser.customData.longitude');    
-    if(lon!=null && lat !=null){
-        setupMap([lat,lon]);
+    var lon = appRactive.get('currentUser.customData.longitude');
+    if (lon != null && lat != null) {
+        setupMap([lat, lon]);
     } else {
         selectCity(1, 'Москва');
     }
 }
 
-function setupMap(coords){
-    if(yaMap == null){
+function setupMap(coords) {
+    if (yaMap == null) {
         yaMap = new ymaps.Map('myMap', {
             center: coords,
             zoom: 9
@@ -128,13 +142,13 @@ function setupMap(coords){
     }
 }
 
-function selectCity(id, name){
+function selectCity(id, name) {
     ymaps.geocode(name).then(res => {
         let coords = res.geoObjects.get(0).geometry.getCoordinates();
         setupMap(coords);
         Request.post({
-            url:'/Home/SelectCity',
-            data:{
+            url: '/Home/SelectCity',
+            data: {
                 idCity: id,
                 lat: coords[0],
                 lon: coords[1]
