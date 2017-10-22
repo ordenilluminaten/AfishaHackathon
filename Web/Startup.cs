@@ -1,7 +1,10 @@
-﻿using ATMIT.Core.Web.Repository;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using ATMIT.Core.Web.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
@@ -89,6 +92,17 @@ namespace Afisha {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
+            app.UseRequestLocalization(new RequestLocalizationOptions {
+                DefaultRequestCulture = new RequestCulture(new CultureInfo("ru")),
+                SupportedCultures = new List<CultureInfo>
+                    {
+                    new CultureInfo("ru")
+                },
+                SupportedUICultures = new List<CultureInfo>
+                {
+                    new CultureInfo("ru")
+                }
+            });
             app.UseStaticFiles();
             //app.UseErrorHandler();
             app.UseSession();
