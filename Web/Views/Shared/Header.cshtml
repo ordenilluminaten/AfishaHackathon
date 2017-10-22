@@ -92,7 +92,7 @@
                                             </div>
                                             <div class="text-center mb-2" style="clear: both;">
                                                 {{#if notification.type == 'NewOffer'}}
-                                                <button class="vk-btn">
+                                                <button class="vk-btn" on-click="@@this.fire('acceptOffer',@@context,notification.idEvent,notification.userFrom.id)">
                                                     <svg width="12" height="12" style="fill:#fff" class="svg-icon">
                                                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#check"></use>
                                                     </svg>
