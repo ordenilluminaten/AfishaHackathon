@@ -3,6 +3,7 @@
         //TODO select title based on event type
         super('event', event.Name, parentPage);
         this.event = event;
+        resetGeoObjects([event]);
     }
 
     render(...args) {
