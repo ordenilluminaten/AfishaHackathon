@@ -249,7 +249,7 @@ namespace Afisha.Controllers {
             var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.IdUserEvent == idUserEvent && _x.IdUser == idUser && _x.State == CompanionState.Pending,
                 _x => _x.Include(_y => _y.UserEvent).ThenInclude(_y => _y.User));
             if (offer == null)
-                return JsonError("Заявка на найдена");
+                return JsonError("Заявка не найдена");
             if (offer.IdUser != CurrentUser.Id)
                 return JsonError("Нет доступа к событию");
 
@@ -285,7 +285,7 @@ namespace Afisha.Controllers {
         public async Task<IActionResult> RemoveOffer(Guid idOffer) {
             var offer = await Unit.Get<UserEventOffer>().FindAsync(_x => _x.Id == idOffer, _x => _x.Include(_y => _y.UserEvent).ThenInclude(_y => _y.User));
             if (offer == null)
-                return JsonError("Заявка на найдена");
+                return JsonError("Заявка не найдена");
             if (offer.IdUser != CurrentUser.Id)
                 return JsonError("Нет доступа к событию");
 

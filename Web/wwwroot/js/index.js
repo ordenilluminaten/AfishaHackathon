@@ -30,9 +30,9 @@
         acceptOffer: (_ctx, idEvent, idUser) => {
             Request.post({
                 method: Request.method.post,
-                url: '/home/acceptOffer',
+                url: '/acceptOffer',
                 data: {
-                    idEvent,
+                    idUserEvent:idEvent,
                     idUser
                 }
             }).then(() => {
@@ -136,7 +136,8 @@ function setupMap(coords) {
             center: coords,
             zoom: 9
         });
-    } else {
+        resetGeoObjects(router.ractive.get('items'));
+    }else{
         yaMap.setCenter(coords, 9);
     }
 }
@@ -156,8 +157,35 @@ function selectCity(id, name) {
     });
 }
 
-function resetGeoObjects() {
+function resetGeoObjects(items){
+    if(yaMap == null || yaMap.geoObjects==null)
+        return;
+    yaMap.geoObjects.removeAll()
 
+    var objectManager = new ymaps.ObjectManager({ clusterize: true })
+    debugger;
+    for(let item of items){
+        if(item.coordinate == null)
+            continue;
+        // Добавление единичного объекта.
+        objectManager.add({
+            type: 'Feature',
+            id: item.id,
+            geometry: {
+                type: 'Point',
+                coordinates: [item.coordinate.lat, item.coordinate.lon]
+            },
+            properties: {
+                hintContent: item.name,
+                balloonContent: `<img src='${item.photos[0]}' width="40px" height="40px" style="float:left; margin-right: 5px;object-fit: cover; " />
+                                 <div style="float:left">
+                                    <h3>${item.name}</h3>
+                                    <span>${item.address}</span>
+                                 </div>`
+            }
+        });
+    } 
+    yaMap.geoObjects.add(objectManager);
 }
 
 function declOfNum(_number, _stringArray) {

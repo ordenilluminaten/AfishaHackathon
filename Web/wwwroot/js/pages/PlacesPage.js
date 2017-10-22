@@ -12,7 +12,10 @@
                     Request.post({
                         url: '/Home/Places',
                         data: filter
-                    }).then(onDone);
+                    }).then((res)=>{
+                        resetGeoObjects(res.items);
+                        onDone(res);
+                    });
                 }
             } 
             },
