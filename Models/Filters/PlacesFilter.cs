@@ -13,9 +13,8 @@ namespace Models.Filters
             Sort = $"{SortName}:{SortType}";
             ViewType = ListViewType.Grid;
         }
-        
+        public int? IdCity{get;set;}
         public PlaceType Category { get; set; }
-
         public override void Filter(ref IQueryable<Place> list)
         {
             if(Category != PlaceType.All){

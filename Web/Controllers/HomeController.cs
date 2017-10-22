@@ -173,7 +173,7 @@ namespace Afisha.Controllers {
         [HttpPost]
         public async Task<IActionResult> Places(PlacesFilter filter) {
             filter.UseSort = false;
-            var list = Afisha.CityPlaces[1].OrderByDescending(_x => _x.Photos.Count());
+            var list = Afisha.CityPlaces[filter.IdCity??CurrentUser.IdCity??1].OrderByDescending(_x => _x.Photos.Count());
             var q = list.AsQueryable();
             filter.Filter(ref q);
 

@@ -146,8 +146,14 @@ function selectCity(id, name) {
     ymaps.geocode(name).then(res => {
         let coords = res.geoObjects.get(0).geometry.getCoordinates();
         setupMap(coords);
+        debugger;
+        appRactive.set('currentUser.customData.idCity', id);
+        if(router.current.id != "place"){
+            router.ractive.set('filter.idCity',id);
+            router.ractive.updateItems();
+        }
         Request.post({
-            url: '/Home/SelectCity',
+            url: '/Home/SelectCity',                                                                           
             data: {
                 idCity: id,
                 lat: coords[0],

@@ -126,10 +126,18 @@
                         <svg width="25" height="25" class="svg-icon">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#location"></use>
                         </svg>
-                        <span>Санкт-Петербург</span>
+                        <span>
+                            {{#with parent.data}}
+                            {{cities[currentUser.customData.idCity]}}
+                            {{/with}}
+                        </span>
                     </a>
-                    <div id="city-dropdown" class="dropdown-content w-100">
-                        <a href="#home">Поиск города</a>
+                    <div id="city-dropdown" class="dropdown-content-closable w-100" style="max-height: 250px; width:250px!important;">
+                        {{#with parent.data}}
+                            {{#each cities:i}}
+                                <a href="javascript:;" on-click="@@global.selectCity(i,this)">{{this}}</a>
+                            {{/each}}
+                        {{/with}}
                     </div>
                 </li>
                 <li class="dropdown profile-item" onclick="dropdown.toggle(this, event, 'profile-dropdown')">
