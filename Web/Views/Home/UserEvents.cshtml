@@ -14,7 +14,7 @@
                 <input id="datetimepicker" type="text" value="@DateTime.Now.Date.ToString()" />
             </div>
             {{#if userEventData.idUserEvent == null}}
-            <button class="vk-btn" style="width:200px;height: 35px;" on-click="@@this.fire('inviteCompanion', @@context, id)">
+            <button class="vk-btn" style="width:200px;height: 35px;" on-click="@@this.parent.fire('inviteCompanion', @@context, id)">
                 Я пойду
             </button>
             {{/if}}
@@ -103,10 +103,10 @@
                     {{/if}}
                 </div>
             </div>
-            <hr style="border: none;color: #eaeef1; background-color: #eaeef1; height: 1px;"  />
-                </div>
-                {{/with}}
-            {{/each}}
+            <hr style="border: none;color: #eaeef1; background-color: #eaeef1; height: 1px;" />
+        </div>
+        {{/with}}
+        {{/each}}
         {{/if}}
-     </div>
+    </div>
 </script>
