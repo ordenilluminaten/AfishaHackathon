@@ -2,14 +2,32 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RootNamespace>Afisha</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Feed\companies.Production.min.xml" />
+    <None Remove="Feed\companies.Production.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Feed\companies.Production.min.xml" />
+    <EmbeddedResource Include="Feed\companies.Production.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
+    <Folder Include="Views\Shared\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0" />
+    <PackageReference Include="ATMIT.Core.Repository" Version="2017.8.14.1" />
+    <PackageReference Include="ATMIT.Core.Web.Utility" Version="2017.8.14.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Models\Models.csproj" />
+  </ItemGroup>
 </Project>

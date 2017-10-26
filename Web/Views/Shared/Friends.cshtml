@@ -1,0 +1,174 @@
+<style>
+    #friends-dropdown {
+        width: 400px;
+        min-height: 100px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+        #friends-dropdown .search {
+            position: absolute;
+            top: 55px;
+            width: 400px;
+            z-index: 1;
+            border-bottom: 1px solid rgba(225, 225, 225, 1);
+        }
+
+            #friends-dropdown .search input {
+                border-top: 1px solid rgb(236, 236, 236);
+                border-right: 1px solid rgb(236, 236, 236);
+                border-bottom: none;
+                border-left: 1px solid rgb(236, 236, 236);
+                border-image: initial;
+                flex: 1;
+            }
+
+            #friends-dropdown .search button {
+                background-color: rgb(238, 238, 238);
+                border: none;
+                padding: 5px 0px;
+                width: 54px;
+            }
+
+        #friends-dropdown .friend-list {
+            max-height: 400px;
+            margin-top: 33px;
+            overflow-y: auto;
+        }
+
+            #friends-dropdown .friend-list .friend {
+                padding: 15px;
+                background: rgb(255, 255, 255);
+                border-bottom: 1px solid rgb(238, 238, 238);
+                border-top: 1px solid rgb(238, 238, 238);
+            }
+
+        #friends-dropdown .nav-link {
+            padding: 0;
+            line-height: 50px;
+        }
+</style>
+
+<a href="javascript:;">
+    <svg width="25" height="25" class="svg-icon">
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#users"></use>
+    </svg>
+</a>
+<div class="dropdown-content dropdown-content-right" id="friends-dropdown">
+    {{#with parent.data.currentUser.friends as friends}}
+    <div class="tabs">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item w-50 text-center">
+                <a class="nav-link active" data-toggle="tab" href="#tab-my-events"
+                   onclick="Header.refreshMyPlaces();">
+                    Мои     
+                </a>
+            </li>
+            <li class="nav-item w-50 text-center">
+                <a class="nav-link" data-toggle="tab" href="#tab-friend-will-go"
+                   onclick="Header.refreshFriendPlaces();">
+                    Друзья
+                    {{#with parent.data.currentUser.friendsEvents as friendsEvents}}
+                        {{#if friendsEvents != null && friendsEvents.count != 0}}
+                            ({{friendsEvents.count}})
+                        {{/if}}      
+                    {{/with}}
+                </a>
+            </li>
+        </ul>
+        <div id="tab-my-events" class="tab active">
+            {{#with parent.data.currentUser.myPlaces as myPlaces}}
+            {{#if myPlaces.events.length == 0 || myPlaces.length == 0}}
+            <p style="line-height: 15px;" class="text-center">У вас нет запланированных событий</p>        
+            {{else}}
+                <table style="line-height: 15px; width: 100%;">
+                <tbody>
+                    {{#each myPlaces.events}}
+                    <tr>
+                        <td>
+                            <a href="javascript:;" 
+                            on-click="@@this.fire('openPlace',@@context, this.id)"
+                            style="text-decoration: underline;color: #00b6ff;">
+                                {{title}}
+                            </a>
+                        </td>
+                        <td style="font-size: 11px;color: grey;text-align: right;">
+                            {{{date}}}
+                        </td>
+                    </tr>
+                    {{/each}}      
+                    {{#each myPlaces.offers}}
+                    <tr>
+                        <td>
+                            <a href="javascript:;" 
+                            on-click="@@this.fire('openPlace',@@context, this.id)"
+                            style="text-decoration: underline;color: #00b6ff;">
+                                {{title}}
+                            </a>
+                        </td>
+                        <td style="font-size: 11px;color: grey;text-align: right;">
+                            {{{date}}}
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            {{/if}}
+            {{/with}}
+        </div>
+        <div id="tab-friend-will-go" class="tab">
+            {{#with parent.data.currentUser.friendsEvents as friendsEvents}}
+            {{#if friendsEvents != null && friendsEvents.count != 0}}
+            <div class="row search">
+                <input type="text" value="{{friendsEvents.seach}}">
+                <button type="button">
+                    <svg class="svg-icon" width="20" height="20">
+                        <use xlink="http://www.w3.org/1999/xlink" xlink="http://www.w3.org/1999/xlink"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#search"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="row friend-list">
+                {{#each friendsEvents.items: idUser}}
+                {{#with friendFilter(friends.items[idUser], friendsEvents.seach) as friend}}
+                {{#if friend != null}}
+                <div class="col-3 mb-2 friend">
+                    <img class="icon-circle user-avatar" id="header-avatar" src="{{friend.photo_100}}"
+                        style="float: left; margin-right: 10px;">
+                    <div class="user-info" style="float: left; line-height: 20px;">
+                        <p>{{friend.first_name}}</p>
+                        <p>{{friend.last_name}}</p>
+                    </div>             
+                </div>
+                <div class="col-9 mb-2 friend">
+                    <table style="line-height: 15px; width: 100%;">
+                        <tbody>
+                            {{#each friendsEvents.items[idUser] as friendEvents}}
+                            <tr>
+                                <td>
+                                    <a href="javascript:;" 
+                                    on-click="@@this.fire('openPlace',@@context, this.id)"
+                                    style="text-decoration: underline;color: #00b6ff;">
+                                        {{friendEvents.title}}
+                                    </a>
+                                </td>
+                                <td style="font-size: 11px;color: grey;text-align: right;">
+                                    {{{friendEvents.date}}}
+                                </td>
+                            </tr>
+                            {{/each}}                
+                        </tbody>
+                    </table>
+                </div>
+                {{/if}}
+                {{/with}}
+                {{/each}}
+            </div>
+            {{else}}
+            <p style="line-height: 15px;" class="text-center">Ни у кого из ваших друзей нет событий</p>
+            {{/if}}
+            {{/with}}
+        </div>
+    </div>
+    {{/with}}    
+</div>

@@ -1,0 +1,94 @@
+{
+  "js": [
+    {
+      "outputFileName": "wwwroot/lib/ractive/ractive.js",
+      "inputFiles": [
+        "node_modules/ractive/ractive.js"
+      ]
+    },
+    {
+      "outputFileName": "wwwroot/bundles/site.js",
+      "inputFiles": [
+        "wwwroot/lib/ractive/ractive.js",
+        "wwwroot/js/components/ractive.ext.js",
+        "wwwroot/js/components/objectClass.js",
+        "wwwroot/js/components/profiler.js",
+        "wwwroot/js/components/request.js",
+        "wwwroot/js/components/modal.js",
+        "wwwroot/js/components/nav-tabs.js",
+        "wwwroot/js/pages/Page.js",
+        "wwwroot/js/pages/PlacesPage.js",
+        "wwwroot/js/pages/PlacePage.js",
+        "wwwroot/js/pages/Header.js",
+        "wwwroot/js/components/utils.js"
+      ]
+    },
+    {
+      "outputFileName": "wwwroot/lib/flatpickr/flatpickr.js",
+      "inputFiles": [
+        "node_modules/flatpickr/dist/flatpickr.js",
+        "node_modules/flatpickr/dist/l10n/ru.js"
+      ]
+    }
+  ],
+  "less": [
+    {
+      "outputFileName": "wwwroot/bundles/site.css",
+      "inputFiles": [
+        "wwwroot/lib/bootstrap-4-grid/grid.css",
+        "wwwroot/css/layout.less",
+        "wwwroot/css/components/sidebar.less",
+        "wwwroot/css/components/header.less",
+        "wwwroot/css/components/dropdown.less",
+        "wwwroot/css/components/form-elements.less",
+        "wwwroot/css/components/nav-tabs.less",
+        "wwwroot/css/components/slider.less",
+        "wwwroot/css/components/modal.less",
+        "wwwroot/css/components/progress-bar.less",
+        "wwwroot/css/components/toastr.less",
+        "wwwroot/css/components/tooltip.less",
+        "wwwroot/css/site.less"
+      ]
+    },
+    {
+      "outputFileName": "wwwroot/lib/flatpickr/flatpickr.css",
+      "inputFiles": [
+        "node_modules/flatpickr/dist/flatpickr.css"
+      ]
+    }
+  ],
+  "scss": [
+    {
+      "outputFileName": "wwwroot/lib/bootstrap-4-grid/grid.css",
+      "inputFiles": [
+        "node_modules/bootstrap-4-grid/scss/grid.scss"
+      ]
+    }
+  ],
+  "svg": [
+    {
+      "outputFileName": "wwwroot/images/svg-icons.min.svg",
+      "inputFiles": [
+        "wwwroot/images/svg-icons.svg"
+      ]
+    },
+    {
+      "outputFileName": "Feed/companies.Production.min.xml",
+      "inputFiles": [
+        "Feed/companies.Production.xml"
+      ]
+    }
+  ],
+  "cshtml": [
+    {
+      "outputFileName": "Views/Home/Bundle.cshtml",
+      "inputFiles": [
+        "Views/Home/Places.cshtml",
+        "Views/Home/Movies.cshtml",
+        "Views/Home/Place.cshtml",
+        "Views/Home/UserEvents.cshtml",
+        "Views/Home/InviteFriendsModal.cshtml"
+      ]
+    }
+  ]
+}

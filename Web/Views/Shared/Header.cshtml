@@ -1,0 +1,165 @@
+﻿
+<style>
+
+</style>
+<header id="header">
+    <div class="header-content">
+        <div class="left-header">
+            <a href="javascript:;"
+               on-click="@@global.router.navigate('places')"
+               id="logo">
+                <svg width="200" height="70" class="svg-icon">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#afisha-logo"></use>
+                </svg>
+            </a>
+        </div>
+        <div class="right-header">
+            <ul class="header-menu">
+                <li class="dropdown" id="bot-dropdown-li" onclick="dropdown.toggle(this,event,'bot-dropdown')">
+                    <a href="javascript:;">
+                        <svg width="25" height="25" class="svg-icon {{@@this.parent.get('currentUser.customData.isFamiliarWithBot')?'':'bot-icon'}}">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#bot"></use>
+                        </svg>
+                    </a>
+                    <div id='bot-dropdown' class="dropdown-content dropdown-content-right bot-dropdown">
+                        <div class="alert alert-warning">
+                            Вы можете получать уведомления от нашего бота, чтобы всегда быть в курсе событий.
+                            {{#if !@@this.parent.get('currentUser.customData.isFamiliarWithBot') }}
+                            <a href="javascript:;" on-click="@@this.fire('setFamiliarWithBot',@@context)">Я ознакомлен</a>
+                            {{/if}}
+                        </div>
+                        <ul>
+                            <li>
+                                <a on-click="@@this.fire('openGroupDialog',@@context,'https://vk.com/im?media=&sel=-85606912')">Чтобы разрешить боту писать вам - напишите "бот старт"</a>
+                            </li>
+                            <li>
+                                <a on-click="@@this.fire('openGroupDialog',@@context,'https://vk.com/im?media=&sel=-85606912')">Чтобы получить список команд бота - напишите "бот"</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="dropdown friends-item"
+                    onclick="dropdown.toggle(this, event, 'friends-dropdown', Header.refreshMyPlaces)">
+                    @await Html.PartialAsync("Friends")
+                </li>
+                {{#with @@this.parent.get('currentUser.customData.notifications')}}
+                <li class="dropdown notification-dropdown" id="notification-dropdown-li"
+                    onclick="dropdown.toggle(this, event, 'notification-dropdown')">
+                    <a href="javascript:;" data-toggle="dropdown" style="position: relative">
+                        {{#if this!= null && this.length!=0}}
+                        <span style="position: absolute" class="notification-badge">{{this.length}}</span>
+                        {{/if}}
+                        <svg width="25" height="25" class="svg-icon">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#notification"></use>
+                        </svg>
+                    </a>
+
+                    <div id="notification-dropdown" class="dropdown-content">
+                        <ul class="dropdown-menu">
+                            <li class="external">
+                                <h4>
+                                    У вас {{this.length==0?'нет':this.length}} {{DeclOfNum(this.length,['новое уведомление','новых уведомления','новых уведомлений'])}}
+                                </h4>
+                            </li>
+                            <li>
+                                <div class="content-wrapper" style="position: relative; overflow: hidden; overflow-y: auto;  width: auto;min-height: 80px; max-height: 300px;">
+                                    {{#each this as notification}}
+                                    <div style="border-bottom:1px solid rgb(218, 217, 217);" class="mb-2">
+                                        <div>
+                                            <span>
+                                                <img class="icon-circle user-avatar" id="header-avatar" src="{{notification.userFrom.avatar==null?'~/images/event-icon.png':notification.userFrom.avatar}}"
+                                                     style="float: left; margin-right: 10px;">
+                                            </span>
+                                            <div>
+                                                <span style="font-weight: bold">
+                                                    {{notification.userFrom.firstName}}
+                                                    {{notification.userFrom.lastName}}
+                                                </span>
+
+                                                <span style="float: right; font-size: 12px; color: rgb(169, 166, 166)">
+                                                    {{notification.date}}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                {{#if notification.type == 'NewOffer'}}
+                                                Новая заявка на поход в "{{notification.placeName}}"
+                                                {{elseif notification.type =='OfferAccepted'}}
+                                                Заявка на поход в "{{notification.placeName}}" принята
+                                                {{elseif notification.type == 'OfferRejected'}}
+                                                Заявка на поход в "{{notification.placeName}}" отклонена
+                                                {{/if}}
+                                            </div>
+                                            <div class="text-center mb-2" style="clear: both;">
+                                                {{#if notification.type == 'NewOffer'}}
+                                                <button class="vk-btn" on-click="@@this.fire('acceptOffer',@@context,notification.idEvent,notification.userFrom.id)">
+                                                    <svg width="12" height="12" style="fill:#fff" class="svg-icon">
+                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#check"></use>
+                                                    </svg>
+                                                </button>
+                                                <button class="vk-btn danger">
+                                                    <svg width="12" height="12" style="fill:#fff" class="svg-icon">
+                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#remove"></use>
+                                                    </svg>
+                                                </button>
+                                                {{/if}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{/each}}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </li>
+                {{/with}}
+                <li>
+                    <a href="javascript:;" data-toggle="dropdown">
+                        <svg width="25" height="25" class="svg-icon">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#favorite"></use>
+                        </svg>
+                    </a>
+                </li>
+                <li class="dropdown" onclick="dropdown.toggle(this, event, 'city-dropdown')">
+                    <a href="javascript:;">
+                        <svg width="25" height="25" class="svg-icon">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#location"></use>
+                        </svg>
+                        <span>
+                            {{#with parent.data}}
+                            {{cities[currentUser.customData.idCity]}}
+                            {{/with}}
+                        </span>
+                    </a>
+                    <div id="city-dropdown" class="dropdown-content-closable w-100" style="max-height: 250px; width:250px!important;">
+                        {{#with parent.data}}
+                            {{#each cities:i}}
+                                <a href="javascript:;" on-click="@@global.selectCity(i,this)">{{this}}</a>
+                            {{/each}}
+                        {{/with}}
+                    </div>
+                </li>
+                <li class="dropdown profile-item" onclick="dropdown.toggle(this, event, 'profile-dropdown')">
+                    {{#with parent.data}}
+                    <a href="javascript:;">
+                        <img id="header-avatar" class="icon-circle user-avatar" src="{{currentUser.photo_200}}">
+                        <span>
+                            {{currentUser.first_name}}&nbsp;{{currentUser.last_name}}
+                            <svg width="15" height="15" class="svg-icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
+                            </svg>
+                        </span>
+                    </a>
+                    {{/with}}
+                    <div id="profile-dropdown" class="dropdown-content w-100">
+                        <a href="#home">Профиль</a>
+                        <a href="#about">Избранное</a>
+                        <div class="separator"></div>
+                        <a href="#contact">Выход</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>

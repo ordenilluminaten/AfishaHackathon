@@ -2,3 +2,27 @@
 Models/obj/
 
 Web/obj/
+
+Web/node_modules/
+
+Web/bin/
+
+Models/bin/
+
+*.userprefs
+
+Models/Models\.csproj\.user
+\.vs/
+Web/wwwroot/bundles/
+
+Web/wwwroot/lib/
+
+Web/Web\.csproj\.user
+
+Web/time
+
+Web/Views/Home/Bundle\.cshtml
+
+\.vscode/tasks\.json
+
+Web/Properties/launchSettings\.json

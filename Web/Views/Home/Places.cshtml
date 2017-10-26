@@ -1,0 +1,104 @@
+﻿<script id='places-page-template' type="text/html">
+    <div class="filter-block" style="padding: 5px 20px;box-shadow: 0 2px 5px rgba(144,153,162,.1);">
+        <div class="filter-bar">
+            <div id="cat-filter" class="filter mr-2 dropdown" onclick="dropdown.toggle(this, event, 'categories-dropdown')">
+                <span>{{parent.data.categories[filter.category]}}</span>
+                <svg width="15" height="15" class="svg-icon">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
+                </svg>
+                <div id="categories-dropdown" class="dropdown-content-closable w-100">
+                    {{#each parent.data.categories:i}}
+                        <a href="javascript:;" on-click="@@this.fire('changeValue','category',i)">{{this}}</a>
+                        {{#if i==0}}
+                        <div class="separator"></div>
+                        {{/if}}
+                    {{/each}}
+                </div>
+            </div>
+            <div class="filter">
+                <svg width="15" height="15" class="svg-icon mr-1">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#search"></use>
+                </svg>
+                <input type="text" placeholder="Поиск" value="{{filter.search}}" on-enter="@@this.updateItems()" />
+            </div>
+            <div class="d-flex ml-auto">
+               <!-- <div id="cat-filter" class="filter mr-2 dropdown" onclick="dropdown.toggle(this, event, 'sort-dropdown')">
+                    <span>{{parent.data.categories[filter.category]}}</span>
+                    <svg width="15" height="15" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
+                    </svg>
+                    <div id="sort-dropdown" class="dropdown-content-closable w-100">
+                        <a href="javascript:;">{{this}}</a>
+                    </div>
+                </div> -->
+                <div class="filter" >
+                    <svg width="17" height="17" class="svg-icon mr-2 {{filter.viewType=='Grid'?'selected':''}}"
+                    on-click="@@this.fire('changeValue','viewType','Grid',false)">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#card_view"></use>
+                    </svg>
+                    <svg width="20" height="20" class="svg-icon {{filter.viewType=='List'?'selected':''}}" 
+                    on-click="@@this.fire('changeValue','viewType','List',false)">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#list_view"></use>
+                    </svg>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div class='content' style="padding: 5px 20px;">
+        <Paginator />
+        <div class='row'>
+            {{#each items:i}}
+            <div class="{{filter.viewType=='Grid'?'event-grid col-4':'event-list col-12'}} mb-3" >
+                <a href="javascript:;" on-click="@@global.router.navigate('place', this)" class="event-card">
+                    {{#if photos != null && photos.length > 0}}
+                    <div class="img-block" style="background:url('{{photos[0]}}')"></div>
+                    {{else}}
+                    <div class="img-block" style="background:url('/images/no-image.gif')"></div>
+                    {{/if}}
+                    <div class="fav-wrapper">
+                        <button class="fav-btn">
+                             <svg width="30" height="30" class="svg-icon" style="fill: white;">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#favorite"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">{{name}}</h3>
+                        <div class="event-schedule mb-2">
+                            <svg width="20" height="20" class="svg-icon mr-2">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#menu-events"></use>
+                            </svg>
+                            <div>{{workingTime}}</div>
+                        </div>
+                        <div class="event-location">
+                            <svg width="22" height="22" class="svg-icon mr-2" style="fill:blue;">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#location"></use>
+                            </svg>
+                            <div>{{address}}</div>
+                        </div>
+                    </div>
+                    <div class="event-stats">
+                        <div>
+                            <svg width="23" height="23" class="svg-icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#rating"></use>
+                            </svg> {{toFixed(parseFloat(rating),2)}}
+                        </div>
+                        <div>
+                            <svg width="23" height="23" class="svg-icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#comments"></use>
+                            </svg> 23
+                        </div>
+                        <div>
+                            <svg width="23" height="23" class="svg-icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#going"></use>
+                            </svg> 100
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {{/each}}
+        </div>
+        <Paginator />
+    </div>
+</script>

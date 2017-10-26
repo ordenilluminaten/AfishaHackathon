@@ -1,14 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Feed", "Feed", "{43F93515-D73F-4269-AC44-F2C76CB067E9}"
-	ProjectSection(SolutionItems) = preProject
-		companies.xml = companies.xml
-	EndProjectSection
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{E006F912-7826-4C79-948B-1A81505EC8FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{E006F912-7826-4C79-948B-1A81505EC8FF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{E9C041B3-B412-4607-8853-1261536E8910}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{E9C041B3-B412-4607-8853-1261536E8910}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +20,11 @@ Global
 		{E9C041B3-B412-4607-8853-1261536E8910}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9C041B3-B412-4607-8853-1261536E8910}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9C041B3-B412-4607-8853-1261536E8910}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2563F34-CAF6-465C-BC60-542FA2C129B4}
 	EndGlobalSection
 EndGlobal

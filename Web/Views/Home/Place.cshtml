@@ -1,0 +1,283 @@
+<script id='place-page-template' type="text/html">
+<style>
+    #page {
+        padding: 0;
+    }
+
+    .header {
+        height: 60vh;
+        max-height: inherit;
+        min-height: 60vh;
+        overflow: hidden;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: -1;
+    }
+
+    .header > .img-container {
+        transform: translate(-50%, -50%);
+        filter: blur(75px) brightness(0.9);
+        display: inline-block;
+        width: 100%;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        border: 0;
+        height: 100%;
+    }
+
+    .header img {
+        transform: translate(-50%, -50%);
+        filter: blur(75px) brightness(0.9);
+        display: inline-block;
+        width: 100%;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        border: 0;
+    }
+
+    .content {
+        padding-left: 10px;
+        padding-right: 10px;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+        background-color: #fff;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    .content > hr {
+        margin: 0;
+        border: 0;
+        height: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .content .short-info {
+        position: relative;
+        border-top-right-radius: 4px;
+        padding: 20px;
+    }
+
+    .content .short-info p, .content .short-info span {
+        color: #666A73;
+    }
+
+    .content .short-info p {
+        word-wrap: break-word;
+        padding: 0;
+        margin: 0;
+    }
+
+    .content .datetime {
+        position: relative;
+    }
+
+    .content .short-info .time {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 15px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: #666a73;
+    }
+
+    .content .short-info .age {
+        color: white;
+        background-color: red;
+        border-radius: 50%;
+        padding: 4px;
+        text-align: center;
+        font-size: 11px;
+        height: 25px;
+        width: 25px;
+        line-height: 17px;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+    }
+
+    .content .short-info h1 {
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+        letter-spacing: 0.5px;
+        color: #282C35;
+    }
+
+    .content .short-info h4 {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        font-size: 1rem;
+        font-weight: normal;
+        line-height: 1rem;
+        letter-spacing: 1px;
+        color: #666a73;
+        text-align: center;
+        width: 100%;
+        padding: 0 20px;
+    }
+
+    .content .short-info .address {
+        display: -webkit-box;
+        margin: 0 auto;
+        color: #666A73;
+    }
+
+    .content .panel a {
+        margin: 0 5px;
+    }
+
+    button.action-btn {
+        cursor: pointer;
+        border: none;
+        min-height: 30px;
+        height: auto;
+        width: 100%;
+        font-size: 1em;
+        color: rgb(255, 255, 255);
+        outline: none;
+        text-transform: uppercase;
+    }
+
+    button.action-btn:hover {
+        transition: box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        transition-delay: 0.1s;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .action-btn svg {
+        fill: white;
+    }
+
+    .action-btn.i-will-go {
+        background-color: #31ce74;
+    }
+
+    .action-btn.i-will-not-go {
+        background-color: #ff0000;
+    }
+
+    .action-btn.invite-friend {
+        background-color: #F4810C;
+        height: auto;
+    }
+
+    .place-image {
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+        min-height: 215px;
+        max-height: 215px;
+    }
+</style>
+
+
+    <div class="row" style="margin: 0">
+        <div class="col-4">
+            <div class="place-image" style="background-image: url('{{photos[0]}}');">
+
+            </div>
+            <div style="min-height: 105px;padding:16px 24px 20px;background: #2a5885;color:#fff">
+                <h1 style="font-size: 18px;overflow: hidden;text-overflow: ellipsis;">
+                    {{name}}
+                </h1>
+                <div>Рейтинг: {{toFixed(rating,2)}}</div>
+                <div>Ресторан</div>
+                <p class="address">
+                    <svg width="16" height="16" style="fill:#fff" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#location"></use>
+                    </svg>
+                    {{address}}
+                </p>
+                {{#if url != null}}
+                <div>
+                    <svg width="16" height="16" style="fill:#fff" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#url"></use>
+                    </svg>
+                    <a href="//{{url}}" target="_blank" style="text-decoration: underline;padding-left: 20px;color:white">
+                        {{url}}
+                    </a>
+                </div>
+
+                {{/if}}
+
+
+
+                <div>
+                    <svg width="16" height="16" style="fill:#fff" class="svg-icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#clock"></use>
+                    </svg>
+                    <span>{{workingTime}}</span>
+                </div>
+                <p></p>
+                <div>
+                    {{#if phones != null}}
+                    <b>
+                        Телефон(ы):
+                    </b>
+                    <p>
+                        {{#each phones:i}}
+                        {{number}}{{#if i < phones.length - 1}},&nbsp;{{/if}}
+                        {{/each}}
+                    </p>
+                    {{/if}}
+                </div>
+
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <div class="col-12">
+                    <div class="tabs" style="padding: 0 10px;">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#tab-will-go">
+                                    Идут (159)
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-gallery">
+                                    Галерея
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-reviews">
+                                    Отзывы
+                                </a>
+                            </li>
+                        </ul>
+                        <div id="tab-will-go" class="tab active">
+                            <# user-events />
+                        </div>
+                        <div id="tab-gallery" class="tab">
+                            {{#if photos != null && photos.length > 0}}
+                            <div class="slider justify-content-center">
+                                {{#each photos: i}}
+                                <input type="radio" name="slide_switch" id="gallery-{{i}}" checked="checked" />
+                                <label for="gallery-{{i}}">
+                                    <img src="{{photos[i]}}" />
+                                </label>
+                                <img src="{{photos[i]}}" style="height: 320px;" />
+                                {{/each}}
+                            </div>
+                            {{/if}}
+                        </div>
+                        <div id="tab-reviews" class="tab">
+                            <div id="reviews"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     
+ 
+</script>

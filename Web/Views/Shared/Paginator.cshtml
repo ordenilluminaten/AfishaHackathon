@@ -1,0 +1,44 @@
+﻿{{#with parent.data}}
+<div class="mb-3 d-flex justify-content-between">
+    <div>
+        <ul class="horizontal">
+            <li><label class="control-label">Найдено:&nbsp;<b>{{filter.itemsTotal}}</b></label></li>
+            <li>
+                <label class="control-label">&nbsp;На стр:</label>
+                <div style="display:table-cell;">
+                    <div class="filter dropdown" style="width: 80px;" onclick="dropdown.toggle(this, event, 'take-dropdown')">
+                        <span>{{filter.take}}</span>
+                        <svg width="15" height="15" class="svg-icon">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/images/svg-icons.min.svg#arrow-down"></use>
+                        </svg>
+                        <div id="take-dropdown" class="dropdown-content-closable w-100">
+                            <a href="javascript:;" on-click="@@this.parent.fire('changeValue',@@context,'take',25)">25</a>
+                            <a href="javascript:;" on-click="@@this.parent.fire('changeValue',@@context,'take',50)">50</a>
+                            <a href="javascript:;" on-click="@@this.parent.fire('changeValue',@@context,'take',100)">100</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div>
+        {{#if filter.pageTotal > 1}}
+            <div class="pagination">
+                {{#if filter.page == 1}}
+                    <a class="disabled" href="javascript:;"><span aria-hidden="true">&laquo;</span></a>
+                {{else}}
+                    <a on-click="@@this.parent.fire('selectPage',@@context,filter.page-1)" href="javascript:;"><span aria-hidden="true">&laquo;</span></a>
+                {{/if}}
+                {{#each pages}}
+                <a class="{{active==true?'active':''}}" href="javascript:;" on-click="@@this.parent.fire('selectPage',@@context,num)">{{num}}</a>
+                {{/each}}
+                {{#if filter.page == filter.pageTotal}}
+                 <a class="disabled" href="javascript:;"><span aria-hidden="true">&raquo;</span></a>
+                {{else}}
+                 <a href="javascript:;" on-click="@@this.parent.fire('selectPage',@@context,filter.page+1)"><span aria-hidden="true">&raquo;</span></a>
+                {{/if}}
+            </div>
+        {{/if}}
+    </div>
+</div>
+{{/with}}
